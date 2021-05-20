@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MeetingsRepository {
@@ -14,6 +14,7 @@ public interface MeetingsRepository {
 
     List<Meeting> getMeetings();
 
+    public int getNextMeetingId();
 
     @Nullable
     public Meeting getMeetingById(int id);
@@ -28,9 +29,9 @@ public interface MeetingsRepository {
 
     List<Meeting> getRoomMeetings(int roomId);
 
-    boolean isRoomFree(int MeetingRoomId, Date start, Date stop);
+    boolean isRoomFree(int MeetingRoomId, LocalDateTime start, LocalDateTime stop);
 
-    List<Integer> getFreeRooms(Date start, Date stop);
+    List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop);
 
     boolean isValidMeeting(Meeting meeting);
 }

@@ -11,7 +11,7 @@ public class DependencyInjection {
         return repo;
     }
 
-    public static MeetingsRepository getNewInstanceApiService() {
+    public static MeetingsRepository getNewMeetingsRepository() {
         return new LocalMeetingsRepository();
     }
 }

@@ -1,22 +1,20 @@
 package com.openclassrooms.mareu.model;
 
-import android.provider.ContactsContract.CommonDataKinds.Email;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
 public class Meeting {
 
     private final int mId;
-    private final Email mOwner;
-    private final HashSet<Email> mParticipants;
+    private final String mOwner;
+    private final HashSet<String> mParticipants;
     private final String mSubject;
-    private final Date mStart;
-    private final Date mStop;
+    private final LocalDateTime mStart;
+    private final LocalDateTime mStop;
     private final int mMeetingRoomId;
 
-    private Meeting(int id, Email owner, HashSet<Email> participants, String subject, Date start, Date stop, int meetingRoomId) {
+    public Meeting(int id, String owner, HashSet<String> participants, String subject, LocalDateTime start, LocalDateTime stop, int meetingRoomId) {
         this.mId = id;
         this.mOwner = owner;
         this.mParticipants = participants;
@@ -30,11 +28,11 @@ public class Meeting {
         return mId;
     }
 
-    public Email getOwner() {
+    public String getOwner() {
         return mOwner;
     }
 
-    public HashSet<Email> getParticipants() {
+    public HashSet<String> getParticipants() {
         return mParticipants;
     }
 
@@ -42,11 +40,11 @@ public class Meeting {
         return mSubject;
     }
 
-    public Date getStart() {
+    public LocalDateTime getStart() {
         return mStart;
     }
 
-    public Date getStop() {
+    public LocalDateTime getStop() {
         return mStop;
     }
 

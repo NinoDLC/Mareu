@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.repository;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -8,26 +7,24 @@ import androidx.annotation.Nullable;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 public class LocalMeetingsRepository implements MeetingsRepository {
 
-    private int mNextMeetingRoomId = 0;
+    private final List<MeetingRoom> mMeetingRooms = DummyMeetingRoomsGenerator.getDummyMeetingRooms();
 
     private int mNextMeetingId = 0;
 
-    private List<MeetingRoom> mMeetingRooms = new DummyMeetingRoomsGenerator();
+    private List<Meeting> mMeetings = new ArrayList<>();
 
-    private List<Meeting> mMeetings = new DummyMeetingGenerator();
-
-    LocalMeetingsRepository(){
+    public LocalMeetingsRepository(){
         while (mMeetings.size() < 20){
             createMeeting(DummyMeetingGenerator.generateMeeting());  // runs isValidMeeting()
         }
-    };
+    }
 
     public List<MeetingRoom> getMeetingRooms(){
         return mMeetingRooms;
@@ -35,6 +32,11 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     public List<Meeting> getMeetings(){
         return mMeetings;
+    }
+
+    public int getNextMeetingId(){
+        mNextMeetingId++;
+        return mNextMeetingId;
     }
 
     @Nullable
@@ -73,7 +75,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     // todo veut-on retourner des id de meetings ?
     public List<Meeting> getRoomMeetings(int roomId){
-        List<Meeting> meetings = new ArrayList<Meeting>();
+        List<Meeting> meetings = new ArrayList<>();
         for (Meeting meeting : mMeetings){
             if (meeting.getMeetingRoomId()==roomId)
                 meetings.add(meeting);
@@ -81,16 +83,16 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return meetings;
     }
 
-    public boolean isRoomFree(int meetingRoomId, Date start, Date stop){
+    public boolean isRoomFree(int meetingRoomId, LocalDateTime start, LocalDateTime stop){
         for (Meeting meeting : getRoomMeetings(meetingRoomId)){
-            if (meeting.getStart().before(stop) && meeting.getStop().before(start))
+            if (meeting.getStart().isBefore(stop) && meeting.getStop().isAfter(start))
                 return false;
         }
         return true;
     }
 
-    public List<Integer> getFreeRooms(Date start, Date stop){
-        List<Integer> roomIds = new ArrayList<Integer>();
+    public List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop){
+        List<Integer> roomIds = new ArrayList<>();
         for (MeetingRoom room : mMeetingRooms){
             if (isRoomFree(room.getId(), start, stop))
                 roomIds.add(room.getId());
@@ -105,7 +107,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
                 return false;
             }
         }
-        if (meeting.getStop().before(meeting.getStart())) {
+        if (meeting.getStop().isBefore(meeting.getStart())) {
             Log.e("Utils", "isValidMeeting(): can't stop before starting");
             return false;
         }
@@ -113,14 +115,16 @@ public class LocalMeetingsRepository implements MeetingsRepository {
             Log.e("Utils", "isValidMeeting(): room is not free");
             return false;
         }
-        for (ContactsContract.CommonDataKinds.Email email : meeting.getParticipants()){
-            if (email == meeting.getOwner()){
+        for (String email : meeting.getParticipants()){
+            if (email.equals(meeting.getOwner())){
                 Log.e("Utils", "isValidMeeting(): meeting owner also in participants");
                 return false;
             }
         }
-        if meeting.getParticipants().size() > meeting.getMeetingRoomId()
-
+        if (meeting.getParticipants().size() > meeting.getMeetingRoomId()) {
+            Log.e("Utils", "isValidMeeting(): meeting room is too small");
+            return false;
+        }
         return true;
     }
 }
