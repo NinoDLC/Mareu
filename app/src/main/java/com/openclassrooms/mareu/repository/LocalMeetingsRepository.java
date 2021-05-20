@@ -24,6 +24,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         while (mMeetings.size() < 20) {
             createMeeting(DummyMeetingGenerator.generateMeeting());  // runs isValidMeeting()
         }
+        mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
     }
 
     public List<MeetingRoom> getMeetingRooms() {

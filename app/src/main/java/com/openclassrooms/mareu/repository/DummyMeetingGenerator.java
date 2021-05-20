@@ -21,10 +21,20 @@ public abstract class DummyMeetingGenerator {
 
     private static final LocalDateTime mRoundedNow = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
 
+    private static int i = 0;
+
+    private static int getNextId() {
+    /* can't use DependencyInjection.getMeetingsRepository().getNextMeetingId()
+        as I am creating the fucking repo : it does not exist yet => nullPointerException
+     */
+        i++;
+        return i;
+    }
+
     protected static Meeting generateMeeting() {
         LocalDateTime start = generateStart();
         return (new Meeting(
-                DependencyInjection.getMeetingsRepository().getNextMeetingId(),
+                getNextId(),
                 generateEmail(),
                 generateParticipants(),
                 mSubjects[mRand.nextInt(mSubjects.length)],
