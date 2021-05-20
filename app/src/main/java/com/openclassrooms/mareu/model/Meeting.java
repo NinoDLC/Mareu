@@ -2,7 +2,6 @@ package com.openclassrooms.mareu.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 
 public class Meeting {
 

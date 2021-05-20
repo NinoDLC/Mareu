@@ -14,13 +14,13 @@ public interface MeetingsRepository {
 
     List<Meeting> getMeetings();
 
-    public int getNextMeetingId();
+    int getNextMeetingId();
 
     @Nullable
-    public Meeting getMeetingById(int id);
+    Meeting getMeetingById(int id);
 
     @Nullable
-    public MeetingRoom getMeetingRoomById(int id);
+    MeetingRoom getMeetingRoomById(int id);
 
     // TODO add 'throws esception' ?
     void createMeeting(Meeting meeting);

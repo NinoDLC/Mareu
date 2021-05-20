@@ -9,7 +9,7 @@ import java.util.Random;
 
 public abstract class DummyMeetingRoomsGenerator {
 
-    private static final String[] mDevices = {"Beamer","Whiteboard","Blackboard","Hi-fi", "augmented reality"};
+    private static final String[] mDevices = {"Beamer", "Whiteboard", "Blackboard", "Hi-fi", "augmented reality"};
 
     private static final Random mRand = new Random();
 
@@ -24,12 +24,12 @@ public abstract class DummyMeetingRoomsGenerator {
             new MeetingRoom(8, "Basset", "2rd floor, 2nd door on the right", generateDevices(), 4),
             new MeetingRoom(9, "Cocker", "3rd floor, 1st door on the left", generateDevices(), 2),
             new MeetingRoom(10, "Epagnol", "3rd floor, 2nd door on the left", generateDevices(), 6)
-            );
+    );
 
-    private static String[] generateDevices(){
+    private static String[] generateDevices() {
         int participantsNumber = mRand.nextInt(2);
         HashSet<String> devices = new HashSet<>();
-        while (devices.size() < participantsNumber ){
+        while (devices.size() < participantsNumber) {
             devices.add(mDevices[mRand.nextInt(mDevices.length)]);
         }
         return devices.toArray(new String[0]);

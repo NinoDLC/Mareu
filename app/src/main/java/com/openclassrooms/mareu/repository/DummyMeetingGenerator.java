@@ -4,7 +4,6 @@ import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -20,11 +19,11 @@ public abstract class DummyMeetingGenerator {
 
     private static final Random mRand = new Random();
 
-    private static final LocalDateTime mRoundedNow = new LocalDateTime().withHour(8).withMinute(0).withSecond(0);;
+    private static final LocalDateTime mRoundedNow = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
 
-    protected static Meeting generateMeeting(){
+    protected static Meeting generateMeeting() {
         LocalDateTime start = generateStart();
-        return(new Meeting(
+        return (new Meeting(
                 DependencyInjection.getMeetingsRepository().getNextMeetingId(),
                 generateEmail(),
                 generateParticipants(),
@@ -35,32 +34,32 @@ public abstract class DummyMeetingGenerator {
         );
     }
 
-    private static String generateEmail(){
+    private static String generateEmail() {
         String name = mFirstNames[mRand.nextInt(mFirstNames.length)];
         String company = mCompanies[mRand.nextInt(mCompanies.length)];
         String domain = mDomains[mRand.nextInt(mDomains.length)];
         return name + "@" + company + "." + domain;
     }
 
-    private static HashSet<String> generateParticipants(){
+    private static HashSet<String> generateParticipants() {
         int participantsNumber = mRand.nextInt(4);
         HashSet<String> participants = new HashSet<>();
-        while (participants.size() < participantsNumber ){
+        while (participants.size() < participantsNumber) {
             participants.add(generateEmail());
         }
         return participants;
     }
 
-    private static LocalDateTime generateStart(){
+    private static LocalDateTime generateStart() {
         /*
         LocalDateTime localDateTime = new LocalDateTime();
         localDateTime.adjustInto(mRoundedNow);
          */
-        return mRoundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12)*5);
+        return mRoundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12) * 5);
     }
 
-    private static LocalDateTime generateStop(LocalDateTime start){
-        return start.plusMinutes(mRand.nextInt(18)*5);
+    private static LocalDateTime generateStop(LocalDateTime start) {
+        return start.plusMinutes(mRand.nextInt(18) * 5);
     }
 
 }
