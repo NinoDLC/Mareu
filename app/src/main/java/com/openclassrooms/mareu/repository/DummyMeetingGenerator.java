@@ -11,11 +11,11 @@ public abstract class DummyMeetingGenerator {
 
     private static final String[] mFirstNames = {"Chuck", "Hans", "Franck", "Marc", "Tedy", "Joe", "Jack", "Fred", "Henry", "Jasmine", "Claire", "Morgan"};
 
-    private static final String[] mCompanies = {"LamZone", "Pepsi", "NerdzHerdz", "Buy More"};
+    private static final String[] mCompanies = {"LamZone", "NerdzHerdz", "Buy More"};
 
     private static final String[] mDomains = {"fr", "com", "org", "net"};
 
-    private static final String[] mSubjects = {"coffee break", "code red", "daily meetup", "agile sprint", "project X"};
+    private static final String[] mSubjects = {"Coffee break", "Code red", "Daily meetup", "Agile sprint", "Project xXx", "Global warming"};
 
     private static final Random mRand = new Random();
 
@@ -48,7 +48,8 @@ public abstract class DummyMeetingGenerator {
         String name = mFirstNames[mRand.nextInt(mFirstNames.length)];
         String company = mCompanies[mRand.nextInt(mCompanies.length)];
         String domain = mDomains[mRand.nextInt(mDomains.length)];
-        return name + "@" + company + "." + domain;
+        String email = name + "@" + company + "." + domain;
+        return email.replaceAll("\\s+", "").toLowerCase();
     }
 
     private static HashSet<String> generateParticipants() {
