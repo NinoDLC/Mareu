@@ -11,8 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
+import com.openclassrooms.mareu.model.MeetingRoom;
 
+import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MeetingsRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsRecyclerViewAdapter.ViewHolder> {
@@ -34,10 +38,22 @@ public class MeetingsRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Meeting meeting = mMeetings.get(position);
-        holder.mText.setText(meeting.getSubject());
-        holder.mParticipants.setText(meeting.getOwner());
-        //holder.mImage
 
+        // TODO : this is ugly, but I hate eventbus even more
+        MeetingRoom mr = DependencyInjection.getMeetingsRepository().getMeetingRoomById(meeting.getMeetingRoomId());
+
+        String sep = " - ";
+        holder.mText.setText(
+                MessageFormat.format("{0}{1}{2}{3}{4}",
+                        meeting.getStart().format(DateTimeFormatter.ofPattern("kk'h'mm")),
+                        sep,
+                        meeting.getSubject(),
+                        sep,
+                        mr.getName()
+                )
+        );
+        holder.mParticipants.setText(meeting.getOwner());
+        holder.mImage.setImageResource(mr.getImageSrc());
     }
 
     @Override

@@ -3,13 +3,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:padding="20dp">
+    android:layout_height="70dp"
+    android:padding="@dimen/spacing">
 
     <ImageView
         android:id="@+id/meeting_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:contentDescription="@string/meeting_image"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_dialog_map"
@@ -21,24 +21,32 @@
 
     <TextView
         android:id="@+id/meeting_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginHorizontal="@dimen/spacing"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="nom de ma réunion"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/meeting_participants"
+        app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
         app:layout_constraintStart_toEndOf="@id/meeting_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/meeting_participants"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginHorizontal="@dimen/spacing"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="Participant@moi.com"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
         app:layout_constraintStart_toEndOf="@id/meeting_image"
         app:layout_constraintTop_toBottomOf="@id/meeting_text" />
 
@@ -48,6 +56,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:contentDescription="@string/delete_meeting"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

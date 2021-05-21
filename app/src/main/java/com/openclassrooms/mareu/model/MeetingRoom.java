@@ -7,13 +7,15 @@ public class MeetingRoom {
     private final String mLocation;
     private final String[] mDevices;
     private final int mCapacity;
+    private final int mImageSrc;
 
-    public MeetingRoom(int id, String name, String location, String[] devices, int capacity) {
+    public MeetingRoom(int id, String name, String location, String[] devices, int capacity, int imageSrc) {
         this.mId = id;
         this.mName = name;
         this.mLocation = location;
         this.mDevices = devices;
         this.mCapacity = capacity;
+        this.mImageSrc = imageSrc;
     }
 
     public int getId() {
@@ -36,4 +38,7 @@ public class MeetingRoom {
         return mCapacity;
     }
 
+    public int getImageSrc() {
+        return mImageSrc;
+    }
 }
