@@ -2,8 +2,9 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     android:padding="@dimen/spacing">
 
     <ImageView
@@ -13,11 +14,10 @@
         android:contentDescription="@string/meeting_image"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_dialog_map"
-        app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="#FF8400" />
+        app:tint="@color/red" />
 
     <TextView
         android:id="@+id/meeting_text"
@@ -26,14 +26,14 @@
         android:layout_marginHorizontal="@dimen/spacing"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="nom de ma réunion"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="13sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/meeting_participants"
         app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
         app:layout_constraintStart_toEndOf="@id/meeting_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/date/day_of_week" />
 
     <TextView
         android:id="@+id/meeting_participants"
@@ -42,13 +42,13 @@
         android:layout_marginHorizontal="@dimen/spacing"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Participant@moi.com"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
         app:layout_constraintStart_toEndOf="@id/meeting_image"
-        app:layout_constraintTop_toBottomOf="@id/meeting_text" />
+        app:layout_constraintTop_toBottomOf="@id/meeting_text"
+        tools:text="@tools:sample/first_names" />
 
     <ImageButton
         android:id="@+id/meeting_delete_button"

@@ -31,8 +31,10 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show()
         );
 
+        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter();
         RecyclerView recyclerView = findViewById(R.id.meeting_list);
-        recyclerView.setAdapter(new MeetingsRecyclerViewAdapter(mRepo.getMeetings()));
+        recyclerView.setAdapter(adapter);
+        adapter.submitList(mRepo.getMeetings());
     }
 
 

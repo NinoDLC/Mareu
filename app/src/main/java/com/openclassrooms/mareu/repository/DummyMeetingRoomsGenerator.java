@@ -14,7 +14,7 @@ public abstract class DummyMeetingRoomsGenerator {
 
     private static final Random mRand = new Random();
 
-    private static final int imageSrc = R.drawable.ic_launcher_background;
+    private static final int imageSrc = R.drawable.ic_launcher_foreground;
 
     private static final List<MeetingRoom> DUMMY_MEETING_ROOMS = Arrays.asList(
             new MeetingRoom(1, "Braque-de-Weimar", "1st floor, 1st door on the left", generateDevices(), 3, imageSrc),

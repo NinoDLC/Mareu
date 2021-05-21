@@ -1,6 +1,8 @@
 package com.openclassrooms.mareu.ui;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -19,12 +21,10 @@ import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class MeetingsRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsRecyclerViewAdapter.ViewHolder> {
+public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Meeting> mMeetings;
-
-    public MeetingsRecyclerViewAdapter(List<Meeting> items) {
-        mMeetings = items;
+    public MeetingsRecyclerViewAdapter() {
+        super(new MeetingsDiffCallback());
     }
 
     @NonNull
@@ -36,37 +36,19 @@ public class MeetingsRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsRe
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        Meeting meeting = mMeetings.get(position);
-
-        // TODO : this is ugly, but I hate eventbus even more
-        MeetingRoom mr = DependencyInjection.getMeetingsRepository().getMeetingRoomById(meeting.getMeetingRoomId());
-
-        String sep = " - ";
-        holder.mText.setText(
-                MessageFormat.format("{0}{1}{2}{3}{4}",
-                        meeting.getStart().format(DateTimeFormatter.ofPattern("kk'h'mm")),
-                        sep,
-                        meeting.getSubject(),
-                        sep,
-                        mr.getName()
-                )
-        );
-        holder.mParticipants.setText(meeting.getOwner());
-        holder.mImage.setImageResource(mr.getImageSrc());
+    public void onBindViewHolder(@NonNull MeetingsRecyclerViewAdapter.ViewHolder holder, int position) {
+        /* todo : remember : this bind method allows for all ViewHolder fields to be private !
+            generally, I guess we want private fields and (some) public methods...
+         */
+        holder.bind(getItem(position));
+        // todo : pourquoi peut-il écrire getItem(), et pas mMeetings.get()
     }
-
-    @Override
-    public int getItemCount() {
-        return mMeetings.size();
-    }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mText;
-        public final TextView mParticipants;
-        public final ImageView mImage;
-        public final ImageButton mDelete;
+        private final TextView mText;
+        private final TextView mParticipants;
+        private final ImageView mImage;
+        private final ImageButton mDelete;
 
         public ViewHolder(View view) {
             super(view);
@@ -76,5 +58,36 @@ public class MeetingsRecyclerViewAdapter extends RecyclerView.Adapter<MeetingsRe
             mDelete = view.findViewById(R.id.meeting_delete_button);
         }
 
+        public void bind(Meeting meeting){
+            // TODO : this is ugly, but I hate eventbus even more
+            MeetingRoom mr = DependencyInjection.getMeetingsRepository().getMeetingRoomById(meeting.getMeetingRoomId());
+            String sep = " - ";
+            if (mr != null) {
+                mText.setText(
+                        MessageFormat.format("{0}{1}{2}{3}{4}",
+                                meeting.getStart().format(DateTimeFormatter.ofPattern("kk'h'mm")),
+                                sep,
+                                meeting.getSubject(),
+                                sep,
+                                mr.getName()
+                        )
+                );
+                mParticipants.setText(meeting.getOwner());
+                mImage.setImageResource(mr.getImageSrc());
+            }
+        }
+    }
+
+    public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<Meeting> {
+
+        @Override
+        public boolean areItemsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
+            return false;
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
+            return false;
+        }
     }
 }
