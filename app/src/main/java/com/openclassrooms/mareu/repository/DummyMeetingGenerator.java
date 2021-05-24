@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.repository;
 
-import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
 
 import java.time.LocalDateTime;
@@ -62,10 +61,6 @@ public abstract class DummyMeetingGenerator {
     }
 
     private static LocalDateTime generateStart() {
-        /*
-        LocalDateTime localDateTime = new LocalDateTime();
-        localDateTime.adjustInto(mRoundedNow);
-         */
         return mRoundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12) * 5);
     }
 

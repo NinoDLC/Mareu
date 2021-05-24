@@ -58,7 +58,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
             mDelete = view.findViewById(R.id.meeting_delete_button);
         }
 
-        public void bind(Meeting meeting){
+        public void bind(Meeting meeting) {
             // TODO : this is ugly, but I hate eventbus even more
             MeetingRoom mr = DependencyInjection.getMeetingsRepository().getMeetingRoomById(meeting.getMeetingRoomId());
             String sep = " - ";
@@ -76,9 +76,9 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
                 mImage.setImageResource(mr.getImageSrc());
                 mDelete.setOnClickListener(
                         view -> Snackbar.make(
-                                    view,
-                                    "let's remove meeting " + meeting.getId(),
-                                    Snackbar.LENGTH_SHORT).show()
+                                view,
+                                "let's remove meeting " + meeting.getId(),
+                                Snackbar.LENGTH_SHORT).show()
                 );
             }
         }

@@ -31,7 +31,7 @@ public class MainViewModel extends ViewModel {
         // todo : do something
 
 
-
+        // mMutableMeetingsLiveData.setValue(mRepo.getMeetings());
 
     }
 
