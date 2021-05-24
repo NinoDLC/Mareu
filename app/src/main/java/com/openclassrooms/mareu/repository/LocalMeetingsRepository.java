@@ -16,7 +16,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     private final List<MeetingRoom> mMeetingRooms = DummyMeetingRoomsGenerator.getDummyMeetingRooms();
 
-    private int mNextMeetingId = 0;
+    private int mNextMeetingId;
 
     private final List<Meeting> mMeetings = new ArrayList<>();
 
@@ -68,9 +68,8 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         // not using getMeetingById to be gentler and use that iterator for loop.
         for (Iterator<Meeting> iterator = mMeetings.iterator(); iterator.hasNext(); ) {
             Meeting meeting = iterator.next();
-            if (meeting.getId() == meetingId) {
-                mMeetings.remove(meeting);
-            }
+            if (meeting.getId() == meetingId)
+                iterator.remove();
         }
     }
 

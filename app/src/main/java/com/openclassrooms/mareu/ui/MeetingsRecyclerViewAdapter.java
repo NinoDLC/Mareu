@@ -1,10 +1,5 @@
 package com.openclassrooms.mareu.ui;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +7,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
@@ -19,7 +20,6 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRecyclerViewAdapter.ViewHolder> {
 
@@ -74,6 +74,12 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
                 );
                 mParticipants.setText(meeting.getOwner());
                 mImage.setImageResource(mr.getImageSrc());
+                mDelete.setOnClickListener(
+                        view -> Snackbar.make(
+                                    view,
+                                    "let's remove meeting " + meeting.getId(),
+                                    Snackbar.LENGTH_SHORT).show()
+                );
             }
         }
     }

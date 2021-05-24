@@ -3,38 +3,52 @@ package com.openclassrooms.mareu.ui;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.di.DependencyInjection;
+import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final MeetingsRepository mRepo = DependencyInjection.getMeetingsRepository();
+
+    private MainViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         setSupportActionBar(findViewById(R.id.toolbar));
 
         findViewById(R.id.fab).setOnClickListener(
                 view -> Snackbar.make(
                         view,
-                        "Replace with your own action",
-                        Snackbar.LENGTH_LONG).show()
+                        "Create a new meeting",
+                        Snackbar.LENGTH_SHORT).show()
         );
 
-        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter();
         RecyclerView recyclerView = findViewById(R.id.meeting_list);
+        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
-        adapter.submitList(mRepo.getMeetings());
+
+        mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+        mViewModel.getViewLiveData().observe(this, new Observer<List<Meeting>>() {
+            @Override
+            public void onChanged(List<Meeting> meetings) {
+                adapter.submitList(meetings);
+            }
+        });
+
     }
 
 
@@ -54,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            mViewModel.buttonClicked();
         }
 
         return super.onOptionsItemSelected(item);
