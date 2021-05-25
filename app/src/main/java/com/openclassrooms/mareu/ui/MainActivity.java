@@ -1,5 +1,6 @@
 package com.openclassrooms.mareu.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,7 +11,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 
@@ -44,10 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         findViewById(R.id.fab).setOnClickListener(
-                view -> Snackbar.make(
-                        view,
-                        "Create a new meeting",
-                        Snackbar.LENGTH_SHORT).show()
+                    view -> startActivity(new Intent(MainActivity.this, ShowMeetingActivity.class))
         );
 
         RecyclerView recyclerView = findViewById(R.id.meeting_list);

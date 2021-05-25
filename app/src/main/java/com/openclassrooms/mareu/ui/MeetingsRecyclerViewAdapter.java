@@ -41,10 +41,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
 
     @Override
     public void onBindViewHolder(@NonNull MeetingsRecyclerViewAdapter.ViewHolder holder, int position) {
-        /* todo : remember : this bind method allows for all ViewHolder fields to be private !
-            generally, I guess we want private fields and (some) public methods...
-            getItem() is defined in ListAdapter,
-            with recyclerViewAdapter, we'd have mMeetings field and do mMeetings.get() */
+        // getItem() is defined in ListAdapter, with recyclerViewAdapter, we'd have mMeetings field and do mMeetings.get()
         Meeting meeting = getItem(position);
         MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
 
@@ -97,7 +94,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
         @Override
         public boolean areContentsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
             return oldItem.getId() == newItem.getId();
-            // if item subject changed, I don't update the screen, here...
+            // todo : if item subject changed, I don't update the screen, here...
         }
     }
 
