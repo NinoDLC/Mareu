@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,12 +21,27 @@ public class MainActivity extends AppCompatActivity {
 
     private MainViewModel mViewModel;
 
+    private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
+        @Override
+        public void itemClicked(int id) {
+            Log.e("Arnaud", "itemClicked: "+ id);
+        }
+
+        @Override
+        public void deleteButtonClicked(int id) {
+            Log.e("Arnaud", "deleteButtonClicked: "+ id);
+            mViewModel.deleteButtonClicked(id);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
 
         findViewById(R.id.fab).setOnClickListener(
                 view -> Snackbar.make(
@@ -35,17 +51,16 @@ public class MainActivity extends AppCompatActivity {
         );
 
         RecyclerView recyclerView = findViewById(R.id.meeting_list);
-        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter();
+        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter(mListener, mViewModel.getMeetingRooms());
         recyclerView.setAdapter(adapter);
 
-        mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
-        mViewModel.getViewLiveData().observe(this, new Observer<List<Meeting>>() {
+        mViewModel.getMeetingsLiveData().observe(this, new Observer<List<Meeting>>() {
             @Override
             public void onChanged(List<Meeting> meetings) {
+                Log.e("Livedata", "onChanged()");
                 adapter.submitList(meetings);
             }
         });
-
     }
 
     @Override
@@ -59,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            mViewModel.buttonClicked();
+            //mViewModel.buttonClicked();
+            System.out.println("coucou");
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }
