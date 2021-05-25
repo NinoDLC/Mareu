@@ -9,12 +9,13 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 public class LocalMeetingsRepository implements MeetingsRepository {
 
-    private final List<MeetingRoom> mMeetingRooms = DummyMeetingRoomsGenerator.getDummyMeetingRooms();
+    private final HashMap<Integer, MeetingRoom> mMeetingRooms = DummyMeetingRoomsGenerator.getDummyMeetingRooms();
 
     private int mNextMeetingId;
 
@@ -22,12 +23,13 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     public LocalMeetingsRepository() {
         while (mMeetings.size() < 20) {
-            createMeeting(DummyMeetingGenerator.generateMeeting());  // runs isValidMeeting()
+            // createMeeting() runs isValidMeeting(), returns boolean
+            createMeeting(DummyMeetingGenerator.generateMeeting());
         }
         mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
     }
 
-    public List<MeetingRoom> getMeetingRooms() {
+    public HashMap<Integer, MeetingRoom> getMeetingRooms() {
         return mMeetingRooms;
     }
 
@@ -49,19 +51,13 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return null;
     }
 
-    @Nullable
-    public MeetingRoom getMeetingRoomById(int id) {
-        for (MeetingRoom meetingRoom : mMeetingRooms) {
-            if (meetingRoom.getId() == id)
-                return meetingRoom;
-        }
-        return null;
-    }
-
-    // TODO add 'throws exception', or return boolean ?
-    public void createMeeting(Meeting meeting) {
+    /*
+     * @Inherit
+     */
+    public boolean createMeeting(Meeting meeting) {
         if (isValidMeeting(meeting))
-            mMeetings.add(meeting);
+            return mMeetings.add(meeting);
+        return false;
     }
 
     public void removeMeetingById(int meetingId) {
@@ -73,7 +69,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         }
     }
 
-    // todo veut-on retourner des id de meetings ?
+    // Opinionated choice: return Meeting objects, not ids
     public List<Meeting> getRoomMeetings(int roomId) {
         List<Meeting> meetings = new ArrayList<>();
         for (Meeting meeting : mMeetings) {
@@ -93,9 +89,9 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     public List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop) {
         List<Integer> roomIds = new ArrayList<>();
-        for (MeetingRoom room : mMeetingRooms) {
-            if (isRoomFree(room.getId(), start, stop))
-                roomIds.add(room.getId());
+        for (int roomId : mMeetingRooms.keySet()) {
+            if (isRoomFree(roomId, start, stop))
+                roomIds.add(roomId);
         }
         return roomIds;
     }
@@ -121,7 +117,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
                 return false;
             }
         }
-        MeetingRoom meetingRoom = getMeetingRoomById(meeting.getMeetingRoomId());
+        MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
         if (meetingRoom == null) {
             Log.e("Utils", "isValidMeeting(): nonexistent meeting room");
             return false;

@@ -6,11 +6,12 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 public interface MeetingsRepository {
 
-    List<MeetingRoom> getMeetingRooms();
+    HashMap<Integer, MeetingRoom> getMeetingRooms();
 
     List<Meeting> getMeetings();
 
@@ -19,11 +20,11 @@ public interface MeetingsRepository {
     @Nullable
     Meeting getMeetingById(int id);
 
-    @Nullable
-    MeetingRoom getMeetingRoomById(int id);
-
-    // TODO add 'throws esception' ?
-    void createMeeting(Meeting meeting);
+    /*
+     * returns false if meeting could not be created
+     * (meetings are only added if valid)
+     */
+    boolean createMeeting(Meeting meeting);
 
     void removeMeetingById(int meetingId);
 

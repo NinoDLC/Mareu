@@ -24,12 +24,11 @@ public class MainActivity extends AppCompatActivity {
     private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
         @Override
         public void itemClicked(int id) {
-            Log.e("Arnaud", "itemClicked: "+ id);
+            Log.e("Arnaud", "itemClicked: " + id);
         }
 
         @Override
         public void deleteButtonClicked(int id) {
-            Log.e("Arnaud", "deleteButtonClicked: "+ id);
             mViewModel.deleteButtonClicked(id);
         }
     };
@@ -41,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+        //mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         findViewById(R.id.fab).setOnClickListener(
                 view -> Snackbar.make(
@@ -51,13 +51,15 @@ public class MainActivity extends AppCompatActivity {
         );
 
         RecyclerView recyclerView = findViewById(R.id.meeting_list);
+        // todo bellow line is overkill (XML): remove it
+        //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter(mListener, mViewModel.getMeetingRooms());
         recyclerView.setAdapter(adapter);
 
         mViewModel.getMeetingsLiveData().observe(this, new Observer<List<Meeting>>() {
             @Override
             public void onChanged(List<Meeting> meetings) {
-                Log.e("Livedata", "onChanged()");
+                Log.e("Livedata", "onChanged(), " + meetings.size());
                 adapter.submitList(meetings);
             }
         });

@@ -91,12 +91,13 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
     public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<Meeting> {
         @Override
         public boolean areItemsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
-            return false;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
-            return false;
+            return oldItem.getId() == newItem.getId();
+            // if item subject changed, I don't update the screen, here...
         }
     }
 
