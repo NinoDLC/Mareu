@@ -37,7 +37,7 @@
 
     <TextView
         android:id="@+id/meeting_participants"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing"
         android:ellipsize="end"
@@ -45,10 +45,22 @@
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
         app:layout_constraintStart_toEndOf="@id/meeting_image"
         app:layout_constraintTop_toBottomOf="@id/meeting_text"
         tools:text="@tools:sample/first_names" />
+
+    <TextView
+        android:id="@+id/meeting_participants_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="12sp"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/meeting_participants"
+        tools:text="+3" />
+
 
     <ImageButton
         android:id="@+id/meeting_delete_button"

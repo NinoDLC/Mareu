@@ -18,8 +18,6 @@ public abstract class DummyMeetingGenerator {
 
     private static final Random mRand = new Random();
 
-    private static final LocalDateTime mRoundedNow = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
-
     private static int i = 0;
 
     private static int getNextId() {
@@ -61,7 +59,8 @@ public abstract class DummyMeetingGenerator {
     }
 
     private static LocalDateTime generateStart() {
-        return mRoundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12) * 5);
+        LocalDateTime roundedNow = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
+        return roundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12) * 5);
     }
 
     private static LocalDateTime generateStop(LocalDateTime start) {

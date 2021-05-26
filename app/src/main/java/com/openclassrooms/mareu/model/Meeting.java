@@ -3,7 +3,7 @@ package com.openclassrooms.mareu.model;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-public class Meeting {
+public class Meeting implements Comparable<Meeting> {
 
     private final int mId;
     private final String mOwner;
@@ -49,5 +49,10 @@ public class Meeting {
 
     public int getMeetingRoomId() {
         return mMeetingRoomId;
+    }
+
+    @Override
+    public int compareTo(Meeting o) {
+        return mStart.compareTo(o.mStart);
     }
 }

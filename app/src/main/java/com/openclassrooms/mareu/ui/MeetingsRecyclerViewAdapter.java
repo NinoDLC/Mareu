@@ -56,6 +56,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
         private final ImageView mImage;
         private final ImageButton mDelete;
         private final View mView;
+        private final TextView mMore;
 
         public ViewHolder(View view) {
             super(view);
@@ -64,6 +65,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
             mImage = view.findViewById(R.id.meeting_image);
             mDelete = view.findViewById(R.id.meeting_delete_button);
             mView = view;
+            mMore = view.findViewById(R.id.meeting_participants_more);
         }
 
         public void bind(Meeting meeting, Listener listener, MeetingRoom meetingRoom) {
@@ -79,6 +81,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
                     )
             );
             mParticipants.setText(meeting.getOwner());
+            mMore.setText(MessageFormat.format("+{0}", meeting.getParticipants().size()));
             mImage.setImageResource(meetingRoom.getImageSrc());
             mDelete.setOnClickListener(view -> listener.deleteButtonClicked(meeting.getId()));
             mView.setOnClickListener(view -> listener.itemClicked(meeting.getId()));

@@ -26,6 +26,8 @@ import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
+import java.time.LocalDateTime;
+
 public class ShowMeetingActivity extends AppCompatActivity {
 
     private static final String MEETING_ID = "MEETING_ID";
@@ -82,10 +84,13 @@ public class ShowMeetingActivity extends AppCompatActivity {
         if (meeting == null) {
             mOwner.setText("moi");
             mOwner.setActivated(false);
-            startHour = 8; // todo replace with now()
-            startMinute = 50;
-            endHour = 9;
-            endMinute = 40;
+            LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
+            roundedNow = roundedNow.withMinute(roundedNow.getMinute()/15*15+15);
+            startHour = roundedNow.getHour(); // todo replace with now()
+            startMinute = roundedNow.getMinute();
+            roundedNow = roundedNow.plusMinutes(30);
+            endHour = roundedNow.getHour();
+            endMinute = roundedNow.getMinute();
         } else {
             mId.setText(String.valueOf(meeting.getId()));
             mOwner.setText(meeting.getOwner());
@@ -114,6 +119,7 @@ public class ShowMeetingActivity extends AppCompatActivity {
             DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
             newFragment.show(getSupportFragmentManager(), "timePicker");
         });
+        button.setText(hour + " : " + minute);
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -131,8 +137,7 @@ public class ShowMeetingActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new TimePickerDialog(getActivity(), this, mInitialHour, mInitialMinute,
-                    DateFormat.is24HourFormat(getActivity()));
+            return new TimePickerDialog(getActivity(), this, mInitialHour, mInitialMinute, true);
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
