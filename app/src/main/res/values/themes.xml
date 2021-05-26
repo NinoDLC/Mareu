@@ -16,12 +16,16 @@
 
     <style name="show_meeting" parent="Theme.Mareu">
         <item name="android:textSize">18sp</item>
-        <item name="chipStyle">@style/chip</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+        <item name="colorControlNormal">@color/blue</item>
     </style>
 
-    <style name="chip" parent="Theme.Mareu">
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/red</item>
+    <style name="toolbar_color" parent="Theme.Mareu">
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
     </style>
 
 </resources>

@@ -27,6 +27,8 @@ public class MainViewModel extends ViewModel {
         mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
     }
 
+    // todo sort the meetings by starting time ?
+
     public LiveData<List<Meeting>> getMeetingsLiveData(){
         return mMutableMeetingsLiveData;
     }

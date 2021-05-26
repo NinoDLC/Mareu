@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -51,10 +50,6 @@ public class ShowMeetingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ShowMeetingActivityViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingActivityViewModel.class);
-        int meetingId = getIntent().getIntExtra(MEETING_ID, 0);
-        Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
-        MeetingRoom meetingRoom = showMeetingActivityViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
-
         setContentView(R.layout.activity_show_meeting);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -63,10 +58,16 @@ public class ShowMeetingActivity extends AppCompatActivity {
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
+        int meetingId = getIntent().getIntExtra(MEETING_ID, 0);
+
+        Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
+        MeetingRoom meetingRoom = null;
+        if (meetingId != 0)
+            meetingRoom = showMeetingActivityViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
         bindAndInitView(meeting, meetingRoom);
     }
 
-    void bindAndInitView(@Nullable Meeting meeting, MeetingRoom meetingRoom){
+    void bindAndInitView(@Nullable Meeting meeting, @Nullable MeetingRoom meetingRoom) {
         mOwner = findViewById(R.id.show_meeting_owner);
         mSubject = findViewById(R.id.show_meeting_subject);
         mParticipantsGroup = findViewById(R.id.show_meeting_participants_group);
@@ -85,14 +86,15 @@ public class ShowMeetingActivity extends AppCompatActivity {
             startMinute = 50;
             endHour = 9;
             endMinute = 40;
-        }else{
+        } else {
             mId.setText(String.valueOf(meeting.getId()));
             mOwner.setText(meeting.getOwner());
             mSubject.setText(meeting.getSubject());
-            for (String participant:meeting.getParticipants()){
-                Chip chip = new Chip(this);
+            LayoutInflater layoutInflater = getLayoutInflater();
+            for (String participant : meeting.getParticipants()) {
+                Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant, mParticipantsGroup, false);
                 chip.setText(participant);
-                mParticipantsGroup.addView(chip,mParticipantsGroup.getChildCount());
+                mParticipantsGroup.addView(chip, mParticipantsGroup.getChildCount());
             }
             mStart.setText(utils.niceTimeFormat(meeting.getStart()));
             mEnd.setText(utils.niceTimeFormat(meeting.getStop()));
