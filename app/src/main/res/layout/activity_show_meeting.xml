@@ -68,32 +68,24 @@
             tools:text="@tools:sample/full_names" />
     </com.google.android.material.chip.ChipGroup>
 
-    <EditText
+    <Button
         android:id="@+id/show_meeting_start"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/show_meeting_text_width"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:importantForAutofill="yes"
-        android:inputType="datetime"
-        android:labelFor="@id/show_meeting_start"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
-        android:autofillHints="yes" />
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group" />
 
-    <EditText
-        android:labelFor="@id/show_meeting_end"
+
+    <Button
         android:id="@+id/show_meeting_end"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/show_meeting_text_width"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="datetime"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_start"
-        android:autofillHints="yes" />
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_start" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_room"
@@ -127,7 +119,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
         app:tint="@color/white" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

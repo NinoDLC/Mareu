@@ -71,7 +71,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
             final String sep = " - ";
             mText.setText(
                     MessageFormat.format("{0}{1}{2}{3}{4}",
-                            meeting.getStart().format(DateTimeFormatter.ofPattern("kk'h'mm")),
+                            utils.niceTimeFormat(meeting.getStart()),
                             sep,
                             meeting.getSubject(),
                             sep,
