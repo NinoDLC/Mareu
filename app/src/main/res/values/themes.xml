@@ -16,6 +16,12 @@
 
     <style name="show_meeting" parent="Theme.Mareu">
         <item name="android:textSize">18sp</item>
+        <item name="chipStyle">@style/chip</item>
+    </style>
+
+    <style name="chip" parent="Theme.Mareu">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/red</item>
     </style>
 
 </resources>

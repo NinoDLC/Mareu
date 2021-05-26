@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,9 +25,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.openclassrooms.mareu.model.MeetingRoom;
 
 public class ShowMeetingActivity extends AppCompatActivity {
 
@@ -41,9 +40,6 @@ public class ShowMeetingActivity extends AppCompatActivity {
     private TextInputEditText mRoom;
     private TextView mId;
 
-    public ShowMeetingActivity() {
-    }
-
     public static Intent navigate(Context context, int id) {
         Intent intent = new Intent(context, ShowMeetingActivity.class);
         intent.putExtra(MEETING_ID, id);
@@ -57,6 +53,7 @@ public class ShowMeetingActivity extends AppCompatActivity {
         ShowMeetingActivityViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingActivityViewModel.class);
         int meetingId = getIntent().getIntExtra(MEETING_ID, 0);
         Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
+        MeetingRoom meetingRoom = showMeetingActivityViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
 
         setContentView(R.layout.activity_show_meeting);
 
@@ -64,12 +61,12 @@ public class ShowMeetingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
 
-        bindAndInitView(meeting);
+        bindAndInitView(meeting, meetingRoom);
     }
 
-    void bindAndInitView(@Nullable Meeting meeting){
+    void bindAndInitView(@Nullable Meeting meeting, MeetingRoom meetingRoom){
         mOwner = findViewById(R.id.show_meeting_owner);
         mSubject = findViewById(R.id.show_meeting_subject);
         mParticipantsGroup = findViewById(R.id.show_meeting_participants_group);
@@ -79,28 +76,40 @@ public class ShowMeetingActivity extends AppCompatActivity {
         mRoom = findViewById(R.id.show_meeting_room);
         mId = findViewById(R.id.show_meeting_id);
 
+        int startHour, startMinute, endHour, endMinute;
+
         if (meeting == null) {
             mOwner.setText("moi");
             mOwner.setActivated(false);
+            startHour = 8; // todo replace with now()
+            startMinute = 50;
+            endHour = 9;
+            endMinute = 40;
         }else{
-            mId.setText(meeting.getId());
+            mId.setText(String.valueOf(meeting.getId()));
             mOwner.setText(meeting.getOwner());
             mSubject.setText(meeting.getSubject());
             for (String participant:meeting.getParticipants()){
-                //Chip chip = new Chip(mParticipantsGroup);
-                Log.e("Arnaud", "bindAndInitView");
+                Chip chip = new Chip(this);
+                chip.setText(participant);
+                mParticipantsGroup.addView(chip,mParticipantsGroup.getChildCount());
             }
             mStart.setText(utils.niceTimeFormat(meeting.getStart()));
             mEnd.setText(utils.niceTimeFormat(meeting.getStop()));
+            mRoom.setText(meetingRoom.getName());
+            startHour = meeting.getStart().getHour();
+            startMinute = meeting.getStart().getMinute();
+            endHour = meeting.getStop().getHour();
+            endMinute = meeting.getStop().getMinute();
         }
-        bindButton(mStart, true);
-        bindButton(mEnd, false);
 
+        bindButton(mStart, startHour, startMinute);
+        bindButton(mEnd, endHour, endMinute);
     }
 
-    void bindButton(Button button, boolean isStart) {
+    void bindButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> {
-            DialogFragment newFragment = new TimePickerFragment(button);
+            DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
             newFragment.show(getSupportFragmentManager(), "timePicker");
         });
     }
@@ -108,18 +117,19 @@ public class ShowMeetingActivity extends AppCompatActivity {
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         private final Button mButton;
+        private final int mInitialHour;
+        private final int mInitialMinute;
 
-        public TimePickerFragment(Button button) {
+        public TimePickerFragment(Button button, int initialHour, int initialMinute) {
             mButton = button;
+            mInitialHour = initialHour;
+            mInitialMinute = initialMinute;
         }
 
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            int hour = 8;
-            int minute = 50;
-
-            return new TimePickerDialog(getActivity(), this, hour, minute,
+            return new TimePickerDialog(getActivity(), this, mInitialHour, mInitialMinute,
                     DateFormat.is24HourFormat(getActivity()));
         }
 

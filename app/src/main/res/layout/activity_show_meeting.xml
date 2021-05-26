@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/show_meeting_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/show_meeting">
@@ -25,6 +26,7 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_owner"
+        android:drawableStart="@android:drawable/ic_menu_myplaces"
         android:layout_width="@dimen/show_meeting_text_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
@@ -48,25 +50,21 @@
         android:id="@+id/show_meeting_participants_group"
         android:layout_width="@dimen/show_meeting_text_width"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_subject"
+        app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_field"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/show_meeting_participants_field"
+        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_subject">
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
+        tools:text="@tools:sample/full_names" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/show_meeting_participants_chip"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipIcon="@drawable/ic_launcher_foreground"
-            tools:text="@tools:sample/first_names" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/show_meeting_participants_field"
-            android:layout_width="@dimen/show_meeting_text_width"
-            android:layout_height="wrap_content"
-            tools:text="@tools:sample/full_names" />
-    </com.google.android.material.chip.ChipGroup>
 
     <Button
         android:id="@+id/show_meeting_start"
@@ -75,7 +73,7 @@
         app:layout_constraintBottom_toTopOf="@id/show_meeting_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group" />
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_field" />
 
 
     <Button
@@ -100,7 +98,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/show_meeting_id"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/show_meeting_text_width"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing"
         app:layout_constraintBottom_toBottomOf="parent"

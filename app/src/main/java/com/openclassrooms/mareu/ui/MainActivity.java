@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
         @Override
         public void itemClicked(int id) {
-            startActivity(ShowMeetingActivity.navigate(MainActivity.this, id));
+            MainActivity.this.startActivity(ShowMeetingActivity.navigate(MainActivity.this, id));
         }
 
         @Override
