@@ -48,13 +48,18 @@ public class ShowMeetingFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ShowMeetingFragmentViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingFragmentViewModel.class);
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        int meetingId = getArguments().getInt(MEETING_ID, 0);
+        int meetingId =  requireArguments().getInt(MEETING_ID);
 
         Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
         MeetingRoom meetingRoom = null;
@@ -76,12 +81,12 @@ public class ShowMeetingFragment extends Fragment {
 
         int startHour, startMinute, endHour, endMinute;
 
-        if (meeting == null) {
+        if (meeting == null || meetingRoom ==null) {
             mOwner.setText("moi");
             mOwner.setActivated(false);
             LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
-            roundedNow = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15 + 15);
-            startHour = roundedNow.getHour(); // todo replace with now()
+            roundedNow = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
+            startHour = roundedNow.getHour();
             startMinute = roundedNow.getMinute();
             roundedNow = roundedNow.plusMinutes(30);
             endHour = roundedNow.getHour();
@@ -112,7 +117,7 @@ public class ShowMeetingFragment extends Fragment {
     void bindButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> {
             DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
-            newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+            newFragment.show(requireActivity().getSupportFragmentManager(), "timePicker");
         });
         button.setText(hour + " : " + minute);
     }

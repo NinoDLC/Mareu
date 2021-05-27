@@ -1,34 +1,50 @@
 package com.openclassrooms.mareu.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
 
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.model.Meeting;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
+    private FragmentManager mFragmentManager;
+    private int mViewMain;
+    private int mViewRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-
         setSupportActionBar(findViewById(R.id.toolbar));
+        mFragmentManager = getSupportFragmentManager();
+
+        boolean landscapeTablet = findViewById(R.id.left) != null;
+
+        if (landscapeTablet){
+            mViewMain = R.id.left;
+            mViewRight = R.id.right;
+        } else {
+            mViewMain = R.id.main_container;
+            // todo init them !
+            //  if (MainActivity.this.mSavedInstanceState != null)
+            mViewRight = mViewMain;
+        }
+        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(), null).commit();
+
+    }
+
+    public void setDetailedViewContent(int id) {
+        //todo j'ai une recursion ? je file un DetailViewListener à un fragment depuis mon DetailViewListener...?
+        mFragmentManager.beginTransaction().replace(mViewRight, ShowMeetingFragment.newInstance(id), null).commit();
+    }
+
+    public void endDetailedView() {
+        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(), null).commit();
     }
 
     @Override
