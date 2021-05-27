@@ -7,24 +7,6 @@
     android:layout_height="match_parent"
     android:theme="@style/show_meeting">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/toolbar_color"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="8dp"
-            app:title="Ma réu"
-            app:titleTextColor="@color/white" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_owner"
         android:layout_width="@dimen/show_meeting_text_width"
@@ -70,7 +52,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
         tools:text="@tools:sample/full_names" />
-
 
     <Button
         android:id="@+id/show_meeting_start"
@@ -125,6 +106,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
         app:tint="@color/white" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,18 +5,17 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
@@ -28,7 +27,7 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.time.LocalDateTime;
 
-public class ShowMeetingActivity extends AppCompatActivity {
+public class ShowMeetingFragment extends Fragment {
 
     private static final String MEETING_ID = "MEETING_ID";
 
@@ -41,43 +40,39 @@ public class ShowMeetingActivity extends AppCompatActivity {
     private TextInputEditText mRoom;
     private TextView mId;
 
-    public static Intent navigate(Context context, int id) {
-        Intent intent = new Intent(context, ShowMeetingActivity.class);
-        intent.putExtra(MEETING_ID, id);
-        return intent;
+    public static ShowMeetingFragment newInstance(int id){
+        ShowMeetingFragment fragment = new ShowMeetingFragment();
+        Bundle args = new Bundle();
+        args.putInt(MEETING_ID, id);
+        fragment.setArguments(args);
+        return fragment;
     }
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ShowMeetingFragmentViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingFragmentViewModel.class);
+        View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        ShowMeetingActivityViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingActivityViewModel.class);
-        setContentView(R.layout.activity_show_meeting);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-        int meetingId = getIntent().getIntExtra(MEETING_ID, 0);
+        int meetingId = getArguments().getInt(MEETING_ID, 0);
 
         Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
         MeetingRoom meetingRoom = null;
         if (meetingId != 0)
             meetingRoom = showMeetingActivityViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
-        bindAndInitView(meeting, meetingRoom);
+        bindAndInitView(view, meeting, meetingRoom);
+        return view;
     }
 
-    void bindAndInitView(@Nullable Meeting meeting, @Nullable MeetingRoom meetingRoom) {
-        mOwner = findViewById(R.id.show_meeting_owner);
-        mSubject = findViewById(R.id.show_meeting_subject);
-        mParticipantsGroup = findViewById(R.id.show_meeting_participants_group);
-        mParticipantsField = findViewById(R.id.show_meeting_participants_field);
-        mStart = findViewById(R.id.show_meeting_start);
-        mEnd = findViewById(R.id.show_meeting_end);
-        mRoom = findViewById(R.id.show_meeting_room);
-        mId = findViewById(R.id.show_meeting_id);
+    void bindAndInitView(View view, @Nullable Meeting meeting, @Nullable MeetingRoom meetingRoom) {
+        mOwner = view.findViewById(R.id.show_meeting_owner);
+        mSubject = view.findViewById(R.id.show_meeting_subject);
+        mParticipantsGroup = view.findViewById(R.id.show_meeting_participants_group);
+        mParticipantsField = view.findViewById(R.id.show_meeting_participants_field);
+        mStart = view.findViewById(R.id.show_meeting_start);
+        mEnd = view.findViewById(R.id.show_meeting_end);
+        mRoom = view.findViewById(R.id.show_meeting_room);
+        mId = view.findViewById(R.id.show_meeting_id);
 
         int startHour, startMinute, endHour, endMinute;
 
@@ -85,7 +80,7 @@ public class ShowMeetingActivity extends AppCompatActivity {
             mOwner.setText("moi");
             mOwner.setActivated(false);
             LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
-            roundedNow = roundedNow.withMinute(roundedNow.getMinute()/15*15+15);
+            roundedNow = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15 + 15);
             startHour = roundedNow.getHour(); // todo replace with now()
             startMinute = roundedNow.getMinute();
             roundedNow = roundedNow.plusMinutes(30);
@@ -117,7 +112,7 @@ public class ShowMeetingActivity extends AppCompatActivity {
     void bindButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> {
             DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
-            newFragment.show(getSupportFragmentManager(), "timePicker");
+            newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
         });
         button.setText(hour + " : " + minute);
     }

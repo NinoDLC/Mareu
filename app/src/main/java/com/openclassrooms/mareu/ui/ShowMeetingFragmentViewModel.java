@@ -9,7 +9,7 @@ import com.openclassrooms.mareu.repository.MeetingsRepository;
 
 import java.util.HashMap;
 
-public class ShowMeetingActivityViewModel extends ViewModel {
+public class ShowMeetingFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mRepository = DependencyInjection.getMeetingsRepository();
 

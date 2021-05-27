@@ -23,23 +23,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/meeting_list"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_meeting" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:contentDescription="@string/floating_button"
-        app:backgroundTint="@color/red"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="@color/white" />
+        android:layout_height="wrap_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
