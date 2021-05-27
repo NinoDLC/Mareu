@@ -1,6 +1,6 @@
 package com.openclassrooms.mareu.model;
 
-import androidx.annotation.DrawableRes;
+import androidx.annotation.ColorInt;
 
 public class MeetingRoom {
 
@@ -10,7 +10,7 @@ public class MeetingRoom {
     private final String[] mDevices;
     private final int mCapacity;
 
-    @DrawableRes
+    @ColorInt
     private final int mImageSrc;
 
     public MeetingRoom(int id, String name, String location, String[] devices, int capacity, int imageSrc) {

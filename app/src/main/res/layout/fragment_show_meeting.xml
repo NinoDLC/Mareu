@@ -9,8 +9,9 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_owner"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginTop="?attr/actionBarSize"
         android:drawableStart="@drawable/ic_baseline_emoji_people_24"
         android:hint="@string/hint_owner"
@@ -22,8 +23,9 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_subject"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:drawableStart="@drawable/ic_baseline_contact_support_24"
         android:hint="@string/hint_subject"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_group"
@@ -34,8 +36,9 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/show_meeting_participants_group"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +46,9 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_participants_field"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:drawableStart="@drawable/ic_baseline_person_add_24"
         android:hint="@string/hint_participant"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
@@ -55,8 +59,9 @@
 
     <Button
         android:id="@+id/show_meeting_start"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +69,9 @@
 
     <Button
         android:id="@+id/show_meeting_end"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +79,9 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_room"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginBottom="70dp"
         android:drawableStart="@android:drawable/ic_dialog_map"
         android:hint="@string/hint_meeting_room"
@@ -87,7 +94,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/show_meeting_id"
-        android:layout_width="@dimen/show_meeting_text_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -98,13 +105,12 @@
         android:id="@+id/show_meeting_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:contentDescription="@string/floating_button"
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:srcCompat="@drawable/ic_baseline_check_24"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

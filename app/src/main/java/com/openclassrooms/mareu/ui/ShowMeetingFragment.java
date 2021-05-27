@@ -2,8 +2,6 @@ package com.openclassrooms.mareu.ui;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
@@ -39,6 +38,7 @@ public class ShowMeetingFragment extends Fragment {
     private Button mEnd;
     private TextInputEditText mRoom;
     private TextView mId;
+    private FloatingActionButton mCreate;
 
     public static ShowMeetingFragment newInstance(int id){
         ShowMeetingFragment fragment = new ShowMeetingFragment();
@@ -78,6 +78,7 @@ public class ShowMeetingFragment extends Fragment {
         mEnd = view.findViewById(R.id.show_meeting_end);
         mRoom = view.findViewById(R.id.show_meeting_room);
         mId = view.findViewById(R.id.show_meeting_id);
+        mCreate = view.findViewById(R.id.show_meeting_create);
 
         int startHour, startMinute, endHour, endMinute;
 
@@ -112,6 +113,15 @@ public class ShowMeetingFragment extends Fragment {
 
         bindButton(mStart, startHour, startMinute);
         bindButton(mEnd, endHour, endMinute);
+
+        mCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // todo if is valid meeting, ...
+                //  ShowMeetingFragment.this.finish();
+                ((MainActivity) requireActivity()).onBackPressed();
+            }
+        });
     }
 
     void bindButton(Button button, int hour, int minute) {
@@ -119,7 +129,7 @@ public class ShowMeetingFragment extends Fragment {
             DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
             newFragment.show(requireActivity().getSupportFragmentManager(), "timePicker");
         });
-        button.setText(hour + " : " + minute);
+        button.setText(String.format("%02d", hour) + "h" + String.format("%02d", minute));
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -143,8 +153,7 @@ public class ShowMeetingFragment extends Fragment {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // todo get TIME in storable format, and set text in nice-to-read format
 
-            mButton.setText(hourOfDay + " : " + minute);
+            mButton.setText(String.format("%02d", hourOfDay) + "h" + String.format("%02d", minute));
         }
     }
-
 }

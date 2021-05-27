@@ -1,5 +1,6 @@
 package com.openclassrooms.mareu.ui;
 
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,7 +84,9 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
             );
             mParticipants.setText(meeting.getOwner());
             mMore.setText(MessageFormat.format("+{0}", meeting.getParticipants().size()));
-            mImage.setImageResource(meetingRoom.getImageSrc());
+            mImage.setImageResource(R.drawable.ic_font_awesome_5_solid_dog);
+            mImage.setColorFilter(ContextCompat.getColor(mView.getContext(), meetingRoom.getImageSrc()));
+
             mDelete.setOnClickListener(view -> listener.deleteButtonClicked(meeting.getId()));
             mView.setOnClickListener(view -> listener.itemClicked(meeting.getId()));
         }
