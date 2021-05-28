@@ -83,8 +83,9 @@ public class ShowMeetingFragment extends Fragment {
         int startHour, startMinute, endHour, endMinute;
 
         if (meeting == null || meetingRoom ==null) {
-            mOwner.setText("moi");
-            mOwner.setActivated(false);
+            mOwner.setText(R.string.user_email_adress);
+            mOwner.setEnabled(false);
+
             LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
             roundedNow = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
             startHour = roundedNow.getHour();
@@ -126,8 +127,8 @@ public class ShowMeetingFragment extends Fragment {
 
     void bindButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> {
-            DialogFragment newFragment = new TimePickerFragment(button, hour, minute);
-            newFragment.show(requireActivity().getSupportFragmentManager(), "timePicker");
+            DialogFragment timePickerFragment = new TimePickerFragment(button, hour, minute);
+            timePickerFragment.show(requireActivity().getSupportFragmentManager(), "timePicker");
         });
         button.setText(String.format("%02d", hour) + "h" + String.format("%02d", minute));
     }

@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu.ui;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,10 +12,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.di.DependencyInjection;
+import com.openclassrooms.mareu.model.MeetingRoom;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,18 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private int mViewMain;
     private int mViewRight;
     private boolean mLandscapeTablet;
-
-    private final Fragment mEmptyFragment = new Fragment() {
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_empty, container, true);
-        }
-    };
+    private MainViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
@@ -56,11 +62,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragmentsInitialState() {
-        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(), null).commit();
-        /* todo : pourquoi je ne peux pas faire ça ?
+        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(mViewModel), null).commit();
+        // todo : pourquoi je ne peux pas faire ça ?
         if (mLandscapeTablet)
-            mFragmentManager.beginTransaction().replace(mViewRight, mEmptyFragment, null).commit();
-        */
+            mFragmentManager.beginTransaction().replace(mViewRight, new Fragment() {
+            @Nullable
+            @Override
+            public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                return inflater.inflate(R.layout.fragment_empty, container, true);
+            }
+        }, null).commit();
     }
 
     public void setDetailedViewContent(int id) {
@@ -77,11 +88,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            //mViewModel.buttonClicked();
-            System.out.println("coucou");
+        if (id == R.id.filter_date) {
+            new DatePickerDialog(this).show();
+        } else {
+            new FilterDialog(mViewModel.getMeetingRoomNames(), mViewModel.getSelectedRoomsAtLaunch()).show(getSupportFragmentManager(), null);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 }
+

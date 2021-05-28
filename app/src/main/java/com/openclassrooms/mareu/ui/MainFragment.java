@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    private MainViewModel mViewModel;
+    private final MainViewModel mViewModel;
 
     private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
         @Override
@@ -34,11 +34,13 @@ public class MainFragment extends Fragment {
         }
     };
 
+    public MainFragment(MainViewModel viewModel) {
+        mViewModel = viewModel;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
-        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
     }
 
     @Nullable

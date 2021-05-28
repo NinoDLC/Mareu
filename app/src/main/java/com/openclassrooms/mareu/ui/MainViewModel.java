@@ -9,6 +9,8 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,4 +43,18 @@ public class MainViewModel extends ViewModel {
         mRepository.removeMeetingById(id);
         mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
     }
+
+    public CharSequence[] getMeetingRoomNames() {
+        List<CharSequence> meetingRoomNames = new ArrayList<CharSequence>();
+        for (MeetingRoom meetingRoom : mMeetingRooms.values())
+            meetingRoomNames.add(meetingRoom.getName());
+        return meetingRoomNames.toArray(new CharSequence[0]);
+    }
+
+    public boolean[] getSelectedRoomsAtLaunch(){
+        boolean[] selected = new boolean[mMeetingRooms.size()];
+        Arrays.fill(selected, true);
+        return  selected;
+    }
+
 }
