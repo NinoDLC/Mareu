@@ -2,38 +2,32 @@ package com.openclassrooms.mareu.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 public class FilterDialog extends DialogFragment {
-    private final CharSequence[] mMeetingRoomsNames;
-    private final boolean[] mSelectedRoomsAtLaunch;
+    private final MainViewModel mMainViewModel;
 
-    public FilterDialog(CharSequence[] meetingRoomsNames, boolean[] selectedRoomsAtLaunch) {
-        mMeetingRoomsNames = meetingRoomsNames;
-        mSelectedRoomsAtLaunch = selectedRoomsAtLaunch;
+    public FilterDialog(MainViewModel viewModel) {
+        mMainViewModel = viewModel;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<Integer> selectedItems = new ArrayList<Integer>();  // Where we track the selected items
+        List<Integer> selectedItems = new ArrayList<>();  // Where we track the selected items
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.filter_by_room)
-                .setMultiChoiceItems(mMeetingRoomsNames, mSelectedRoomsAtLaunch,
+                .setMultiChoiceItems(mMainViewModel.getMeetingRoomNames(), mMainViewModel.getSelectedRooms(),
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -44,21 +38,9 @@ public class FilterDialog extends DialogFragment {
                                 }
                             }
                         })
-                .setPositiveButton("filter", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.e("coucou", "onClick: ");
-                    }
+                .setPositiveButton("Apply", (dialog, which) -> {
                 })
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.e("coucou", "onClick: ");
-                    }
-                });
-
+                .setNegativeButton("Reset", (dialog, id) -> mMainViewModel.resetFilter());
         return builder.create();
     }
-
-
 }

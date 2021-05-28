@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.ui;
 
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.text.MessageFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRecyclerViewAdapter.ViewHolder> {

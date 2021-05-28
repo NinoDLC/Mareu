@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.mareu.R;
@@ -20,12 +19,14 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
 
+    private final MainActivity mMainActivity;
     private final MainViewModel mViewModel;
 
     private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
         @Override
         public void itemClicked(int id) {
-            ((MainActivity) requireActivity()).setDetailedViewContent(id);
+            // todo : replace my mMainActivity with an interface with setDetailedViewContent ?
+            mMainActivity.setDetailedViewContent(id);
         }
 
         @Override
@@ -34,7 +35,8 @@ public class MainFragment extends Fragment {
         }
     };
 
-    public MainFragment(MainViewModel viewModel) {
+    public MainFragment(MainActivity mainActivity, MainViewModel viewModel) {
+        mMainActivity = mainActivity;
         mViewModel = viewModel;
     }
 
@@ -48,10 +50,10 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        view.findViewById(R.id.fab).setOnClickListener(v -> ((MainActivity) requireActivity()).setDetailedViewContent(0));
+        view.findViewById(R.id.fab).setOnClickListener(v -> mMainActivity.setDetailedViewContent(0));
 
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
-        // todo bellow line is overkill (XML): remove it
+        // todo: in XML: overkill?
         //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter(mListener, mViewModel.getMeetingRooms());
         recyclerView.setAdapter(adapter);

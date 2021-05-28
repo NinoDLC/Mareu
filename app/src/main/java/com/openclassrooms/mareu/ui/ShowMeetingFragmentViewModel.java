@@ -15,11 +15,11 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     private final HashMap<Integer, MeetingRoom> mMeetingRooms = mRepository.getMeetingRooms();
 
-    public Meeting getMeetingById(int id){
+    public Meeting getMeetingById(int id) {
         return mRepository.getMeetingById(id);
     }
 
-    public HashMap<Integer, MeetingRoom> getMeetingRooms(){
+    public HashMap<Integer, MeetingRoom> getMeetingRooms() {
         return mMeetingRooms;
     }
 

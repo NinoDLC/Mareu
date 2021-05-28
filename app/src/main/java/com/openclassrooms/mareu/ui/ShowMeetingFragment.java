@@ -40,7 +40,7 @@ public class ShowMeetingFragment extends Fragment {
     private TextView mId;
     private FloatingActionButton mCreate;
 
-    public static ShowMeetingFragment newInstance(int id){
+    public static ShowMeetingFragment newInstance(int id) {
         ShowMeetingFragment fragment = new ShowMeetingFragment();
         Bundle args = new Bundle();
         args.putInt(MEETING_ID, id);
@@ -59,7 +59,7 @@ public class ShowMeetingFragment extends Fragment {
         ShowMeetingFragmentViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingFragmentViewModel.class);
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        int meetingId =  requireArguments().getInt(MEETING_ID);
+        int meetingId = requireArguments().getInt(MEETING_ID);
 
         Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
         MeetingRoom meetingRoom = null;
@@ -82,7 +82,7 @@ public class ShowMeetingFragment extends Fragment {
 
         int startHour, startMinute, endHour, endMinute;
 
-        if (meeting == null || meetingRoom ==null) {
+        if (meeting == null || meetingRoom == null) {
             mOwner.setText(R.string.user_email_adress);
             mOwner.setEnabled(false);
 

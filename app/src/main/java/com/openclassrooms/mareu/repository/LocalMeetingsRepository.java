@@ -10,7 +10,6 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         sortMeetings();
     }
 
-    private void sortMeetings(){
+    private void sortMeetings() {
         Collections.sort(mMeetings, Meeting::compareTo);
     }
 

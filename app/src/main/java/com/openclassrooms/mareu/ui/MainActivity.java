@@ -1,29 +1,16 @@
 package com.openclassrooms.mareu.ui;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.di.DependencyInjection;
-import com.openclassrooms.mareu.model.MeetingRoom;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,21 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // or play with addToBackstack in transactions.
+        // todo play with addToBackstack in transactions.
         setFragmentsInitialState();
     }
 
     private void setFragmentsInitialState() {
-        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(mViewModel), null).commit();
-        // todo : pourquoi je ne peux pas faire ça ?
+        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(this, mViewModel), null).commit();
         if (mLandscapeTablet)
-            mFragmentManager.beginTransaction().replace(mViewRight, new Fragment() {
-            @Nullable
-            @Override
-            public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                return inflater.inflate(R.layout.fragment_empty, container, true);
-            }
-        }, null).commit();
+            mFragmentManager.beginTransaction().replace(mViewRight, new Fragment(R.layout.fragment_empty), null).commit();
     }
 
     public void setDetailedViewContent(int id) {
@@ -86,19 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.filter_date) {
+        if (item.getItemId() == R.id.filter_date) {
             new DatePickerDialog(this).show();
         } else {
-            new FilterDialog(mViewModel.getMeetingRoomNames(), mViewModel.getSelectedRoomsAtLaunch()).show(getSupportFragmentManager(), null);
+            new FilterDialog(mViewModel).show(getSupportFragmentManager(), null);
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 }
 

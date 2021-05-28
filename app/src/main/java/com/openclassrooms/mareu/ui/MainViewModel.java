@@ -25,23 +25,20 @@ public class MainViewModel extends ViewModel {
 
     private final HashMap<Integer, MeetingRoom> mMeetingRooms = mRepository.getMeetingRooms();
 
+    private final boolean[] mSelected = new boolean[mMeetingRooms.size()];
+
+
     public MainViewModel() {
         mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
+        resetFilter();
     }
 
-    // todo sort the meetings by starting time ?
-
-    public LiveData<List<Meeting>> getMeetingsLiveData(){
+    public LiveData<List<Meeting>> getMeetingsLiveData() {
         return mMutableMeetingsLiveData;
     }
 
-    public HashMap<Integer, MeetingRoom> getMeetingRooms(){
+    public HashMap<Integer, MeetingRoom> getMeetingRooms() {
         return mMeetingRooms;
-    }
-
-    protected void deleteButtonClicked(int id){
-        mRepository.removeMeetingById(id);
-        mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
     }
 
     public CharSequence[] getMeetingRoomNames() {
@@ -51,10 +48,22 @@ public class MainViewModel extends ViewModel {
         return meetingRoomNames.toArray(new CharSequence[0]);
     }
 
-    public boolean[] getSelectedRoomsAtLaunch(){
-        boolean[] selected = new boolean[mMeetingRooms.size()];
-        Arrays.fill(selected, true);
-        return  selected;
+    public boolean[] getSelectedRooms() {
+        return mSelected;
+    }
+
+    public void toggleRoomSelection(int position) {
+        mSelected[position] = !mSelected[position];
+        // todo apply filter
+    }
+
+    public void resetFilter() {
+        Arrays.fill(mSelected, true);
+    }
+
+    protected void deleteButtonClicked(int id) {
+        mRepository.removeMeetingById(id);
+        mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
     }
 
 }
