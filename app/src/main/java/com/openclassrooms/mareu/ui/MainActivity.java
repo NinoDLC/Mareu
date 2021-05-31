@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.ViewModelFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //mViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainViewModel.class);
-        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainViewModel.class);
 
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
         mLandscapeTablet = findViewById(R.id.left) != null;
 
         if (mLandscapeTablet) {
-            mViewMain = R.id.left;
-            mViewRight = R.id.right;
+            mViewMain = R.id.master;
+            mViewRight = R.id.detail;
         } else {
-            mViewMain = R.id.main_container;
+            mViewMain = R.id.master;
             mViewRight = mViewMain;
         }
         setFragmentsInitialState();

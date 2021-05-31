@@ -1,10 +1,10 @@
 package com.openclassrooms.mareu.ui;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -16,19 +16,23 @@ import java.util.List;
 
 public class MainViewModel extends ViewModel {
 
-    private final MeetingsRepository mRepository = DependencyInjection.getMeetingsRepository();
+    private final MeetingsRepository mRepository;
     // todo : repo is to be injected, for this I must customize my factory
     //  but it will only hand me the repo, and I made a DI that can return the instance...
     //  then remove all setvalues()
 
     private final MutableLiveData<List<Meeting>> mMutableMeetingsLiveData = new MutableLiveData<>();
 
-    private final HashMap<Integer, MeetingRoom> mMeetingRooms = mRepository.getMeetingRooms();
+    private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
-    private final boolean[] mSelected = new boolean[mMeetingRooms.size()];
+    private final boolean[] mSelected;
 
 
-    public MainViewModel() {
+    public MainViewModel(@NonNull MeetingsRepository meetingsRepository) {
+        mRepository = meetingsRepository;
+
+        mMeetingRooms = mRepository.getMeetingRooms();
+        mSelected = new boolean[mMeetingRooms.size()];
         mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
         resetFilter();
     }
@@ -63,7 +67,8 @@ public class MainViewModel extends ViewModel {
 
     protected void deleteButtonClicked(int id) {
         mRepository.removeMeetingById(id);
-        mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
+        // TODO new ArrayList no longer necessary
+        mMutableMeetingsLiveData.setValue(new ArrayList<>(mRepository.getMeetings()));
     }
 
 }
