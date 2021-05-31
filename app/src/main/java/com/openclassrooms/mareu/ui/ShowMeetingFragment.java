@@ -1,7 +1,10 @@
 package com.openclassrooms.mareu.ui;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +32,7 @@ import java.time.LocalDateTime;
 public class ShowMeetingFragment extends Fragment {
 
     private static final String MEETING_ID = "MEETING_ID";
+    private ShowMeetingFragmentViewModel mViewModel;
 
     private TextInputEditText mOwner;
     private TextInputEditText mSubject;
@@ -36,7 +40,7 @@ public class ShowMeetingFragment extends Fragment {
     private TextInputEditText mParticipantsField;
     private Button mStart;
     private Button mEnd;
-    private TextInputEditText mRoom;
+    private Button mRoom;
     private TextView mId;
     private FloatingActionButton mCreate;
 
@@ -51,25 +55,27 @@ public class ShowMeetingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(ShowMeetingFragmentViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ShowMeetingFragmentViewModel showMeetingActivityViewModel = new ViewModelProvider(this).get(ShowMeetingFragmentViewModel.class);
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        int meetingId = requireArguments().getInt(MEETING_ID);
-
-        Meeting meeting = showMeetingActivityViewModel.getMeetingById(meetingId);
+        Meeting meeting = mViewModel.requireMeetingById(requireArguments().getInt(MEETING_ID));
         MeetingRoom meetingRoom = null;
-        if (meetingId != 0)
-            meetingRoom = showMeetingActivityViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
+        meetingRoom = mViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
+
         bindAndInitView(view, meeting, meetingRoom);
+
+        mViewModel.getFreeMeetingRooms().observe(requireActivity(), freeMeetingRooms -> mRoom.setOnClickListener(
+                v -> new FreeMeetingRoomsListDialog(requireContext(), freeMeetingRooms).show()
+        ));
         return view;
     }
 
-    void bindAndInitView(View view, @Nullable Meeting meeting, @Nullable MeetingRoom meetingRoom) {
+    void bindAndInitView(View view, Meeting meeting, @Nullable MeetingRoom meetingRoom) {
         mOwner = view.findViewById(R.id.show_meeting_owner);
         mSubject = view.findViewById(R.id.show_meeting_subject);
         mParticipantsGroup = view.findViewById(R.id.show_meeting_participants_group);
@@ -83,16 +89,9 @@ public class ShowMeetingFragment extends Fragment {
         int startHour, startMinute, endHour, endMinute;
 
         if (meeting == null || meetingRoom == null) {
-            mOwner.setText(R.string.user_email_adress);
+
             mOwner.setEnabled(false);
 
-            LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
-            roundedNow = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
-            startHour = roundedNow.getHour();
-            startMinute = roundedNow.getMinute();
-            roundedNow = roundedNow.plusMinutes(30);
-            endHour = roundedNow.getHour();
-            endMinute = roundedNow.getMinute();
         } else {
             mId.setText(String.valueOf(meeting.getId()));
             mOwner.setText(meeting.getOwner());
@@ -112,8 +111,8 @@ public class ShowMeetingFragment extends Fragment {
             endMinute = meeting.getStop().getMinute();
         }
 
-        bindButton(mStart, startHour, startMinute);
-        bindButton(mEnd, endHour, endMinute);
+        bindTimeButton(mStart, startHour, startMinute);
+        bindTimeButton(mEnd, endHour, endMinute);
 
         mCreate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,12 +124,12 @@ public class ShowMeetingFragment extends Fragment {
         });
     }
 
-    void bindButton(Button button, int hour, int minute) {
+    void bindTimeButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> {
             DialogFragment timePickerFragment = new TimePickerFragment(button, hour, minute);
             timePickerFragment.show(requireActivity().getSupportFragmentManager(), "timePicker");
+            button.setText(mViewModel.timeButtonChanged(button==mStart, hour, minute));
         });
-        button.setText(String.format("%02d", hour) + "h" + String.format("%02d", minute));
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -157,4 +156,27 @@ public class ShowMeetingFragment extends Fragment {
             mButton.setText(String.format("%02d", hourOfDay) + "h" + String.format("%02d", minute));
         }
     }
+
+    public class FreeMeetingRoomsListDialog extends androidx.appcompat.app.AlertDialog {
+
+        private final CharSequence[] mRooms;
+
+        protected FreeMeetingRoomsListDialog(@NonNull Context context, CharSequence[] rooms) {
+            super(context);
+            mRooms = rooms;
+        }
+
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Free rooms list to pick from")
+                    .setItems(mRooms, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mRoom.setText(mViewModel.selectRoom(which));
+                        }
+                    });
+            return builder.create();
+        }
+    };
+
+
 }
