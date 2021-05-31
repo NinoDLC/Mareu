@@ -1,10 +1,10 @@
 package com.openclassrooms.mareu.ui;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.di.DependencyInjection;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ShowMeetingFragmentViewModel extends ViewModel {
 
-    private final MeetingsRepository mRepository = DependencyInjection.getMeetingsRepository();
+    private final MeetingsRepository mRepository;
 
-    private final HashMap<Integer, MeetingRoom> mMeetingRooms = mRepository.getMeetingRooms();
+    private final HashMap<Integer, MeetingRoom> mMeetingRooms;
     private LocalDateTime mStart;
     private LocalDateTime mStop;
     private List<Integer> mFreeRoomIds;
@@ -26,6 +26,11 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     private static final String EMPTY_STRING = "";
 
     private final MutableLiveData<CharSequence[]> mFreeRoomNames = new MutableLiveData<>();
+
+    public ShowMeetingFragmentViewModel(@NonNull MeetingsRepository meetingRepository) {
+        mRepository = meetingRepository;
+        mMeetingRooms = mRepository.getMeetingRooms();
+    }
 
     public Meeting requireMeetingById(int id) {
         Meeting meeting;

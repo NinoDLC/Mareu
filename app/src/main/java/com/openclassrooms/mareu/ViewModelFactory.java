@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.openclassrooms.mareu.repository.LocalMeetingsRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.ui.MainViewModel;
+import com.openclassrooms.mareu.ui.ShowMeetingFragmentViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -39,8 +40,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MainViewModel.class)) {
             return (T) new MainViewModel(meetingRepository);
-        } else if (modelClass.isAssignableFrom(DetailViewModel.class)) {
-            return (T) new DetailViewModel(meetingRepository);
+        } else if (modelClass.isAssignableFrom(ShowMeetingFragmentViewModel.class)) {
+            return (T) new ShowMeetingFragmentViewModel(meetingRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
