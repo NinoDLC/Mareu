@@ -12,6 +12,7 @@ import com.openclassrooms.mareu.repository.MeetingsRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainViewModel extends ViewModel {
@@ -25,16 +26,15 @@ public class MainViewModel extends ViewModel {
 
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
-    private final boolean[] mSelected;
+    private final boolean[] mSelectedRooms;
 
 
     public MainViewModel(@NonNull MeetingsRepository meetingsRepository) {
         mRepository = meetingsRepository;
 
         mMeetingRooms = mRepository.getMeetingRooms();
-        mSelected = new boolean[mMeetingRooms.size()];
-        mMutableMeetingsLiveData.setValue(mRepository.getMeetings());
-        resetFilter();
+        mSelectedRooms = new boolean[mMeetingRooms.size()];
+        resetRoomFilter();
     }
 
     public LiveData<List<Meeting>> getMeetingsLiveData() {
@@ -46,29 +46,45 @@ public class MainViewModel extends ViewModel {
     }
 
     public CharSequence[] getMeetingRoomNames() {
-        List<CharSequence> meetingRoomNames = new ArrayList<CharSequence>();
-        for (MeetingRoom meetingRoom : mMeetingRooms.values())
+        List<CharSequence> meetingRoomNames = new ArrayList<>();
+        for (MeetingRoom meetingRoom : mMeetingRooms.values()) {
             meetingRoomNames.add(meetingRoom.getName());
+        }
         return meetingRoomNames.toArray(new CharSequence[0]);
     }
 
     public boolean[] getSelectedRooms() {
-        return mSelected;
+        return mSelectedRooms;
     }
 
     public void toggleRoomSelection(int position) {
-        mSelected[position] = !mSelected[position];
-        // todo apply filter
+        mSelectedRooms[position] = !mSelectedRooms[position];
+        updateMeetingsList();
     }
 
-    public void resetFilter() {
-        Arrays.fill(mSelected, true);
+    public void resetRoomFilter() {
+        Arrays.fill(mSelectedRooms, true);
+        updateMeetingsList();
     }
 
     protected void deleteButtonClicked(int id) {
         mRepository.removeMeetingById(id);
-        // TODO new ArrayList no longer necessary
-        mMutableMeetingsLiveData.setValue(new ArrayList<>(mRepository.getMeetings()));
+        updateMeetingsList();
     }
+
+    private void updateMeetingsList(){
+        // TODO new ArrayList no longer necessary
+        List<Meeting> meetingList = new ArrayList<>(mRepository.getMeetings());
+        for (Iterator<Meeting> iterator = meetingList.iterator(); iterator.hasNext(); ) {
+            Meeting meeting = iterator.next();
+            if (!mSelectedRooms[meeting.getMeetingRoomId()-1])
+                meetingList.remove(meeting);
+            else if (false) // todo i.e. DATE condition
+                meetingList.remove(meeting);
+        }
+        mMutableMeetingsLiveData.setValue(new ArrayList<>(meetingList));
+    }
+
+
 
 }

@@ -1,11 +1,15 @@
 package com.openclassrooms.mareu.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -64,12 +68,27 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+    // todo ecouter une livedata mViewModel.getSelectedRooms()
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.filter_date) {
             new DatePickerDialog(this).show();
         } else {
-            new FilterDialog(mViewModel).show(getSupportFragmentManager(), null);
+            new DialogFragment() {
+                @NonNull
+                @Override
+                public Dialog onCreateDialog(Bundle savedInstanceState) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.filter_by_room)
+                            .setMultiChoiceItems(mViewModel.getMeetingRoomNames(), mViewModel.getSelectedRooms(),
+                                    (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which))
+                            .setPositiveButton("Apply", (dialog, which) -> {
+                            })
+                            .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter());
+                    return builder.create();
+                }
+            }.show(getSupportFragmentManager(), null);
         }
         return super.onOptionsItemSelected(item);
     }

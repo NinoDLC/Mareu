@@ -39,18 +39,15 @@ public class ShowMeetingFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        Meeting meeting = mViewModel.requireMeetingById(requireArguments().getInt(MEETING_ID));
+        //todo : pas besoin de le mettre dans onCreate()?
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
+
+        Meeting meeting = mViewModel.initMeeting(requireArguments().getInt(MEETING_ID));
         MeetingRoom meetingRoom = mViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
         bindAndInitView(view, meeting, meetingRoom);
         return view;
@@ -67,9 +64,7 @@ public class ShowMeetingFragment extends Fragment {
         TextView id = view.findViewById(R.id.show_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
 
-        if (meeting.getId() == 0) {
-            owner.setEnabled(false);
-        }
+        if (meeting.getId() == 0) owner.setEnabled(false);
         id.setText(String.valueOf(meeting.getId()));
         owner.setText(meeting.getOwner());
         subject.setText(meeting.getSubject());
@@ -88,14 +83,7 @@ public class ShowMeetingFragment extends Fragment {
 
         mViewModel.getFreeMeetingRooms().observe(
                 requireActivity(),
-                freeMeetingRooms -> mRoom.setOnClickListener(
-                        v -> new AlertDialog.Builder(getActivity())
-                                .setTitle("Free rooms list to pick from")
-                                .setItems(
-                                        freeMeetingRooms,
-                                        (dialog, which) -> mRoom.setText(mViewModel.selectRoom(which))
-                                ).create().show()
-                )
+                freeMeetingRooms -> bindRoomButton(freeMeetingRooms)
         );
 
         create.setOnClickListener(new View.OnClickListener() {
@@ -108,11 +96,23 @@ public class ShowMeetingFragment extends Fragment {
         });
     }
 
+    void bindRoomButton(CharSequence[] freeMeetingRooms){
+        mRoom.setOnClickListener(
+                view -> new AlertDialog.Builder(getActivity())
+                        .setTitle("Free rooms list to pick from")
+                        .setItems(
+                                freeMeetingRooms,
+                                (dialog, which) -> mRoom.setText(mViewModel.setRoom(which))
+                        ).create().show()
+        );
+    }
+
     void bindTimeButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> new TimePickerDialog(
                 requireContext(),
                 (v, hourOfDay, minute1) -> button.setText(
-                        mViewModel.timeButtonChanged(button == mStart, hour, minute1)),
+                        mViewModel.timeButtonChanged(button == mStart, hourOfDay, minute1)),
                 hour, minute, true).show());
+        // todo : l'heure de lancement du TimePickerDialog n'est pas mise à jour...
     }
 }
