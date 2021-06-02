@@ -16,5 +16,6 @@
     <color name="dog_8">#FF9800</color>
     <color name="dog_9">#FF5722</color>
     <color name="dog_10">#CE0A24</color>
+    <!-- todo remember the FOLDER color existence, for selectors -->
 </resources>
 

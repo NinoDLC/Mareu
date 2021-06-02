@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -17,7 +18,6 @@ import java.util.List;
 public class ShowMeetingFragmentViewModel extends ViewModel {
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
-    private static final String EMPTY_STRING = "";
 
     private final MeetingsRepository mRepository;
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
@@ -36,13 +36,15 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
             LocalDateTime stop = start.plusMinutes(30);
             mMeetingBuilder = new Meeting.MeetingBuilder()
-                    .setId(mRepository.getNextMeetingId())
+                    .setId(0)  // todo only at creation do we set id mRepository.getNextMeetingId()
                     .setOwner(PHONE_OWNER_EMAIL)
                     .setParticipants(new HashSet<>(0))
-                    .setSubject(EMPTY_STRING)
+                    // not setting subject
                     .setStart(start)
                     .setStop(stop)
                     .setMeetingRoomId(mRepository.getFreeRooms(start, stop).get(0));
+            // todo this get(0) might throw an exception if all rooms are booked...
+            //  also see getMeetingRoomName()
         } else {
             Meeting m = mRepository.getMeetingById(id);
             if (m == null) throw new NullPointerException("Inexistent meeting, id " + id);
@@ -63,10 +65,6 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         return mMeetingBuilder.build();
     }
 
-    public HashMap<Integer, MeetingRoom> getMeetingRooms() {
-        return mMeetingRooms;
-    }
-
     public String setRoom(int which) {
         MeetingRoom meetingRoom = mMeetingRooms.get(mFreeRoomIds.get(which));
         if (meetingRoom == null) throw new NullPointerException("Requested inexistant room");
@@ -79,14 +77,15 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     }
 
     public String timeButtonChanged(boolean startButton, int hour, int minute) {
-        if (startButton) mMeetingBuilder.setStart(LocalDateTime.now().withHour(hour).withMinute(minute));
+        if (startButton)
+            mMeetingBuilder.setStart(LocalDateTime.now().withHour(hour).withMinute(minute));
         else mMeetingBuilder.setStop(LocalDateTime.now().withHour(hour).withMinute(minute));
 
         updateFreeRoomNames();
         return startButton ? utils.niceTimeFormat(mMeetingBuilder.getStart()) : utils.niceTimeFormat(mMeetingBuilder.getStop());
     }
 
-    void updateFreeRoomNames(){
+    void updateFreeRoomNames() {
         mFreeRoomIds = mRepository.getFreeRooms(mMeetingBuilder.getStart(), mMeetingBuilder.getStop());
         CharSequence[] freeRoomNames = new CharSequence[mFreeRoomIds.size()];
         for (int id = 0; id < mFreeRoomIds.size(); id++) {
@@ -97,4 +96,9 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         mFreeRoomNames.setValue(freeRoomNames);
     }
 
+    public String getMeetingRoomName() {
+        MeetingRoom meetingRoom = mMeetingRooms.get(mMeetingBuilder.getMeetingRoomId());
+        // todo warning : meeting room is possibly
+        return meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room);
+    }
 }

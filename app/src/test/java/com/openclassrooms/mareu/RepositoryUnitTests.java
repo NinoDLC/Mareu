@@ -1,8 +1,5 @@
 package com.openclassrooms.mareu;
 
-import com.openclassrooms.mareu.di.DependencyInjection;
-import com.openclassrooms.mareu.repository.DummyMeetingRoomsGenerator;
-import com.openclassrooms.mareu.repository.LocalMeetingsRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
 import org.junit.Test;

@@ -21,7 +21,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 import com.openclassrooms.mareu.model.Meeting;
-import com.openclassrooms.mareu.model.MeetingRoom;
 
 public class ShowMeetingFragment extends Fragment {
 
@@ -47,13 +46,14 @@ public class ShowMeetingFragment extends Fragment {
         //todo : pas besoin de le mettre dans onCreate()?
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
 
+        //todo make this a livedata
         Meeting meeting = mViewModel.initMeeting(requireArguments().getInt(MEETING_ID));
-        MeetingRoom meetingRoom = mViewModel.getMeetingRooms().get(meeting.getMeetingRoomId());
-        bindAndInitView(view, meeting, meetingRoom);
+        bindAndInitView(view, meeting);
         return view;
     }
 
-    void bindAndInitView(View view, Meeting meeting, @Nullable MeetingRoom meetingRoom) {
+    void bindAndInitView(View view, Meeting meeting) {
+
         TextInputEditText owner = view.findViewById(R.id.show_meeting_owner);
         TextInputEditText subject = view.findViewById(R.id.show_meeting_subject);
         ChipGroup participantsGroup = view.findViewById(R.id.show_meeting_participants_group);
@@ -64,7 +64,7 @@ public class ShowMeetingFragment extends Fragment {
         TextView id = view.findViewById(R.id.show_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
 
-        if (meeting.getId() == 0) owner.setEnabled(false);
+        owner.setEnabled(meeting.getId() != 0);  // todo can't work
         id.setText(String.valueOf(meeting.getId()));
         owner.setText(meeting.getOwner());
         subject.setText(meeting.getSubject());
@@ -76,15 +76,12 @@ public class ShowMeetingFragment extends Fragment {
         }
         mStart.setText(utils.niceTimeFormat(meeting.getStart()));
         end.setText(utils.niceTimeFormat(meeting.getStop()));
-        mRoom.setText(meetingRoom != null ? meetingRoom.getName() : "");
+        mRoom.setText(mViewModel.getMeetingRoomName());
 
         bindTimeButton(mStart, meeting.getStart().getHour(), meeting.getStart().getMinute());
         bindTimeButton(end, meeting.getStop().getHour(), meeting.getStop().getMinute());
 
-        mViewModel.getFreeMeetingRooms().observe(
-                requireActivity(),
-                freeMeetingRooms -> bindRoomButton(freeMeetingRooms)
-        );
+        mViewModel.getFreeMeetingRooms().observe(requireActivity(), this::bindRoomButton);
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
