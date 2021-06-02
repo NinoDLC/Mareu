@@ -5,11 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,10 +17,12 @@ import com.openclassrooms.mareu.ViewModelFactory;
 public class MainActivity extends AppCompatActivity {
 
     private FragmentManager mFragmentManager;
-    private int mViewMain;
-    private int mViewRight;
+    private int mViewMaster;
+    private int mViewDetail;
     private boolean mLandscapeTablet;
     private MainViewModel mViewModel;
+
+    private boolean[] mSelectedRooms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +33,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
         mFragmentManager = getSupportFragmentManager();
-        mLandscapeTablet = findViewById(R.id.left) != null;
+        mLandscapeTablet = findViewById(R.id.detail) != null;
 
         if (mLandscapeTablet) {
-            mViewMain = R.id.master;
-            mViewRight = R.id.detail;
+            mViewMaster = R.id.master;
+            mViewDetail = R.id.detail;
         } else {
-            mViewMain = R.id.master;
-            mViewRight = mViewMain;
+            mViewMaster = R.id.master;
+            mViewDetail = mViewMaster;
         }
         setFragmentsInitialState();
+
+        mViewModel.getSelectedRooms().observe(
+                this, booleans -> {
+                    mSelectedRooms = booleans;
+                    supportInvalidateOptionsMenu();
+                }
+        );
     }
 
     @Override
@@ -53,13 +59,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragmentsInitialState() {
-        mFragmentManager.beginTransaction().replace(mViewMain, new MainFragment(this, mViewModel), null).commit();
+        mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(this, mViewModel), null).commit();
         if (mLandscapeTablet)
-            mFragmentManager.beginTransaction().replace(mViewRight, new Fragment(R.layout.fragment_empty), null).commit();
+            mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
     }
 
     public void setDetailedViewContent(int id) {
-        mFragmentManager.beginTransaction().replace(mViewRight, ShowMeetingFragment.newInstance(id), null).commit();
+        mFragmentManager.beginTransaction().replace(mViewDetail, ShowMeetingFragment.newInstance(id), null).commit();
     }
 
     @Override
@@ -68,29 +74,40 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public Dialog onCreateDialog() {
+        return new AlertDialog.Builder(this)
+                .setTitle(R.string.filter_by_room)
+                .setMultiChoiceItems(
+                        mViewModel.getMeetingRoomNames(),
+                        mSelectedRooms,
+                        (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which)
+                )
+                .setPositiveButton("Apply", (dialog, which) -> {
+                })
+                .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter())
+                .create();
+    }
 
-    // todo ecouter une livedata mViewModel.getSelectedRooms()
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.filter_date) {
-            new DatePickerDialog(this).show();
-        } else {
-            new DialogFragment() {
-                @NonNull
-                @Override
-                public Dialog onCreateDialog(Bundle savedInstanceState) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(R.string.filter_by_room)
-                            .setMultiChoiceItems(mViewModel.getMeetingRoomNames(), mViewModel.getSelectedRooms(),
-                                    (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which))
-                            .setPositiveButton("Apply", (dialog, which) -> {
-                            })
-                            .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter());
-                    return builder.create();
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.filter_date).setVisible(true);
+        menu.findItem(R.id.filter_room).setVisible(true);
+        // todo tint if filtered, use mLandscapeTablet
+        menu.findItem(R.id.filter_date).setOnMenuItemClickListener(
+                item -> {
+                    new DatePickerDialog(MainActivity.this).show();
+                    return false;
                 }
-            }.show(getSupportFragmentManager(), null);
-        }
-        return super.onOptionsItemSelected(item);
+        );
+
+        menu.findItem(R.id.filter_room).setOnMenuItemClickListener(
+                item -> {
+                    onCreateDialog().show();
+                    return false;
+                }
+        );
+
+        return super.onPrepareOptionsMenu(menu);
     }
 }
 

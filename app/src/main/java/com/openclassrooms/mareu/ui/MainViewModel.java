@@ -9,11 +9,14 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import static java.util.Arrays.copyOf;
 
 public class MainViewModel extends ViewModel {
 
@@ -28,6 +31,7 @@ public class MainViewModel extends ViewModel {
 
     private final boolean[] mSelectedRooms;
 
+    private final MutableLiveData<boolean[]> mSelectedRoomsLiveData = new MutableLiveData<>();
 
     public MainViewModel(@NonNull MeetingsRepository meetingsRepository) {
         mRepository = meetingsRepository;
@@ -53,19 +57,24 @@ public class MainViewModel extends ViewModel {
         return meetingRoomNames.toArray(new CharSequence[0]);
     }
 
-    public boolean[] getSelectedRooms() {
-        return mSelectedRooms;
+    public LiveData<boolean[]> getSelectedRooms() {
+        return mSelectedRoomsLiveData;
     }
 
     public void toggleRoomSelection(int position) {
         mSelectedRooms[position] = !mSelectedRooms[position];
+        mSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
         updateMeetingsList();
     }
 
     public void resetRoomFilter() {
         Arrays.fill(mSelectedRooms, true);
+        mSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
         updateMeetingsList();
     }
+
+    // todo split this in 2 viewModels : activity and fragment
+    //  this is where we have a state repository for selectedRooms
 
     protected void deleteButtonClicked(int id) {
         mRepository.removeMeetingById(id);
@@ -74,13 +83,10 @@ public class MainViewModel extends ViewModel {
 
     private void updateMeetingsList(){
         // TODO new ArrayList no longer necessary
-        List<Meeting> meetingList = new ArrayList<>(mRepository.getMeetings());
-        for (Iterator<Meeting> iterator = meetingList.iterator(); iterator.hasNext(); ) {
-            Meeting meeting = iterator.next();
-            if (!mSelectedRooms[meeting.getMeetingRoomId()-1])
-                meetingList.remove(meeting);
-            else if (false) // todo i.e. DATE condition
-                meetingList.remove(meeting);
+        List<Meeting> meetingList = new ArrayList<>();
+        for (Meeting meeting : mRepository.getMeetings()) {
+            if (mSelectedRooms[meeting.getMeetingRoomId()-1]) // todo add date condition
+                meetingList.add(meeting);
         }
         mMutableMeetingsLiveData.setValue(new ArrayList<>(meetingList));
     }

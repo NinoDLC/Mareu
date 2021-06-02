@@ -48,8 +48,6 @@ public class MainFragment extends Fragment {
         view.findViewById(R.id.fab).setOnClickListener(v -> mMainActivity.setDetailedViewContent(0));
 
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
-        // todo: in XML: overkill?
-        //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter(mListener, mViewModel.getMeetingRooms());
         recyclerView.setAdapter(adapter);
 
