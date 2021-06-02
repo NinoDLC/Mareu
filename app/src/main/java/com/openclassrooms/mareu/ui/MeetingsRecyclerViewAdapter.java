@@ -1,5 +1,8 @@
 package com.openclassrooms.mareu.ui;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,38 +58,32 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mText;
         private final TextView mParticipants;
-        private final ImageView mImage;
+        private final TextView mRoomName;
         private final ImageButton mDelete;
         private final View mView;
         private final TextView mMore;
 
         public ViewHolder(View view) {
             super(view);
+            mView = view;
             mText = view.findViewById(R.id.meeting_text);
             mParticipants = view.findViewById(R.id.meeting_participants);
-            mImage = view.findViewById(R.id.meeting_image);
+            mRoomName = view.findViewById(R.id.meeting_room_name);
             mDelete = view.findViewById(R.id.meeting_delete_button);
-            mView = view;
             mMore = view.findViewById(R.id.meeting_participants_more);
         }
 
         public void bind(Meeting meeting, Listener listener, MeetingRoom meetingRoom) {
-
-            final String sep = " - ";
             mText.setText(
-                    MessageFormat.format("{0}{1}{2}{3}{4}",
+                    MessageFormat.format("{0} - {1}",
                             utils.niceTimeFormat(meeting.getStart()),
-                            sep,
-                            meeting.getSubject(),
-                            sep,
-                            meetingRoom.getName()
+                            meeting.getSubject()
                     )
             );
             mParticipants.setText(meeting.getOwner());
             mMore.setText(MessageFormat.format("+{0}", meeting.getParticipants().size()));
-            mImage.setImageResource(R.drawable.ic_font_awesome_5_solid_dog);
-            mImage.setColorFilter(ContextCompat.getColor(mView.getContext(), meetingRoom.getImageSrc()));
-
+            mRoomName.setText(meetingRoom.getName());
+            mRoomName.setTextColor(ContextCompat.getColor(mView.getContext(), meetingRoom.getImageSrc()));
             mDelete.setOnClickListener(view -> listener.deleteButtonClicked(meeting.getId()));
             mView.setOnClickListener(view -> listener.itemClicked(meeting.getId()));
         }

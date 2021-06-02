@@ -18,7 +18,7 @@ import java.util.List;
 
 import static java.util.Arrays.copyOf;
 
-public class MainViewModel extends ViewModel {
+public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mRepository;
     // todo : repo is to be injected, for this I must customize my factory
@@ -33,7 +33,7 @@ public class MainViewModel extends ViewModel {
 
     private final MutableLiveData<boolean[]> mSelectedRoomsLiveData = new MutableLiveData<>();
 
-    public MainViewModel(@NonNull MeetingsRepository meetingsRepository) {
+    public MainFragmentViewModel(@NonNull MeetingsRepository meetingsRepository) {
         mRepository = meetingsRepository;
 
         mMeetingRooms = mRepository.getMeetingRooms();
@@ -73,16 +73,13 @@ public class MainViewModel extends ViewModel {
         updateMeetingsList();
     }
 
-    // todo split this in 2 viewModels : activity and fragment
-    //  this is where we have a state repository for selectedRooms
-
     protected void deleteButtonClicked(int id) {
         mRepository.removeMeetingById(id);
         updateMeetingsList();
     }
 
     private void updateMeetingsList(){
-        // TODO new ArrayList no longer necessary
+        // TODO new ArrayList no longer necessary when repo is liveData.
         List<Meeting> meetingList = new ArrayList<>();
         for (Meeting meeting : mRepository.getMeetings()) {
             if (mSelectedRooms[meeting.getMeetingRoomId()-1]) // todo add date condition

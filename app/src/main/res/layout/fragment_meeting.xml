@@ -7,17 +7,20 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing">
 
-    <ImageView
-        android:id="@+id/meeting_image"
+    <TextView
+        android:id="@+id/meeting_room_name"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:contentDescription="@string/meeting_image"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_dialog_map"
+        android:background="@drawable/ic_font_awesome_5_solid_dog"
+        android:gravity="center"
+        android:lineSpacingMultiplier="0.8"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/red" />
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/meeting_text"
@@ -31,7 +34,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/meeting_participants"
         app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
-        app:layout_constraintStart_toEndOf="@id/meeting_image"
+        app:layout_constraintStart_toEndOf="@id/meeting_room_name"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/date/day_of_week" />
 
@@ -45,7 +48,7 @@
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/meeting_image"
+        app:layout_constraintStart_toEndOf="@id/meeting_room_name"
         app:layout_constraintTop_toBottomOf="@id/meeting_text"
         tools:text="@tools:sample/first_names" />
 
@@ -55,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="12sp"
         android:textColor="@color/blue"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/meeting_participants"
         tools:text="+3" />
