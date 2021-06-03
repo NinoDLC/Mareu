@@ -11,15 +11,15 @@ public class MeetingRoom {
     private final int mCapacity;
 
     @ColorInt
-    private final int mImageSrc;
+    private final int mTextColor;
 
-    public MeetingRoom(int id, String name, String location, String[] devices, int capacity, int imageSrc) {
+    public MeetingRoom(int id, String name, String location, String[] devices, int capacity, int textColor) {
         this.mId = id;
         this.mName = name;
         this.mLocation = location;
         this.mDevices = devices;
         this.mCapacity = capacity;
-        this.mImageSrc = imageSrc;
+        this.mTextColor = textColor;
     }
 
     public int getId() {
@@ -42,7 +42,7 @@ public class MeetingRoom {
         return mCapacity;
     }
 
-    public int getImageSrc() {
-        return mImageSrc;
+    public int getTextColor() {
+        return mTextColor;
     }
 }

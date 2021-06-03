@@ -1,14 +1,15 @@
 package com.openclassrooms.mareu.ui;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,27 +22,39 @@ import com.openclassrooms.mareu.ViewModelFactory;
 
 public class MainFragment extends Fragment {
 
-    private final MainActivity mMainActivity;
+    private MainActivity mMainActivity;
     private MainFragmentViewModel mViewModel;
-
+    private MeetingsRecyclerViewAdapter mAdapter;
     private boolean[] mSelectedRooms;
 
-    private final MeetingsRecyclerViewAdapter.Listener mListener = new MeetingsRecyclerViewAdapter.Listener() {
-        @Override
-        public void itemClicked(int id) {
-            // todo : replace my mMainActivity with an interface with setDetailedViewContent ?
-            mMainActivity.setDetailedViewContent(id);
-        }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        @Override
-        public void deleteButtonClicked(int id) {
-            mViewModel.deleteButtonClicked(id);
-        }
-    };
+        mMainActivity = (MainActivity) requireActivity();
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
+        mAdapter = new MeetingsRecyclerViewAdapter(
+                new MeetingsRecyclerViewAdapter.Listener() {
+                    @Override
+                    public void itemClicked(int id) {
+                        mMainActivity.setDetailedViewContent(id);
+                    }
 
-    public MainFragment(MainActivity mainActivity) {
-        mMainActivity = mainActivity;
-        setHasOptionsMenu(true);
+                    @Override
+                    public void deleteButtonClicked(int id) {
+                        mViewModel.deleteButtonClicked(id);
+                    }
+                }
+        );
+
+        // todo can't use getViewLifecycleOwner() from onCreate() !
+        mViewModel.getMeetingsLiveData().observe(mMainActivity, items -> mAdapter.submitList(items));
+        mViewModel.getSelectedRooms().observe(
+                mMainActivity, booleans -> {
+                    mSelectedRooms = booleans;
+                    mMainActivity.supportInvalidateOptionsMenu();
+                }
+        );
     }
 
     @Nullable
@@ -49,22 +62,12 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        setHasOptionsMenu(true);
         view.findViewById(R.id.fab).setOnClickListener(v -> mMainActivity.setDetailedViewContent(0));
 
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
-
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
-        MeetingsRecyclerViewAdapter adapter = new MeetingsRecyclerViewAdapter(mListener, mViewModel.getMeetingRooms());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
 
-        mViewModel.getMeetingsLiveData().observe(requireActivity(), adapter::submitList);
-
-        mViewModel.getSelectedRooms().observe(
-                getViewLifecycleOwner(), booleans -> {
-                    mSelectedRooms = booleans;
-                    mMainActivity.supportInvalidateOptionsMenu();
-                }
-        );
         return view;
     }
 
@@ -77,11 +80,20 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         menu.findItem(R.id.filter_date).setOnMenuItemClickListener(
                 item -> {
-                    new DatePickerDialog(requireContext()).show();
+                    new TimePickerDialog(  // staying away from dates and DatePickerDialog()
+                            requireContext(),
+                            new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(@NonNull TimePicker view, int hourOfDay, int minute) {
+                                    mViewModel.setTimeFilter(hourOfDay, minute);
+                                }
+                            },
+                            8, 30, true).show();    // todo remove magic numbers
                     return false;
+                    // todo handle reset
                 }
         );
 

@@ -62,11 +62,10 @@ public class LocalMeetingsRepository implements MeetingsRepository {
      */
     public boolean createMeeting(Meeting meeting) {
         if (isValidMeeting(meeting)) {
-            boolean added;
-            added = mMeetings.add(meeting);
-            if (added)
-                sortMeetings();
-            return added;
+            if (!mMeetings.add(meeting))
+                return false;
+            sortMeetings();
+            return true;
         }
         return false;
     }

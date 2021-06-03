@@ -2,6 +2,7 @@ package com.openclassrooms.mareu.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,40 +12,35 @@ import com.openclassrooms.mareu.R;
 public class MainActivity extends AppCompatActivity {
 
     private FragmentManager mFragmentManager;
+    private boolean mLandscapeTabletLayout;
     private int mViewMaster;
     private int mViewDetail;
-    private boolean mLandscapeTablet;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
-        mFragmentManager = getSupportFragmentManager();
-        mLandscapeTablet = findViewById(R.id.detail) != null;
 
-        if (mLandscapeTablet) {
-            mViewMaster = R.id.master;
-            mViewDetail = R.id.detail;
-        } else {
-            mViewMaster = R.id.master;
-            mViewDetail = mViewMaster;
-        }
+        mFragmentManager = getSupportFragmentManager();
+        mLandscapeTabletLayout = findViewById(R.id.detail) != null;
+        mViewMaster = R.id.master;
+        mViewDetail = mLandscapeTabletLayout ?R.id.detail:mViewMaster;
+
         setFragmentsInitialState();
     }
 
     @Override
     public void onBackPressed() {
-        // todo play with addToBackstack in transactions.
         setFragmentsInitialState();
     }
 
     private void setFragmentsInitialState() {
-        // todo : MainFragemnt is created from scratch each time : scrollposition and filters are discarded... meh.
-        mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(this), null).commit();
-        if (mLandscapeTablet)
+        // todo: play with addToBackstack in transactions.
+        // todo: MainFragment is created from scratch each time : scroll position and filters are discarded... meh.
+        mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(), null).commit();
+        if (mLandscapeTabletLayout)
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
     }
 

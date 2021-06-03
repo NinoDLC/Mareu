@@ -9,6 +9,8 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,23 +25,24 @@ public class MainFragmentViewModel extends ViewModel {
     //  but it will only hand me the repo, and I made a DI that can return the instance...
     //  then remove all setvalues()
 
-    private final MutableLiveData<List<Meeting>> mMutableMeetingsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<MeetingsRecyclerViewAdapterItem>> mMutableMeetingsLiveData = new MutableLiveData<>();
 
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
     private final boolean[] mSelectedRooms;
 
-    private final MutableLiveData<boolean[]> mSelectedRoomsLiveData = new MutableLiveData<>();
+    private LocalDateTime mTimeFilter;
+
+    private final MutableLiveData<boolean[]> mMutableSelectedRoomsLiveData = new MutableLiveData<>();
 
     public MainFragmentViewModel(@NonNull MeetingsRepository meetingsRepository) {
         mRepository = meetingsRepository;
-
         mMeetingRooms = mRepository.getMeetingRooms();
         mSelectedRooms = new boolean[mMeetingRooms.size()];
         resetRoomFilter();
     }
 
-    public LiveData<List<Meeting>> getMeetingsLiveData() {
+    public LiveData<List<MeetingsRecyclerViewAdapterItem>> getMeetingsLiveData() {
         return mMutableMeetingsLiveData;
     }
 
@@ -56,18 +59,18 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public LiveData<boolean[]> getSelectedRooms() {
-        return mSelectedRoomsLiveData;
+        return mMutableSelectedRoomsLiveData;
     }
 
     public void toggleRoomSelection(int position) {
         mSelectedRooms[position] = !mSelectedRooms[position];
-        mSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
+        mMutableSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
         updateMeetingsList();
     }
 
     public void resetRoomFilter() {
         Arrays.fill(mSelectedRooms, true);
-        mSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
+        mMutableSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
         updateMeetingsList();
     }
 
@@ -76,16 +79,49 @@ public class MainFragmentViewModel extends ViewModel {
         updateMeetingsList();
     }
 
-    private void updateMeetingsList(){
+    private void updateMeetingsList() {
         // TODO new ArrayList no longer necessary when repo is liveData.
-        List<Meeting> meetingList = new ArrayList<>();
+        List<MeetingsRecyclerViewAdapterItem> itemsList = new ArrayList<>();
         for (Meeting meeting : mRepository.getMeetings()) {
-            if (mSelectedRooms[meeting.getMeetingRoomId()-1]) // todo add date condition
-                meetingList.add(meeting);
+            if (mSelectedRooms[meeting.getMeetingRoomId() - 1] && meetsTimeConditions(meeting))
+                itemsList.add(makeRecyclerViewItem(meeting));
         }
-        mMutableMeetingsLiveData.setValue(new ArrayList<>(meetingList));
+        mMutableMeetingsLiveData.setValue(new ArrayList<>(itemsList));
+    }
+
+    MeetingsRecyclerViewAdapterItem makeRecyclerViewItem(Meeting meeting) {
+        MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
+        if (mr == null)
+            throw new NullPointerException("null MeetingRoom object");
+        return new MeetingsRecyclerViewAdapterItem(
+                meeting.getId(),
+                MessageFormat.format("{0} - {1}",
+                        utils.niceTimeFormat(meeting.getStart()),
+                        meeting.getSubject()
+                ),
+                meeting.getOwner(),
+                MessageFormat.format("+{0}", meeting.getParticipants().size()),
+                mr.getName(),
+                mr.getTextColor()
+        );
+
+                // todo could I store the color itself?
     }
 
 
+    private boolean meetsTimeConditions(@NonNull Meeting meeting) {
+        if (mTimeFilter == null) return true;
+        return meeting.getStart().isBefore(mTimeFilter) && meeting.getStop().isAfter(mTimeFilter);
+    }
+
+    public void setTimeFilter(int hourOfDay, int minute) {
+        mTimeFilter = LocalDateTime.now().withHour(hourOfDay).withMinute(minute).withSecond(1);
+        updateMeetingsList();
+    }
+
+    public void resetTimeFilter() {
+        mTimeFilter = null;
+        updateMeetingsList();
+    }
 
 }

@@ -49,6 +49,11 @@ public class ShowMeetingFragment extends Fragment {
         //todo make this a livedata
         Meeting meeting = mViewModel.initMeeting(requireArguments().getInt(MEETING_ID));
         bindAndInitView(view, meeting);
+
+        mRoom = view.findViewById(R.id.show_meeting_room);
+        mRoom.setText(mViewModel.getMeetingRoomName());
+        mViewModel.getFreeMeetingRooms().observe(requireActivity(), this::bindRoomButton);
+
         return view;
     }
 
@@ -60,7 +65,6 @@ public class ShowMeetingFragment extends Fragment {
         TextInputEditText participantsField = view.findViewById(R.id.show_meeting_participants_field);
         mStart = view.findViewById(R.id.show_meeting_start);
         Button end = view.findViewById(R.id.show_meeting_end);
-        mRoom = view.findViewById(R.id.show_meeting_room);
         TextView id = view.findViewById(R.id.show_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
 
@@ -76,12 +80,9 @@ public class ShowMeetingFragment extends Fragment {
         }
         mStart.setText(utils.niceTimeFormat(meeting.getStart()));
         end.setText(utils.niceTimeFormat(meeting.getStop()));
-        mRoom.setText(mViewModel.getMeetingRoomName());
 
         bindTimeButton(mStart, meeting.getStart().getHour(), meeting.getStart().getMinute());
         bindTimeButton(end, meeting.getStop().getHour(), meeting.getStop().getMinute());
-
-        mViewModel.getFreeMeetingRooms().observe(requireActivity(), this::bindRoomButton);
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override

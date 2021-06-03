@@ -45,6 +45,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                     .setMeetingRoomId(mRepository.getFreeRooms(start, stop).get(0));
             // todo this get(0) might throw an exception if all rooms are booked...
             //  also see getMeetingRoomName()
+            //  also suggest the smallest room that fits
+
         } else {
             Meeting m = mRepository.getMeetingById(id);
             if (m == null) throw new NullPointerException("Inexistent meeting, id " + id);

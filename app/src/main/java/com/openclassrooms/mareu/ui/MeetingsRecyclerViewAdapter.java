@@ -19,15 +19,13 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 import java.text.MessageFormat;
 import java.util.HashMap;
 
-public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRecyclerViewAdapter.ViewHolder> {
+public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerViewAdapterItem, MeetingsRecyclerViewAdapter.ViewHolder> {
 
     private final Listener mListener;
-    private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
-    public MeetingsRecyclerViewAdapter(Listener listener, HashMap<Integer, MeetingRoom> meetingRooms) {
+    public MeetingsRecyclerViewAdapter(@NonNull Listener listener) {
         super(new MeetingsDiffCallback());
         mListener = listener;
-        mMeetingRooms = meetingRooms;
     }
 
     @NonNull
@@ -41,12 +39,8 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
     @Override
     public void onBindViewHolder(@NonNull MeetingsRecyclerViewAdapter.ViewHolder holder, int position) {
         // getItem() is defined in ListAdapter, with recyclerViewAdapter, we'd have mMeetings field and do mMeetings.get()
-        Meeting meeting = getItem(position);
-        MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
-
-        if (mr == null)
-            throw new NullPointerException("null MeetingRoom object");
-        holder.bind(meeting, mListener, mr);
+        MeetingsRecyclerViewAdapterItem item = getItem(position);
+        holder.bind(item, mListener);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,32 +61,28 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<Meeting, MeetingsRe
             mMore = view.findViewById(R.id.meeting_participants_more);
         }
 
-        public void bind(Meeting meeting, Listener listener, MeetingRoom meetingRoom) {
-            mText.setText(
-                    MessageFormat.format("{0} - {1}",
-                            utils.niceTimeFormat(meeting.getStart()),
-                            meeting.getSubject()
-                    )
-            );
-            mParticipants.setText(meeting.getOwner());
-            mMore.setText(MessageFormat.format("+{0}", meeting.getParticipants().size()));
-            mRoomName.setText(meetingRoom.getName());
-            mRoomName.setTextColor(ContextCompat.getColor(mView.getContext(), meetingRoom.getImageSrc()));
-            mDelete.setOnClickListener(view -> listener.deleteButtonClicked(meeting.getId()));
-            mView.setOnClickListener(view -> listener.itemClicked(meeting.getId()));
+        public void bind(@NonNull MeetingsRecyclerViewAdapterItem item, @NonNull Listener listener) {
+            mText.setText(item.getUpLine());
+            mParticipants.setText(item.getOwner());
+            mMore.setText(item.getParticipantsNumber());
+            mRoomName.setText(item.getMeetingRoomName());
+            mRoomName.setTextColor(ContextCompat.getColor(mView.getContext(), item.getMeetingRoomColor()));
+            mDelete.setOnClickListener(view -> listener.deleteButtonClicked(item.getId()));
+            mView.setOnClickListener(view -> listener.itemClicked(item.getId()));
         }
     }
 
-    public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<Meeting> {
+    public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<MeetingsRecyclerViewAdapterItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
+        public boolean areItemsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
+        // todo: my meetings are immutable. but do I re-use ID ?
+        // todo : if item subject changed, I don't update the screen, here...
         @Override
-        public boolean areContentsTheSame(@NonNull Meeting oldItem, @NonNull Meeting newItem) {
-            return oldItem.getId() == newItem.getId();
-            // todo : if item subject changed, I don't update the screen, here...
+        public boolean areContentsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
+            return false;
         }
     }
 
