@@ -46,10 +46,6 @@ public class MainFragmentViewModel extends ViewModel {
         return mMutableMeetingsLiveData;
     }
 
-    public HashMap<Integer, MeetingRoom> getMeetingRooms() {
-        return mMeetingRooms;
-    }
-
     public CharSequence[] getMeetingRoomNames() {
         List<CharSequence> meetingRoomNames = new ArrayList<>();
         for (MeetingRoom meetingRoom : mMeetingRooms.values()) {
@@ -89,7 +85,7 @@ public class MainFragmentViewModel extends ViewModel {
         mMutableMeetingsLiveData.setValue(new ArrayList<>(itemsList));
     }
 
-    MeetingsRecyclerViewAdapterItem makeRecyclerViewItem(Meeting meeting) {
+    private MeetingsRecyclerViewAdapterItem makeRecyclerViewItem(@NonNull Meeting meeting) {
         MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
         if (mr == null)
             throw new NullPointerException("null MeetingRoom object");
@@ -102,12 +98,9 @@ public class MainFragmentViewModel extends ViewModel {
                 meeting.getOwner(),
                 MessageFormat.format("+{0}", meeting.getParticipants().size()),
                 mr.getName(),
-                mr.getTextColor()
+                mr.getTextColor()  // todo could I store the color itself?
         );
-
-                // todo could I store the color itself?
     }
-
 
     private boolean meetsTimeConditions(@NonNull Meeting meeting) {
         if (mTimeFilter == null) return true;
@@ -122,6 +115,14 @@ public class MainFragmentViewModel extends ViewModel {
     public void resetTimeFilter() {
         mTimeFilter = null;
         updateMeetingsList();
+    }
+
+    public int getTimeFilterHour() {
+        return mTimeFilter == null ? LocalDateTime.now().getHour() : mTimeFilter.getHour();
+    }
+
+    public int getTimeFilterMinute() {
+        return mTimeFilter == null ? LocalDateTime.now().getMinute() : mTimeFilter.getMinute();
     }
 
 }

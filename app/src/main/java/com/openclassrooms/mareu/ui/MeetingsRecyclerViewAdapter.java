@@ -13,11 +13,6 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.model.Meeting;
-import com.openclassrooms.mareu.model.MeetingRoom;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
 
 public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerViewAdapterItem, MeetingsRecyclerViewAdapter.ViewHolder> {
 
@@ -30,7 +25,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_meeting, parent, false);
         return new ViewHolder(view);
@@ -51,7 +46,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
         private final View mView;
         private final TextView mMore;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
             mView = view;
             mText = view.findViewById(R.id.meeting_text);
@@ -78,11 +73,9 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
             return oldItem.getId() == newItem.getId();
         }
 
-        // todo: my meetings are immutable. but do I re-use ID ?
-        // todo : if item subject changed, I don't update the screen, here...
         @Override
         public boolean areContentsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
-            return false;
+            return false;  // todo: if I re-use IDs for changed meetings, change this test.
         }
     }
 

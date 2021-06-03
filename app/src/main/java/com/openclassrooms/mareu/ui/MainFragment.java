@@ -1,7 +1,6 @@
 package com.openclassrooms.mareu.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -85,37 +83,35 @@ public class MainFragment extends Fragment {
                 item -> {
                     new TimePickerDialog(  // staying away from dates and DatePickerDialog()
                             requireContext(),
-                            new TimePickerDialog.OnTimeSetListener() {
-                                @Override
-                                public void onTimeSet(@NonNull TimePicker view, int hourOfDay, int minute) {
-                                    mViewModel.setTimeFilter(hourOfDay, minute);
-                                }
-                            },
-                            8, 30, true).show();    // todo remove magic numbers
+                            (view, hourOfDay, minute) -> mViewModel.setTimeFilter(hourOfDay, minute),
+                            mViewModel.getTimeFilterHour(),
+                            mViewModel.getTimeFilterMinute(),
+                            true) {
+                        @Override
+                        public void cancel() {
+                            mViewModel.resetTimeFilter();
+                            super.cancel();
+                        }
+                    }.show();
                     return false;
-                    // todo handle reset
                 }
         );
 
         menu.findItem(R.id.filter_room).setOnMenuItemClickListener(
                 item -> {
-                    onCreateDialog().show();
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.filter_by_room)
+                            .setMultiChoiceItems(
+                                    mViewModel.getMeetingRoomNames(),
+                                    mSelectedRooms,
+                                    (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which)
+                            )
+                            .setPositiveButton("Apply", (dialog, which) -> {
+                            })
+                            .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter())
+                            .create().show();
                     return false;
                 }
         );
-    }
-
-    public Dialog onCreateDialog() {
-        return new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.filter_by_room)
-                .setMultiChoiceItems(
-                        mViewModel.getMeetingRoomNames(),
-                        mSelectedRooms,
-                        (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which)
-                )
-                .setPositiveButton("Apply", (dialog, which) -> {
-                })
-                .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter())
-                .create();
     }
 }
