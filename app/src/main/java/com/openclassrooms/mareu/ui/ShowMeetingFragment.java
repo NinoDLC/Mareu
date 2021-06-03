@@ -3,6 +3,7 @@ package com.openclassrooms.mareu.ui;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +24,15 @@ import com.openclassrooms.mareu.ViewModelFactory;
 import com.openclassrooms.mareu.model.Meeting;
 
 public class ShowMeetingFragment extends Fragment {
-
-    private static final String MEETING_ID = "MEETING_ID";
     private ShowMeetingFragmentViewModel mViewModel;
 
     private Button mStart;
-    private Button mRoom;
 
-    public static ShowMeetingFragment newInstance(int id) {
-        ShowMeetingFragment fragment = new ShowMeetingFragment();
-        Bundle args = new Bundle();
-        args.putInt(MEETING_ID, id);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
     }
 
     @Nullable
@@ -43,17 +40,10 @@ public class ShowMeetingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        //todo : pas besoin de le mettre dans onCreate()?
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
-
-        //todo make this a livedata
-        Meeting meeting = mViewModel.initMeeting(requireArguments().getInt(MEETING_ID));
-        bindAndInitView(view, meeting);
-
-        mRoom = view.findViewById(R.id.show_meeting_room);
-        mRoom.setText(mViewModel.getMeetingRoomName());
-        mViewModel.getFreeMeetingRooms().observe(requireActivity(), this::bindRoomButton);
-
+        mViewModel.getMeeting().observe(requireActivity(), meeting -> {
+            // todo: this observation depends on mRoom view, can't go in onCreate()
+            bindAndInitView(view, meeting);
+        });
         return view;
     }
 
@@ -68,39 +58,51 @@ public class ShowMeetingFragment extends Fragment {
         TextView id = view.findViewById(R.id.show_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
 
-        owner.setEnabled(meeting.getId() != 0);  // todo can't work
+        owner.setEnabled(meeting.getId() != 0);
         id.setText(String.valueOf(meeting.getId()));
         owner.setText(meeting.getOwner());
         subject.setText(meeting.getSubject());
         LayoutInflater layoutInflater = getLayoutInflater();
+        participantsGroup.removeAllViews();
         for (String participant : meeting.getParticipants()) {
             Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant, participantsGroup, false);
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
+            chip.setOnCloseIconClickListener(v -> mViewModel.deleteParticipant(participant));
         }
+
+        participantsField.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && participantsField.getText() != null) {
+                // todo if is valid email?
+                mViewModel.newParticipant(participantsField.getText().toString());
+                participantsField.setText("");
+                return true;
+            }
+            return false;
+        });
+
         mStart.setText(utils.niceTimeFormat(meeting.getStart()));
         end.setText(utils.niceTimeFormat(meeting.getStop()));
-
         bindTimeButton(mStart, meeting.getStart().getHour(), meeting.getStart().getMinute());
         bindTimeButton(end, meeting.getStop().getHour(), meeting.getStop().getMinute());
 
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // todo if is valid meeting, ...
-                //  ShowMeetingFragment.this.finish();
-                ((MainActivity) requireActivity()).onBackPressed();
-            }
+        Button room = view.findViewById(R.id.show_meeting_room);
+        room.setText(mViewModel.getMeetingRoomName());
+        bindRoomButton(room, mViewModel.getFreeMeetingRooms());
+
+        create.setOnClickListener(v -> {
+            // todo if is valid meeting, ...
+            ((MainActivity) requireActivity()).onBackPressed();
         });
     }
 
-    void bindRoomButton(CharSequence[] freeMeetingRooms){
-        mRoom.setOnClickListener(
+    void bindRoomButton(Button room, CharSequence[] freeMeetingRooms) {
+        room.setOnClickListener(
                 view -> new AlertDialog.Builder(getActivity())
-                        .setTitle("Free rooms list to pick from")
+                        .setTitle(R.string.free_rooms_dialog_title)
                         .setItems(
                                 freeMeetingRooms,
-                                (dialog, which) -> mRoom.setText(mViewModel.setRoom(which))
+                                (dialog, which) -> mViewModel.setRoom(which)
                         ).create().show()
         );
     }
@@ -108,9 +110,11 @@ public class ShowMeetingFragment extends Fragment {
     void bindTimeButton(Button button, int hour, int minute) {
         button.setOnClickListener(view -> new TimePickerDialog(
                 requireContext(),
-                (v, hourOfDay, minute1) -> button.setText(
-                        mViewModel.timeButtonChanged(button == mStart, hourOfDay, minute1)),
-                hour, minute, true).show());
+                (v, h, m) -> mViewModel.timeButtonChanged(button == mStart, h, m),
+                hour,
+                minute,
+                true
+        ).show());
         // todo : l'heure de lancement du TimePickerDialog n'est pas mise à jour...
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
+import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
 import java.text.MessageFormat;
@@ -20,10 +21,9 @@ import static java.util.Arrays.copyOf;
 
 public class MainFragmentViewModel extends ViewModel {
 
-    private final MeetingsRepository mRepository;
-    // todo : repo is to be injected, for this I must customize my factory
-    //  but it will only hand me the repo, and I made a DI that can return the instance...
-    //  then remove all setvalues()
+    private final MeetingsRepository mMeetingsRepository;
+    private final CurrentMeetingIdRepository mCurrentMeetingIdRepository;
+    // todo when going with livedata on repo, remove all setvalues()
 
     private final MutableLiveData<List<MeetingsRecyclerViewAdapterItem>> mMutableMeetingsLiveData = new MutableLiveData<>();
 
@@ -35,15 +35,23 @@ public class MainFragmentViewModel extends ViewModel {
 
     private final MutableLiveData<boolean[]> mMutableSelectedRoomsLiveData = new MutableLiveData<>();
 
-    public MainFragmentViewModel(@NonNull MeetingsRepository meetingsRepository) {
-        mRepository = meetingsRepository;
-        mMeetingRooms = mRepository.getMeetingRooms();
+    public MainFragmentViewModel(
+            @NonNull MeetingsRepository meetingsRepository,
+            @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
+        mMeetingsRepository = meetingsRepository;
+        mCurrentMeetingIdRepository = currentMeetingIdRepository;
+
+        mMeetingRooms = mMeetingsRepository.getMeetingRooms();
         mSelectedRooms = new boolean[mMeetingRooms.size()];
         resetRoomFilter();
     }
 
     public LiveData<List<MeetingsRecyclerViewAdapterItem>> getMeetingsLiveData() {
         return mMutableMeetingsLiveData;
+    }
+
+    public void setDetailId(int id) {
+        mCurrentMeetingIdRepository.setCurrentId(id);
     }
 
     public CharSequence[] getMeetingRoomNames() {
@@ -71,14 +79,14 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     protected void deleteButtonClicked(int id) {
-        mRepository.removeMeetingById(id);
+        mMeetingsRepository.removeMeetingById(id);
         updateMeetingsList();
     }
 
     private void updateMeetingsList() {
         // TODO new ArrayList no longer necessary when repo is liveData.
         List<MeetingsRecyclerViewAdapterItem> itemsList = new ArrayList<>();
-        for (Meeting meeting : mRepository.getMeetings()) {
+        for (Meeting meeting : mMeetingsRepository.getMeetings()) {
             if (mSelectedRooms[meeting.getMeetingRoomId() - 1] && meetsTimeConditions(meeting))
                 itemsList.add(makeRecyclerViewItem(meeting));
         }

@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         mViewMaster = R.id.master;
         mViewDetail = mLandscapeTabletLayout ?R.id.detail:mViewMaster;
 
+        // todo: actually not so great design on big tablets in portrait mode
+
         setFragmentsInitialState();
     }
 
@@ -44,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
     }
 
-    public void setDetailedViewContent(int id) {
-        ShowMeetingFragment showMeetingFragment = ShowMeetingFragment.newInstance(id);
-        mFragmentManager.beginTransaction().replace(mViewDetail, showMeetingFragment, null).commit();
+    public void setDetailedViewContent() {
+        mFragmentManager.beginTransaction().replace(mViewDetail, new ShowMeetingFragment(), null).commit();
     }
 }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
+import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 
 import java.time.LocalDateTime;
@@ -23,20 +24,30 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
     private List<Integer> mFreeRoomIds;
     private Meeting.MeetingBuilder mMeetingBuilder;
-    private final MutableLiveData<CharSequence[]> mFreeRoomNames = new MutableLiveData<>();
+    private CharSequence[] mFreeRoomNames;
+    private final MutableLiveData<Meeting> mMeetingMutableLiveData = new MutableLiveData<>();
 
-    public ShowMeetingFragmentViewModel(@NonNull MeetingsRepository meetingRepository) {
+    public ShowMeetingFragmentViewModel(
+            @NonNull MeetingsRepository meetingRepository,
+            @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
         mRepository = meetingRepository;
         mMeetingRooms = mRepository.getMeetingRooms();
+
+        initMeeting(currentMeetingIdRepository.getCurrentId());
+
     }
 
-    public Meeting initMeeting(int id) {
+    public LiveData<Meeting> getMeeting() {
+        return mMeetingMutableLiveData;
+    }
+
+    private void initMeeting(int id) {
         if (id == 0) {
             LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
             LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
             LocalDateTime stop = start.plusMinutes(30);
             mMeetingBuilder = new Meeting.MeetingBuilder()
-                    .setId(0)  // todo only at creation do we set id mRepository.getNextMeetingId()
+                    .setId(0)  // todo do set ID at Meeting creation. mRepository.getNextMeetingId()
                     .setOwner(PHONE_OWNER_EMAIL)
                     .setParticipants(new HashSet<>(0))
                     // not setting subject
@@ -57,50 +68,68 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             mMeetingBuilder = new Meeting.MeetingBuilder()
                     .setId(m.getId())
                     .setOwner(m.getOwner())
-                    .setParticipants(participants)
+                    .setParticipants(new HashSet<>(participants))
                     .setSubject(m.getSubject())
                     .setStart(m.getStart())
                     .setStop(m.getStop())
                     .setMeetingRoomId(m.getMeetingRoomId());
         }
         updateFreeRoomNames();
-        return mMeetingBuilder.build();
+        mMeetingMutableLiveData.setValue(mMeetingBuilder.build());
     }
 
-    public String setRoom(int which) {
+    public void setRoom(int which) {
         MeetingRoom meetingRoom = mMeetingRooms.get(mFreeRoomIds.get(which));
         if (meetingRoom == null) throw new NullPointerException("Requested inexistant room");
         mMeetingBuilder.setMeetingRoomId(meetingRoom.getId());
-        return meetingRoom.getName();
+        mMeetingMutableLiveData.setValue(mMeetingBuilder.build());
     }
 
-    public LiveData<CharSequence[]> getFreeMeetingRooms() {
+    public CharSequence[] getFreeMeetingRooms() {
         return mFreeRoomNames;
     }
 
-    public String timeButtonChanged(boolean startButton, int hour, int minute) {
+    public void timeButtonChanged(boolean startButton, int hour, int minute) {
         if (startButton)
             mMeetingBuilder.setStart(LocalDateTime.now().withHour(hour).withMinute(minute));
         else mMeetingBuilder.setStop(LocalDateTime.now().withHour(hour).withMinute(minute));
 
         updateFreeRoomNames();
-        return startButton ? utils.niceTimeFormat(mMeetingBuilder.getStart()) : utils.niceTimeFormat(mMeetingBuilder.getStop());
+        mMeetingMutableLiveData.setValue(mMeetingBuilder.build());
     }
 
-    void updateFreeRoomNames() {
+    private void updateFreeRoomNames() {
+        if (mMeetingBuilder.getStart().isAfter(mMeetingBuilder.getStop())) {
+            mFreeRoomNames = new CharSequence[0];
+            return;
+        }
         mFreeRoomIds = mRepository.getFreeRooms(mMeetingBuilder.getStart(), mMeetingBuilder.getStop());
-        CharSequence[] freeRoomNames = new CharSequence[mFreeRoomIds.size()];
+        mFreeRoomNames = new CharSequence[mFreeRoomIds.size()];
         for (int id = 0; id < mFreeRoomIds.size(); id++) {
             MeetingRoom meetingRoom = mMeetingRooms.get(mFreeRoomIds.get(id));
             if (meetingRoom == null) throw new NullPointerException("Exceeded rooms number");
-            freeRoomNames[id] = meetingRoom.getName();
+            mFreeRoomNames[id] = meetingRoom.getName();
         }
-        mFreeRoomNames.setValue(freeRoomNames);
     }
 
     public String getMeetingRoomName() {
         MeetingRoom meetingRoom = mMeetingRooms.get(mMeetingBuilder.getMeetingRoomId());
         // todo warning : meeting room is possibly
         return meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room);
+    }
+
+    public void newParticipant(String participant) {
+        if (participant.isEmpty()) return;
+        HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
+        participants.add(participant);
+        mMeetingBuilder.setParticipants(participants);
+        mMeetingMutableLiveData.setValue(mMeetingBuilder.build());
+    }
+
+    public void deleteParticipant(String participant) {
+        HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
+        participants.remove(participant);
+        mMeetingBuilder.setParticipants(participants);
+        mMeetingMutableLiveData.setValue(mMeetingBuilder.build());
     }
 }
