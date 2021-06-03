@@ -34,7 +34,6 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         mMeetingRooms = mRepository.getMeetingRooms();
 
         initMeeting(currentMeetingIdRepository.getCurrentId());
-
     }
 
     public LiveData<Meeting> getMeeting() {

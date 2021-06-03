@@ -1,8 +1,5 @@
 package com.openclassrooms.mareu.repository;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 public class CurrentMeetingIdRepository {
 
     private int mId = 0;

@@ -1,12 +1,7 @@
 <resources>
     <string name="app_name">Ma réu</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-
     <string name="floating_button">Create meeting</string>
-    <string name="meeting_image">Meeting image</string>
     <string name="delete_meeting">Delete Meeting</string>
-
     <string name="hint_owner">Meeting owner email</string>
     <string name="hint_subject">Meeting Subject</string>
     <string name="hint_participant">Add a participant email</string>

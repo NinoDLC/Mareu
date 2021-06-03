@@ -29,10 +29,6 @@ public interface MeetingsRepository {
 
     void removeMeetingById(int meetingId);
 
-    List<Meeting> getRoomMeetings(int roomId);
-
-    boolean isRoomFree(int MeetingRoomId, LocalDateTime start, LocalDateTime stop);
-
     List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop);
 
     boolean isValidMeeting(Meeting meeting);

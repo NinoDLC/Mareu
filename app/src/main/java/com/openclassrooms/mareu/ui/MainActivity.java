@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         // todo: actually not so great design on big tablets in portrait mode
 
+        // todo: rotation is not handled
         setFragmentsInitialState();
     }
 

@@ -92,7 +92,7 @@ public class ShowMeetingFragment extends Fragment {
 
         create.setOnClickListener(v -> {
             // todo if is valid meeting, ...
-            ((MainActivity) requireActivity()).onBackPressed();
+            requireActivity().onBackPressed();
         });
     }
 

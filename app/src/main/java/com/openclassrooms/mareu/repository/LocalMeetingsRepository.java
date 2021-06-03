@@ -80,7 +80,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
     }
 
     // Opinionated choice: return Meeting objects, not ids
-    public List<Meeting> getRoomMeetings(int roomId) {
+    private List<Meeting> getRoomMeetings(int roomId) {
         List<Meeting> meetings = new ArrayList<>();
         for (Meeting meeting : mMeetings) {
             if (meeting.getMeetingRoomId() == roomId)
@@ -89,7 +89,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return meetings;
     }
 
-    public boolean isRoomFree(int meetingRoomId, LocalDateTime start, LocalDateTime stop) {
+    private boolean isRoomFree(int meetingRoomId, LocalDateTime start, LocalDateTime stop) {
         for (Meeting meeting : getRoomMeetings(meetingRoomId)) {
             if (meeting.getStart().isBefore(stop) && meeting.getStop().isAfter(start))
                 return false;
