@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 

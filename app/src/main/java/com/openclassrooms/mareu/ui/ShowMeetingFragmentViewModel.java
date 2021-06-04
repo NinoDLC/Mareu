@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu.ui;
 
+import android.text.Editable;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -25,6 +27,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     private Meeting.MeetingBuilder mMeetingBuilder;
     private CharSequence[] mFreeRoomNames;
     private final MutableLiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
+    private String mParticipant;
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
@@ -46,7 +49,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
             LocalDateTime stop = start.plusMinutes(30);
             mMeetingBuilder = new Meeting.MeetingBuilder()
-                    .setId(0)  // todo do set ID at Meeting creation. mRepository.getNextMeetingId()
+                    .setId(0)
                     .setOwner(PHONE_OWNER_EMAIL)
                     .setParticipants(new HashSet<>(0))
                     // not setting subject
@@ -89,6 +92,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                 utils.niceTimeFormat(meeting.getStart()),
                 utils.niceTimeFormat(meeting.getStop()),
                 meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room),
+                mParticipant,
                 meeting.getParticipants().toArray(new String[0]),
                 meeting.getStart().getHour(),
                 meeting.getStart().getMinute(),
@@ -128,12 +132,25 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         updateItem();
     }
 
-    public void addParticipant(String participant) {
-        if (participant.isEmpty()) return;
-        HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
-        participants.add(participant);
-        mMeetingBuilder.setParticipants(participants);
-        updateFreeRoomNames();
+    public void setSubject(Editable editable) {
+        if (editable == null) return;
+        String string = editable.toString();
+        mMeetingBuilder.setSubject(string);
+        updateItem();
+    }
+
+    public void addParticipant(Editable editable) {
+        if (editable == null) return;
+        String string = editable.toString();
+        if (utils.isValidEmail(string)) {
+            HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
+            mMeetingBuilder.setParticipants(participants);
+            participants.add(string);
+            mParticipant = "";
+            updateFreeRoomNames();
+        } else {
+            mParticipant = string;
+        }
         updateItem();
     }
 
@@ -143,5 +160,18 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         mMeetingBuilder.setParticipants(participants);
         updateFreeRoomNames();
         updateItem();
+    }
+
+    public boolean validate() {
+        if (mRepository.isValidMeeting(mMeetingBuilder.build())) {
+            int id = mMeetingBuilder.getId();
+            if (id == 0) mMeetingBuilder.setId(mRepository.getNextMeetingId());
+            else mRepository.removeMeetingById(id);
+            mRepository.createMeeting(mMeetingBuilder.build());
+            return true;
+        }
+        return false;
+        // todo is valid meeting has nothing to do in repo anymore
+        // todo plus doesn't work for existing meeting, as room is not (yet) free...
     }
 }

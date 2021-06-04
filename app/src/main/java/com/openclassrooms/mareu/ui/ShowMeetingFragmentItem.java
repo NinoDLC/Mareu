@@ -7,6 +7,7 @@ public class ShowMeetingFragmentItem {
     private final String mStartText;
     private final String mEndText;
     private final String mRoomName;
+    private final String mParticipant;
     private final String[] mParticipants;
     private final int mStartHour;
     private final int mStartMinute;
@@ -15,7 +16,7 @@ public class ShowMeetingFragmentItem {
     private final CharSequence[] mMeetingRooms;
 
 
-    public ShowMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName,
+    public ShowMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName, String participant,
                                    String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] meetingRooms) {
         mId = id;
         mOwner = owner;
@@ -23,6 +24,7 @@ public class ShowMeetingFragmentItem {
         mStartText = startText;
         mEndText = endText;
         mRoomName = roomName;
+        mParticipant = participant;
         mParticipants = participants;
         mStartHour = startHour;
         mStartMinute = startMinute;
@@ -53,6 +55,10 @@ public class ShowMeetingFragmentItem {
 
     public String getRoomName() {
         return mRoomName;
+    }
+
+    public String getParticipant() {
+        return mParticipant;
     }
 
     public String[] getParticipants() {

@@ -3,10 +3,10 @@ package com.openclassrooms.mareu.ui;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -60,6 +60,11 @@ public class ShowMeetingFragment extends Fragment {
         end.setText(item.getEndText());
         room.setText(item.getRoomName());
 
+        // todo focus is not triggered on button click (for participantsField either)
+        subject.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) mViewModel.setSubject(subject.getText());
+        });
+
         LayoutInflater layoutInflater = getLayoutInflater();
         participantsGroup.removeAllViews();
         for (String participant : item.getParticipants()) {
@@ -71,18 +76,14 @@ public class ShowMeetingFragment extends Fragment {
             chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
 
-        // todo fix click on a button will reset text-fields
-
-        participantsField.setOnKeyListener((v, keyCode, event) -> {
-
-            if (keyCode == KeyEvent.KEYCODE_ENTER
-                    && participantsField.getText() != null
-                    && utils.isValidEmail(participantsField.getText().toString())) {
-                mViewModel.addParticipant(participantsField.getText().toString());
-                participantsField.setText("");
-                return true;
-            }
-            return false;
+        participantsField.setText(item.getParticipant());
+        participantsField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        participantsField.setOnEditorActionListener((v, actionId, event) -> {
+            mViewModel.addParticipant(participantsField.getText());
+            return true;
+        });
+        participantsField.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) mViewModel.addParticipant(participantsField.getText());
         });
 
         bindTimeButton(start, item.getStartHour(), item.getStartMinute(), true);
@@ -90,8 +91,7 @@ public class ShowMeetingFragment extends Fragment {
         bindRoomButton(room, item.getMeetingRooms());
 
         create.setOnClickListener(v -> {
-            // todo if is valid meeting, ...
-            requireActivity().onBackPressed();
+            if (mViewModel.validate()) requireActivity().onBackPressed();
         });
     }
 

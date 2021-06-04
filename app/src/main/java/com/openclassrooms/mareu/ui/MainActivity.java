@@ -48,11 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private void setFragmentsInitialState() {
         // todo: play with addToBackstack in transactions.
         // todo: MainFragment is created from scratch each time : scroll position and filters are discarded... meh.
+        // todo: the moment I stop reloading master when detail exits, I dan't see added meetings anymore...
         mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(), null).commit();
         if (mLandscapeTabletLayout)
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
-
-
     }
 
     public void setDetailedViewContent() {
