@@ -29,7 +29,8 @@ public interface MeetingsRepository {
 
     void removeMeetingById(int meetingId);
 
-    List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop);
+    // todo : those last two have not their place in the repo, have they?
+    List<Integer> getFreeRooms(Meeting meeting);
 
     boolean isValidMeeting(Meeting meeting);
 }

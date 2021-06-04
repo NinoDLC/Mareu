@@ -97,11 +97,12 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return true;
     }
 
-    public List<Integer> getFreeRooms(LocalDateTime start, LocalDateTime stop) {
+    public List<Integer> getFreeRooms(Meeting meeting) {
         List<Integer> roomIds = new ArrayList<>();
-        for (int roomId : mMeetingRooms.keySet()) {
-            if (isRoomFree(roomId, start, stop))
-                roomIds.add(roomId);
+        int seats = meeting.getParticipants().size() + 1;  // to account for owner also
+        for (MeetingRoom room : mMeetingRooms.values()) {
+            if (isRoomFree(room.getId(), meeting.getStart(), meeting.getStop()) && room.getCapacity() >= seats)
+                roomIds.add(room.getId());
         }
         return roomIds;
     }

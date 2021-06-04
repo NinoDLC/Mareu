@@ -2,6 +2,7 @@ package com.openclassrooms.mareu.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -30,8 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         // todo: actually not so great design on big tablets in portrait mode
 
-        // todo: rotation is not handled
         setFragmentsInitialState();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        // todo: rotation is not handled yet
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -45,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(), null).commit();
         if (mLandscapeTabletLayout)
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
+
+
     }
 
     public void setDetailedViewContent() {

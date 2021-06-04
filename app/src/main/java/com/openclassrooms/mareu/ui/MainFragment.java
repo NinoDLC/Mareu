@@ -29,7 +29,9 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // can't use getViewLifecycleOwner() from onCreate()
         mMainActivity = (MainActivity) requireActivity();
+
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
         mAdapter = new MeetingsRecyclerViewAdapter(
                 new MeetingsRecyclerViewAdapter.Listener() {
@@ -45,7 +47,6 @@ public class MainFragment extends Fragment {
                 }
         );
 
-        // todo can't use getViewLifecycleOwner() from onCreate() !
         mViewModel.getMeetingsLiveData().observe(mMainActivity, items -> mAdapter.submitList(items));
         mViewModel.getSelectedRooms().observe(
                 mMainActivity, booleans -> {

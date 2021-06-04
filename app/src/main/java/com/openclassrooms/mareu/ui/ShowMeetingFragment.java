@@ -21,12 +21,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
-import com.openclassrooms.mareu.model.Meeting;
 
 public class ShowMeetingFragment extends Fragment {
     private ShowMeetingFragmentViewModel mViewModel;
-
-    private Button mStart;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,55 +37,57 @@ public class ShowMeetingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        mViewModel.getMeeting().observe(requireActivity(), meeting -> {
-            // todo: this observation depends on mRoom view, can't go in onCreate()
-            bindAndInitView(view, meeting);
-        });
+        mViewModel.getShowMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item));
         return view;
     }
 
-    void bindAndInitView(View view, Meeting meeting) {
+    void bindAndInitView(View view, ShowMeetingFragmentItem item) {
 
-        TextInputEditText owner = view.findViewById(R.id.show_meeting_owner);
+        TextView owner = view.findViewById(R.id.show_meeting_owner);
         TextInputEditText subject = view.findViewById(R.id.show_meeting_subject);
         ChipGroup participantsGroup = view.findViewById(R.id.show_meeting_participants_group);
         TextInputEditText participantsField = view.findViewById(R.id.show_meeting_participants_field);
-        mStart = view.findViewById(R.id.show_meeting_start);
+        Button start = view.findViewById(R.id.show_meeting_start);
         Button end = view.findViewById(R.id.show_meeting_end);
         TextView id = view.findViewById(R.id.show_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
+        Button room = view.findViewById(R.id.show_meeting_room);
 
-        owner.setEnabled(meeting.getId() != 0);
-        id.setText(String.valueOf(meeting.getId()));
-        owner.setText(meeting.getOwner());
-        subject.setText(meeting.getSubject());
+        id.setText(item.getId());
+        owner.setText(item.getOwner());
+        subject.setText(item.getSubject());
+        start.setText(item.getStartText());
+        end.setText(item.getEndText());
+        room.setText(item.getRoomName());
+
         LayoutInflater layoutInflater = getLayoutInflater();
         participantsGroup.removeAllViews();
-        for (String participant : meeting.getParticipants()) {
+        for (String participant : item.getParticipants()) {
             Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant, participantsGroup, false);
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
-            chip.setOnCloseIconClickListener(v -> mViewModel.deleteParticipant(participant));
+
+            // todo if editable. problem : this adds conditions
+            chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
 
+        // todo fix click on a button will reset text-fields
+
         participantsField.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER && participantsField.getText() != null) {
-                // todo if is valid email?
-                mViewModel.newParticipant(participantsField.getText().toString());
+
+            if (keyCode == KeyEvent.KEYCODE_ENTER
+                    && participantsField.getText() != null
+                    && utils.isValidEmail(participantsField.getText().toString())) {
+                mViewModel.addParticipant(participantsField.getText().toString());
                 participantsField.setText("");
                 return true;
             }
             return false;
         });
 
-        mStart.setText(utils.niceTimeFormat(meeting.getStart()));
-        end.setText(utils.niceTimeFormat(meeting.getStop()));
-        bindTimeButton(mStart, meeting.getStart().getHour(), meeting.getStart().getMinute());
-        bindTimeButton(end, meeting.getStop().getHour(), meeting.getStop().getMinute());
-
-        Button room = view.findViewById(R.id.show_meeting_room);
-        room.setText(mViewModel.getMeetingRoomName());
-        bindRoomButton(room, mViewModel.getFreeMeetingRooms());
+        bindTimeButton(start, item.getStartHour(), item.getStartMinute(), true);
+        bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);
+        bindRoomButton(room, item.getMeetingRooms());
 
         create.setOnClickListener(v -> {
             // todo if is valid meeting, ...
@@ -107,14 +106,13 @@ public class ShowMeetingFragment extends Fragment {
         );
     }
 
-    void bindTimeButton(Button button, int hour, int minute) {
+    void bindTimeButton(Button button, int hour, int minute, boolean isStartButton) {
         button.setOnClickListener(view -> new TimePickerDialog(
                 requireContext(),
-                (v, h, m) -> mViewModel.timeButtonChanged(button == mStart, h, m),
+                (v, h, m) -> mViewModel.setTime(isStartButton, h, m),
                 hour,
                 minute,
                 true
         ).show());
-        // todo : l'heure de lancement du TimePickerDialog n'est pas mise à jour...
     }
 }
