@@ -166,8 +166,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     public boolean validate() {
         if (mRepository.isValidMeeting(mMeetingBuilder.build())) {
             int id = mMeetingBuilder.getId();
-            if (id == 0) mMeetingBuilder.setId(mRepository.getNextMeetingId());
-            else mRepository.removeMeetingById(id);
+            if (id != 0) mRepository.removeMeetingById(id);
+            mMeetingBuilder.setId(mRepository.getNextMeetingId());
             mRepository.createMeeting(mMeetingBuilder.build());
             return true;
         }

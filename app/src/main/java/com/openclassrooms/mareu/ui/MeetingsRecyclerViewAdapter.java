@@ -75,7 +75,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
 
         @Override
         public boolean areContentsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
-            return false;  // todo: if I re-use IDs for changed meetings, change this test.
+            return oldItem.getId() == newItem.getId();
         }
     }
 
