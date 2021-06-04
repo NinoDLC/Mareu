@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         mFragmentManager = getSupportFragmentManager();
         mLandscapeTabletLayout = findViewById(R.id.detail) != null;
         mViewMaster = R.id.master;
-        mViewDetail = mLandscapeTabletLayout ?R.id.detail:mViewMaster;
+        mViewDetail = mLandscapeTabletLayout ? R.id.detail : mViewMaster;
 
         // todo: actually not so great design on big tablets in portrait mode
 

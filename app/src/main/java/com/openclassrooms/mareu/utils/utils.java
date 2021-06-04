@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui;
+package com.openclassrooms.mareu.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +14,7 @@ public final class utils {
         return localDateTime.format(DateTimeFormatter.ofPattern("kk'h'mm"));
     }
 
-    public static boolean isValidEmail(String string){
+    public static boolean isValidEmail(String string) {
         return pattern.matcher(string).matches();
     }
 }

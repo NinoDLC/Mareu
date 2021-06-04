@@ -28,7 +28,7 @@ public interface MeetingsRepository {
 
     void removeMeetingById(int meetingId);
 
-    // todo : those last two have not their place in the repo, have they?
+    // todo : do those last two have their place in the repo?
     List<Integer> getFreeRooms(Meeting meeting);
 
     boolean isValidMeeting(Meeting meeting);

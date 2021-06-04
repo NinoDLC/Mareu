@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu;
+package com.openclassrooms.mareu.utils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -19,8 +19,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             synchronized (ViewModelFactory.class) {
                 if (factory == null) {
                     factory = new ViewModelFactory(
-                        new LocalMeetingsRepository(),
-                        new CurrentMeetingIdRepository()
+                            new LocalMeetingsRepository(),
+                            new CurrentMeetingIdRepository()
                     );
                 }
             }

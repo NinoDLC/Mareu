@@ -4,11 +4,11 @@ public class CurrentMeetingIdRepository {
 
     private int mId = 0;
 
-    public void setCurrentId(int id){
+    public void setCurrentId(int id) {
         mId = id;
     }
 
-    public int getCurrentId(){
+    public int getCurrentId() {
         return mId;
     }
 

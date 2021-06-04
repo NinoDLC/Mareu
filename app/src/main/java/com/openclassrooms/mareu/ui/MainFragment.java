@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.ViewModelFactory;
+import com.openclassrooms.mareu.utils.ViewModelFactory;
 
 public class MainFragment extends Fragment {
 

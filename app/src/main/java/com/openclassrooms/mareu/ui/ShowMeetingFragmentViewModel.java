@@ -12,6 +12,7 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
+import com.openclassrooms.mareu.utils.utils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         updateFreeRoomNames();
     }
 
-    private void updateItem(){
+    private void updateItem() {
         Meeting meeting = mMeetingBuilder.build();
 
         MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
@@ -171,7 +172,5 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             return true;
         }
         return false;
-        // todo is valid meeting has nothing to do in repo anymore
-        // todo plus doesn't work for existing meeting, as room is not (yet) free...
     }
 }

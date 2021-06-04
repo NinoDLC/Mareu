@@ -20,7 +20,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.ViewModelFactory;
+import com.openclassrooms.mareu.utils.ViewModelFactory;
 
 public class ShowMeetingFragment extends Fragment {
     private ShowMeetingFragmentViewModel mViewModel;
@@ -72,7 +72,7 @@ public class ShowMeetingFragment extends Fragment {
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
 
-            // todo if editable. problem : this adds conditions
+            // todo if in edit mode... problem : this adds conditions
             chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
 

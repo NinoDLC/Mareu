@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,8 +43,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
     }
 
     public int getNextMeetingId() {
-        mNextMeetingId++;
-        return mNextMeetingId;
+        return ++mNextMeetingId;
     }
 
     @Nullable
@@ -61,13 +59,11 @@ public class LocalMeetingsRepository implements MeetingsRepository {
      * @Inherit
      */
     public boolean createMeeting(Meeting meeting) {
-        if (isValidMeeting(meeting)) {
-            if (!mMeetings.add(meeting))
-                return false;
-            sortMeetings();
-            return true;
-        }
-        return false;
+        if (!isValidMeeting(meeting)) return false;
+        if (getMeetingById(meeting.getId()) != null) return false;
+        if (!mMeetings.add(meeting)) return false;
+        sortMeetings();
+        return true;
     }
 
     public void removeMeetingById(int meetingId) {
@@ -89,10 +85,12 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return meetings;
     }
 
-    private boolean isRoomFree(int meetingRoomId, LocalDateTime start, LocalDateTime stop) {
-        for (Meeting meeting : getRoomMeetings(meetingRoomId)) {
-            if (meeting.getStart().isBefore(stop) && meeting.getStop().isAfter(start))
-                return false;
+    private boolean isRoomFree(int meetingRoomId, Meeting meeting) {
+        for (Meeting m : getRoomMeetings(meetingRoomId)) {
+            if (m.getStart().isBefore(meeting.getStop())
+                    && m.getStop().isAfter(meeting.getStart())
+                    && meeting.getId() != m.getId()
+            ) return false;
         }
         return true;
     }
@@ -101,24 +99,18 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         List<Integer> roomIds = new ArrayList<>();
         int seats = meeting.getParticipants().size() + 1;  // to account for owner also
         for (MeetingRoom room : mMeetingRooms.values()) {
-            if (isRoomFree(room.getId(), meeting.getStart(), meeting.getStop()) && room.getCapacity() >= seats)
+            if (isRoomFree(room.getId(), meeting) && room.getCapacity() >= seats)
                 roomIds.add(room.getId());
         }
         return roomIds;
     }
 
     public boolean isValidMeeting(Meeting meeting) {
-        for (Meeting existentMeeting : mMeetings) {
-            if (existentMeeting.getId() == meeting.getId()) {
-                Log.e("Utils", "isValidMeeting(): duplicate id");
-                return false;
-            }
-        }
         if (meeting.getStop().isBefore(meeting.getStart())) {
             Log.e("Utils", "isValidMeeting(): can't stop before starting");
             return false;
         }
-        if (!isRoomFree(meeting.getMeetingRoomId(), meeting.getStart(), meeting.getStop())) {
+        if (!isRoomFree(meeting.getMeetingRoomId(), meeting)) {
             Log.e("Utils", "isValidMeeting(): room is not free");
             return false;
         }
