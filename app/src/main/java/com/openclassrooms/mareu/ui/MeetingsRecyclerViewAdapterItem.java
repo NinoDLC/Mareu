@@ -1,5 +1,8 @@
 package com.openclassrooms.mareu.ui;
 
+import java.util.Objects;
+
+// TODO this is a viewstate !
 public class MeetingsRecyclerViewAdapterItem {
     private final int mId;
     private final String mUpLine;
@@ -39,5 +42,35 @@ public class MeetingsRecyclerViewAdapterItem {
 
     public int getMeetingRoomColor() {
         return mMeetingRoomColor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MeetingsRecyclerViewAdapterItem that = (MeetingsRecyclerViewAdapterItem) o;
+        return mId == that.mId &&
+            mMeetingRoomColor == that.mMeetingRoomColor &&
+            Objects.equals(mUpLine, that.mUpLine) &&
+            Objects.equals(mOwner, that.mOwner) &&
+            Objects.equals(mParticipantsNumber, that.mParticipantsNumber) &&
+            Objects.equals(mMeetingRoomName, that.mMeetingRoomName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId, mUpLine, mOwner, mParticipantsNumber, mMeetingRoomName, mMeetingRoomColor);
+    }
+
+    @Override
+    public String toString() {
+        return "MeetingsRecyclerViewAdapterItem{" +
+            "mId=" + mId +
+            ", mUpLine='" + mUpLine + '\'' +
+            ", mOwner='" + mOwner + '\'' +
+            ", mParticipantsNumber='" + mParticipantsNumber + '\'' +
+            ", mMeetingRoomName='" + mMeetingRoomName + '\'' +
+            ", mMeetingRoomColor=" + mMeetingRoomColor +
+            '}';
     }
 }

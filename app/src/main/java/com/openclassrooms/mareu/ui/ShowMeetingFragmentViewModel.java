@@ -3,8 +3,10 @@ package com.openclassrooms.mareu.ui;
 import android.text.Editable;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.R;
@@ -29,7 +31,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     private CharSequence[] mFreeRoomNames;
     private String mParticipant;
     private Meeting.MeetingBuilder mMeetingBuilder;
-    private final MutableLiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
+    private final LiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData;
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
@@ -37,7 +39,48 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         mRepository = meetingRepository;
         mMeetingRooms = mRepository.getMeetingRooms();
 
-        initMeeting(currentMeetingIdRepository.getCurrentId());
+        // Maps work for now because MeetingRepo doesn't use LiveData
+        mShowMeetingFragmentItemMutableLiveData = Transformations.map(currentMeetingIdRepository.getCurrentIdMutableLiveData(), new Function<Integer, ShowMeetingFragmentItem>() {
+            @Override
+            public ShowMeetingFragmentItem apply(Integer id) {
+                Meeting m = mRepository.getMeetingById(id);
+                if (m == null) throw new NullPointerException("Inexistent meeting, id " + id);
+
+                HashSet<String> participants = new HashSet<>(0);
+                participants.addAll(m.getParticipants());
+
+                mMeetingBuilder = new Meeting.MeetingBuilder()
+                    .setId(m.getId())
+                    .setOwner(m.getOwner())
+                    .setParticipants(new HashSet<>(participants))
+                    .setSubject(m.getSubject())
+                    .setStart(m.getStart())
+                    .setStop(m.getStop())
+                    .setMeetingRoomId(m.getMeetingRoomId());
+
+                Meeting meeting = mMeetingBuilder.build();
+
+                MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
+                // get() indeed returns null when key is not mapped to something.
+
+                ShowMeetingFragmentItem item = new ShowMeetingFragmentItem(
+                    String.valueOf(meeting.getId()),
+                    meeting.getOwner(),
+                    meeting.getSubject(),
+                    utils.niceTimeFormat(meeting.getStart()),
+                    utils.niceTimeFormat(meeting.getStop()),
+                    meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room),
+                    mParticipant,
+                    meeting.getParticipants().toArray(new String[0]),
+                    meeting.getStart().getHour(),
+                    meeting.getStart().getMinute(),
+                    meeting.getStop().getHour(),
+                    meeting.getStop().getMinute(),
+                    mFreeRoomNames
+                );
+                return item;
+            }
+        });
         updateItem();
     }
 
@@ -46,35 +89,22 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
     }
 
     private void initMeeting(int id) {
-        if (id == 0) {
-            LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
-            LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
-            LocalDateTime stop = start.plusMinutes(30);
-            mMeetingBuilder = new Meeting.MeetingBuilder()
-                    .setId(0)
-                    .setOwner(PHONE_OWNER_EMAIL)
-                    .setParticipants(new HashSet<>(0))
-                    // not setting subject
-                    .setStart(start)
-                    .setStop(stop);
-            List<Integer> freeMeetingRoomIDs = mRepository.getFreeRooms(mMeetingBuilder.build());
-            mMeetingBuilder.setMeetingRoomId(freeMeetingRoomIDs.size() == 0 ? -1 : freeMeetingRoomIDs.get(0));
-        } else {
-            Meeting m = mRepository.getMeetingById(id);
-            if (m == null) throw new NullPointerException("Inexistent meeting, id " + id);
+//        if (id == 0) {
+//            LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
+//            LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
+//            LocalDateTime stop = start.plusMinutes(30);
+//            mMeetingBuilder = new Meeting.MeetingBuilder()
+//                    .setId(0)
+//                    .setOwner(PHONE_OWNER_EMAIL)
+//                    .setParticipants(new HashSet<>(0))
+//                    // not setting subject
+//                    .setStart(start)
+//                    .setStop(stop);
+//            List<Integer> freeMeetingRoomIDs = mRepository.getFreeRooms(mMeetingBuilder.build());
+//            mMeetingBuilder.setMeetingRoomId(freeMeetingRoomIDs.size() == 0 ? -1 : freeMeetingRoomIDs.get(0));
+//        } else {
 
-            HashSet<String> participants = new HashSet<>(0);
-            participants.addAll(m.getParticipants());
-
-            mMeetingBuilder = new Meeting.MeetingBuilder()
-                    .setId(m.getId())
-                    .setOwner(m.getOwner())
-                    .setParticipants(new HashSet<>(participants))
-                    .setSubject(m.getSubject())
-                    .setStart(m.getStart())
-                    .setStop(m.getStop())
-                    .setMeetingRoomId(m.getMeetingRoomId());
-        }
+        //}
         updateFreeRoomNames();
     }
 

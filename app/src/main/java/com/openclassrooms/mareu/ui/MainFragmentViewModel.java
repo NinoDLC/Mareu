@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -32,6 +33,7 @@ public class MainFragmentViewModel extends ViewModel {
 
     private final boolean[] mSelectedRooms;
 
+    @Nullable
     private LocalDateTime mTimeFilter;
 
     private final MutableLiveData<boolean[]> mMutableSelectedRoomsLiveData = new MutableLiveData<>();
