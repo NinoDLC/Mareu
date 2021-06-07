@@ -31,13 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         // todo: actually not so great design on big tablets in portrait mode
 
-        setFragmentsInitialState();
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        // todo: rotation is not handled yet
-        super.onSaveInstanceState(outState);
+        if (savedInstanceState == null) setFragmentsInitialState();
     }
 
     @Override
@@ -47,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragmentsInitialState() {
         // todo: play with addToBackstack in transactions.
-        // todo: MainFragment is created from scratch each time : scroll position and filters are discarded... meh.
-        // todo: the moment I stop reloading master when detail exits, I dan't see added meetings anymore...
+        // todo: when coming back from detailFragment, filters are discarded... meh.
+        // todo: now viewModel persists, and I don't see added meetings anymore...
         mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(), null).commit();
         if (mLandscapeTabletLayout)
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();

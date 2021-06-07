@@ -14,7 +14,6 @@
         android:background="@drawable/ic_font_awesome_5_solid_dog"
         android:gravity="center"
         android:lineSpacingMultiplier="0.8"
-        android:textColor="@color/black"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +62,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/meeting_participants"
         tools:text="+3" />
-
 
     <ImageButton
         android:id="@+id/meeting_delete_button"
