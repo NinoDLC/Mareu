@@ -32,7 +32,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
             createMeeting(DummyMeetingGenerator.generateMeeting());
             // todo: this loop updates the livedata 20+ times at launch
         }
-        // TODO Sort by id before getting max id generated
+        Collections.sort(mMeetings, (o1, o2) -> Integer.compare(o1.getId(), o2.getId()));
         mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
         sortMeetings();
     }

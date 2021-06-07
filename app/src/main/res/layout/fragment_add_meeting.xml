@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/first_names" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/show_meeting_subject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,42 +40,53 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
+        app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_subject" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/show_meeting_participants_field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/show_fields_spacing"
+        android:drawableStart="@drawable/ic_baseline_person_add_24"
+        android:hint="@string/hint_participant"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
+        tools:text="@tools:sample/full_names" />
+
+    <Button
         android:id="@+id/show_meeting_start"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:drawableStart="@drawable/ic_baseline_vertical_align_top_24"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_field"
         tools:text="@tools:sample/date/hhmm" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <Button
         android:id="@+id/show_meeting_end"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:drawableStart="@drawable/ic_baseline_vertical_align_bottom_24"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_start"
         tools:text="@tools:sample/date/hhmm" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <Button
         android:id="@+id/show_meeting_room"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginBottom="70dp"
-        android:drawableStart="@drawable/ic_baseline_location_on_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +112,7 @@
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_24"
+        app:srcCompat="@drawable/ic_baseline_check_24"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui;
+package com.openclassrooms.mareu.ui.Main;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.ui.MainActivity;
 import com.openclassrooms.mareu.utils.ViewModelFactory;
 
 public class MainFragment extends Fragment {

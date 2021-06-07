@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui;
+package com.openclassrooms.mareu.ui.Show;
 
 public class ShowMeetingFragmentItem {
     private final String mId;
@@ -7,30 +7,25 @@ public class ShowMeetingFragmentItem {
     private final String mStartText;
     private final String mEndText;
     private final String mRoomName;
-    private final String mParticipant;
     private final String[] mParticipants;
     private final int mStartHour;
     private final int mStartMinute;
     private final int mEndHour;
     private final int mEndMinute;
-    private final CharSequence[] mMeetingRooms;
 
-
-    public ShowMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName, String participant,
-                                   String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] meetingRooms) {
+    public ShowMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName,
+                                   String[] participants, int startHour, int startMinute, int endHour, int endMinute) {
         mId = id;
         mOwner = owner;
         mSubject = subject;
         mStartText = startText;
         mEndText = endText;
         mRoomName = roomName;
-        mParticipant = participant;
         mParticipants = participants;
         mStartHour = startHour;
         mStartMinute = startMinute;
         mEndHour = endHour;
         mEndMinute = endMinute;
-        mMeetingRooms = meetingRooms;
     }
 
     public String getId() {
@@ -57,10 +52,6 @@ public class ShowMeetingFragmentItem {
         return mRoomName;
     }
 
-    public String getParticipant() {
-        return mParticipant;
-    }
-
     public String[] getParticipants() {
         return mParticipants;
     }
@@ -79,9 +70,5 @@ public class ShowMeetingFragmentItem {
 
     public int getEndMinute() {
         return mEndMinute;
-    }
-
-    public CharSequence[] getMeetingRooms() {
-        return mMeetingRooms;
     }
 }

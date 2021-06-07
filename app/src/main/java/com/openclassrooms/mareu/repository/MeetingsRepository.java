@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu.repository;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
@@ -12,8 +13,7 @@ public interface MeetingsRepository {
 
     HashMap<Integer, MeetingRoom> getMeetingRooms();
 
-    // TODO : use livedata's in repo !!
-    List<Meeting> getMeetings();
+    LiveData<List<Meeting>> getMeetings();
 
     int getNextMeetingId();
 

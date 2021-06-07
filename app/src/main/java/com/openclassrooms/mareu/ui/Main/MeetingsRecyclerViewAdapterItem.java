@@ -1,8 +1,8 @@
-package com.openclassrooms.mareu.ui;
+package com.openclassrooms.mareu.ui.Main;
 
 import java.util.Objects;
 
-// TODO this is a viewstate !
+// todo: this is a viewstate !
 public class MeetingsRecyclerViewAdapterItem {
     private final int mId;
     private final String mUpLine;

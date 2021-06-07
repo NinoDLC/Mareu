@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui;
+package com.openclassrooms.mareu.ui.Add;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
@@ -22,14 +22,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.utils.ViewModelFactory;
 
-public class ShowMeetingFragment extends Fragment {
-    private ShowMeetingFragmentViewModel mViewModel;
+public class AddMeetingFragment extends Fragment {
+    private AddMeetingFragmentViewModel mViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AddMeetingFragmentViewModel.class);
     }
 
     @Nullable
@@ -37,11 +37,11 @@ public class ShowMeetingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        mViewModel.getShowMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item));
+        //mViewModel.getAddMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item));
         return view;
     }
-
-    void bindAndInitView(View view, ShowMeetingFragmentItem item) {
+/*
+    void bindAndInitView(View view, AddMeetingFragmentItem item) {
 
         TextView owner = view.findViewById(R.id.show_meeting_owner);
         TextInputEditText subject = view.findViewById(R.id.show_meeting_subject);
@@ -111,4 +111,6 @@ public class ShowMeetingFragment extends Fragment {
                 true
         ).show());
     }
+
+ */
 }

@@ -2,13 +2,14 @@ package com.openclassrooms.mareu.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.ui.Main.MainFragment;
+import com.openclassrooms.mareu.ui.Show.ShowMeetingFragment;
 
 public class MainActivity extends AppCompatActivity {
 
