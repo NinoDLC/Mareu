@@ -24,13 +24,15 @@ public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
     private final CurrentMeetingIdRepository mCurrentMeetingIdRepository;
-    // todo when going with livedata on repo, remove all setvalues()
+    // todo: when going with livedata on repo, remove all setvalues()
 
     private final MutableLiveData<List<MeetingsRecyclerViewAdapterItem>> mMutableMeetingsLiveData = new MutableLiveData<>();
 
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
     private final boolean[] mSelectedRooms;
+
+    private List<Meeting> mMeetings;
 
     private LocalDateTime mTimeFilter;
 
@@ -42,6 +44,7 @@ public class MainFragmentViewModel extends ViewModel {
         mMeetingsRepository = meetingsRepository;
         mCurrentMeetingIdRepository = currentMeetingIdRepository;
 
+        mMeetingsRepository.getMeetings().observe();
         mMeetingRooms = mMeetingsRepository.getMeetingRooms();
         mSelectedRooms = new boolean[mMeetingRooms.size()];
         resetRoomFilter();
@@ -85,7 +88,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     private void updateMeetingsList() {
-        // TODO new ArrayList no longer necessary when repo is liveData.
+        // todo: new ArrayList no longer necessary when repo is liveData.
         List<MeetingsRecyclerViewAdapterItem> itemsList = new ArrayList<>();
         for (Meeting meeting : mMeetingsRepository.getMeetings()) {
             if (mSelectedRooms[meeting.getMeetingRoomId() - 1] && meetsTimeConditions(meeting))
@@ -107,7 +110,7 @@ public class MainFragmentViewModel extends ViewModel {
                 meeting.getOwner(),
                 MessageFormat.format("+{0}", meeting.getParticipants().size()),
                 mr.getName(),
-                mr.getTextColor()  // todo could I store the color itself?
+                mr.getTextColor()  // todo: could I store the color itself?
         );
     }
 

@@ -4,6 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
@@ -22,10 +24,13 @@ public class LocalMeetingsRepository implements MeetingsRepository {
 
     private final List<Meeting> mMeetings = new ArrayList<>();
 
+    private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>();
+
     public LocalMeetingsRepository() {
         while (mMeetings.size() < 20) {
             // createMeeting() runs isValidMeeting(), returns boolean
             createMeeting(DummyMeetingGenerator.generateMeeting());
+            // todo: this loop updates the livedata 20+ times at launch
         }
         mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
         sortMeetings();
@@ -39,8 +44,8 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return mMeetingRooms;
     }
 
-    public List<Meeting> getMeetings() {
-        return mMeetings;
+    public LiveData<List<Meeting>> getMeetings() {
+        return mMeetingListMutableLiveData;
     }
 
     public int getNextMeetingId() {
@@ -61,6 +66,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         if (getMeetingById(meeting.getId()) != null) return false;
         if (!mMeetings.add(meeting)) return false;
         sortMeetings();
+        mMeetingListMutableLiveData.setValue(mMeetings);
         return true;
     }
 
@@ -71,6 +77,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
             if (meeting.getId() == meetingId)
                 iterator.remove();
         }
+        mMeetingListMutableLiveData.setValue(mMeetings);
     }
 
     // Opinionated choice: return Meeting objects, not ids
