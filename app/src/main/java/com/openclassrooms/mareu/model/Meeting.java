@@ -59,6 +59,8 @@ public class Meeting implements Comparable<Meeting> {
     }
 
 
+    // TODO generate equals & hashcode & toString()
+
     public static class MeetingBuilder {
         private int mId;
         private String mOwner;
