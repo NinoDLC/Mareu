@@ -169,8 +169,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             int id = mMeetingBuilder.getId();
             if (id != 0) mRepository.removeMeetingById(id);
             mMeetingBuilder.setId(mRepository.getNextMeetingId());
-            mRepository.createMeeting(mMeetingBuilder.build());
-            return true;
+            return mRepository.createMeeting(mMeetingBuilder.build());
         }
         return false;
     }
