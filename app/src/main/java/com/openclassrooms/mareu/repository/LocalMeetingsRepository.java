@@ -27,6 +27,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
             // createMeeting() runs isValidMeeting(), returns boolean
             createMeeting(DummyMeetingGenerator.generateMeeting());
         }
+        // TODO Sort by id before getting max id generated
         mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
         sortMeetings();
     }

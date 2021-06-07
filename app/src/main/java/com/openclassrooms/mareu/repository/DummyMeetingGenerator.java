@@ -8,7 +8,7 @@ import java.util.Random;
 
 public abstract class DummyMeetingGenerator {
 
-    private static final String[] mFirstNames = {"Chuck", "Hans", "Franck", "Marc", "Tedy", "Joe", "Jack", "Fred", "Henry", "Jasmine", "Claire", "Morgan"};
+    private static final String[] FIRST_NAMES = {"Chuck", "Hans", "Franck", "Marc", "Tedy", "Joe", "Jack", "Fred", "Henry", "Jasmine", "Claire", "Morgan"};
 
     private static final String[] mCompanies = {"LamZone", "NerdzHerdz", "Buy More"};
 
@@ -18,14 +18,13 @@ public abstract class DummyMeetingGenerator {
 
     private static final Random mRand = new Random();
 
-    private static int i = 0;
+    private static int i = 1;
 
     private static int getNextId() {
     /* can't use DependencyInjection.getMeetingsRepository().getNextMeetingId()
         as I am creating the fucking repo : it does not exist yet => nullPointerException
      */
-        i++;
-        return i;
+        return i++;
     }
 
     protected static Meeting generateMeeting() {
@@ -42,7 +41,7 @@ public abstract class DummyMeetingGenerator {
     }
 
     private static String generateEmail() {
-        String name = mFirstNames[mRand.nextInt(mFirstNames.length)];
+        String name = FIRST_NAMES[mRand.nextInt(FIRST_NAMES.length)];
         String company = mCompanies[mRand.nextInt(mCompanies.length)];
         String domain = mDomains[mRand.nextInt(mDomains.length)];
         String email = name + "@" + company + "." + domain;

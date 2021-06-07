@@ -12,7 +12,7 @@ public interface MeetingsRepository {
 
     HashMap<Integer, MeetingRoom> getMeetingRooms();
 
-    // TODO : use livedata's in repo
+    // TODO : use livedata's in repo !!
     List<Meeting> getMeetings();
 
     int getNextMeetingId();

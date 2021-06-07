@@ -23,6 +23,7 @@ public abstract class DummyMeetingRoomsGenerator {
     }
 
     public static HashMap<Integer, MeetingRoom> getDummyMeetingRooms() {
+        // TODO use TreeSet to garantee unicity and order
         HashMap<Integer, MeetingRoom> dummy_meeting_rooms = new HashMap<>();
         dummy_meeting_rooms.put(1, new MeetingRoom(1, "Braque-de-Weimar", "1st floor, 1st door on the left", generateDevices(), 3, R.color.dog_1));
         dummy_meeting_rooms.put(2, new MeetingRoom(2, "Doberman", "1st floor, 2nd door on the left", generateDevices(), 4, R.color.dog_2));
