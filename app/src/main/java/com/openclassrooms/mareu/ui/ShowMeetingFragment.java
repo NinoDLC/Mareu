@@ -60,9 +60,10 @@ public class ShowMeetingFragment extends Fragment {
         end.setText(item.getEndText());
         room.setText(item.getRoomName());
 
-        // todo focus is not triggered on button click (for participantsField either)
-        subject.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) mViewModel.setSubject(subject.getText());
+        // todo setOnFocusChangeListener() is not triggered if I click a button bellow
+        subject.setOnEditorActionListener((v, actionId, event) -> {
+            mViewModel.setSubject(subject.getText());
+            return true;
         });
 
         LayoutInflater layoutInflater = getLayoutInflater();
@@ -71,8 +72,6 @@ public class ShowMeetingFragment extends Fragment {
             Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant, participantsGroup, false);
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
-
-            // todo if in edit mode... problem : this adds conditions
             chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
 
@@ -81,9 +80,6 @@ public class ShowMeetingFragment extends Fragment {
         participantsField.setOnEditorActionListener((v, actionId, event) -> {
             mViewModel.addParticipant(participantsField.getText());
             return true;
-        });
-        participantsField.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) mViewModel.addParticipant(participantsField.getText());
         });
 
         bindTimeButton(start, item.getStartHour(), item.getStartMinute(), true);

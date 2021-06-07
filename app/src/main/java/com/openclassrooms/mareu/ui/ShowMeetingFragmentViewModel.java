@@ -23,12 +23,13 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private final MeetingsRepository mRepository;
+
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
     private List<Integer> mFreeRoomIds;
-    private Meeting.MeetingBuilder mMeetingBuilder;
     private CharSequence[] mFreeRoomNames;
-    private final MutableLiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
     private String mParticipant;
+    private Meeting.MeetingBuilder mMeetingBuilder;
+    private final MutableLiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
@@ -56,11 +57,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                     // not setting subject
                     .setStart(start)
                     .setStop(stop);
-            mMeetingBuilder.setMeetingRoomId(mRepository.getFreeRooms(mMeetingBuilder.build()).get(0));
-            // todo this get(0) might throw an exception if all rooms are booked...
-            //  also see getMeetingRoomName()
-            //  also suggest the smallest room that fits
-
+            List<Integer> freeMeetingRoomIDs = mRepository.getFreeRooms(mMeetingBuilder.build());
+            mMeetingBuilder.setMeetingRoomId(freeMeetingRoomIDs.size() == 0 ? -1 : freeMeetingRoomIDs.get(0));
         } else {
             Meeting m = mRepository.getMeetingById(id);
             if (m == null) throw new NullPointerException("Inexistent meeting, id " + id);
@@ -82,9 +80,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     private void updateItem() {
         Meeting meeting = mMeetingBuilder.build();
-
         MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
-        // todo warning : meeting room is possibly
+        // get() indeed returns null when key is not mapped to something.
 
         ShowMeetingFragmentItem item = new ShowMeetingFragmentItem(
                 String.valueOf(meeting.getId()),
@@ -139,6 +136,10 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
         mMeetingBuilder.setSubject(string);
         updateItem();
     }
+    /* todo
+        show useful error messages to user
+        also implement restrict edit mode for meetings we don't own
+     */
 
     public void addParticipant(Editable editable) {
         if (editable == null) return;

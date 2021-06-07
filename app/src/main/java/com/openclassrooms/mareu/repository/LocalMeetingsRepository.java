@@ -2,6 +2,7 @@ package com.openclassrooms.mareu.repository;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.openclassrooms.mareu.model.Meeting;
@@ -55,10 +56,7 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return null;
     }
 
-    /*
-     * @Inherit
-     */
-    public boolean createMeeting(Meeting meeting) {
+    public boolean createMeeting(@NonNull Meeting meeting) {
         if (!isValidMeeting(meeting)) return false;
         if (getMeetingById(meeting.getId()) != null) return false;
         if (!mMeetings.add(meeting)) return false;
@@ -66,8 +64,8 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return true;
     }
 
+    // not using getMeetingById to be gentler and use that iterator for loop.
     public void removeMeetingById(int meetingId) {
-        // not using getMeetingById to be gentler and use that iterator for loop.
         for (Iterator<Meeting> iterator = mMeetings.iterator(); iterator.hasNext(); ) {
             Meeting meeting = iterator.next();
             if (meeting.getId() == meetingId)
@@ -95,19 +93,27 @@ public class LocalMeetingsRepository implements MeetingsRepository {
         return true;
     }
 
-    public List<Integer> getFreeRooms(Meeting meeting) {
+    public List<Integer> getFreeRooms(@NonNull Meeting meeting) {
+        int seats = meeting.getParticipants().size() + 1;  // account for owner also
+        int smallestFittingCapacity = 9999;
         List<Integer> roomIds = new ArrayList<>();
-        int seats = meeting.getParticipants().size() + 1;  // to account for owner also
         for (MeetingRoom room : mMeetingRooms.values()) {
             if (isRoomFree(room.getId(), meeting) && room.getCapacity() >= seats)
-                roomIds.add(room.getId());
+                if (room.getCapacity() < smallestFittingCapacity) {
+                    smallestFittingCapacity = room.getCapacity();
+                    roomIds.add(0, room.getId());
+                } else roomIds.add(room.getId());
         }
         return roomIds;
     }
 
-    public boolean isValidMeeting(Meeting meeting) {
+    public boolean isValidMeeting(@NonNull Meeting meeting) {
         if (meeting.getStop().isBefore(meeting.getStart())) {
             Log.e("Utils", "isValidMeeting(): can't stop before starting");
+            return false;
+        }
+        if (meeting.getMeetingRoomId() == 0) {
+            Log.e("Utils", "isValidMeeting(): no meeting room set");
             return false;
         }
         if (!isRoomFree(meeting.getMeetingRoomId(), meeting)) {
