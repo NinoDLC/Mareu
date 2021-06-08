@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
         mViewMaster = R.id.master;
         mViewDetail = mLandscapeTabletLayout ? R.id.detail : mViewMaster;
 
-        // todo: actually not so great design on big tablets in portrait mode
-
         if (savedInstanceState == null) setFragmentsInitialState();
     }
 
@@ -39,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         setFragmentsInitialState();
     }
+    // todo: actually not so great design on big tablets in portrait mode
+    // todo: play with addToBackstack in transactions.
+    //  (when coming back from detailFragment, filters are discarded... meh.)
 
     private void setFragmentsInitialState() {
-        // todo: play with addToBackstack in transactions.
-        // todo: when coming back from detailFragment, filters are discarded... meh.
-        // todo: now viewModel persists, and I don't see added meetings anymore...
         mFragmentManager.beginTransaction().replace(mViewMaster, new MainFragment(), null).commit();
         if (mLandscapeTabletLayout)
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();

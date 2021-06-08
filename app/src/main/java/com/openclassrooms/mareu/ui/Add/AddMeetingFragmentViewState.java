@@ -1,7 +1,5 @@
 package com.openclassrooms.mareu.ui.Add;
 
-import java.util.List;
-
 public class AddMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;

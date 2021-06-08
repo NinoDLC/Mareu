@@ -32,7 +32,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                 currentMeetingIdRepository.getCurrentIdMutableLiveData(),
                 id -> {
                     Meeting meeting = mRepository.getMeetingById(id);
-                    if (meeting == null) throw new NullPointerException("Inexistent meeting, id " + id);
+                    if (meeting == null)
+                        throw new NullPointerException("Inexistent meeting, id " + id);
 
                     MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
                     // get() indeed returns null when key is not mapped to something.

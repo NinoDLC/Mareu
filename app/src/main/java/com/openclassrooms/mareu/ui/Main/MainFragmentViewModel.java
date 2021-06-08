@@ -130,7 +130,7 @@ public class MainFragmentViewModel extends ViewModel {
     public void setRoomFilter(int position, boolean checked) {
         boolean[] temp = mSelectedRoomsMutableLivedata.getValue();
         if (temp == null) throw new IllegalStateException("uninitialized room filter");
-        boolean[] state = copyOf(temp,mMeetingRooms.size());
+        boolean[] state = copyOf(temp, mMeetingRooms.size());
         state[position] = checked;
         mSelectedRoomsMutableLivedata.setValue(state);
     }

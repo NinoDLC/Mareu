@@ -28,30 +28,28 @@ public class AddMeetingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AddMeetingFragmentViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
-
-        mViewModel.getAddMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item));
+        View view = inflater.inflate(R.layout.fragment_add_meeting, container, false);
+        mViewModel.getAddMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item, inflater));
         return view;
     }
 
-    void bindAndInitView(View view, AddMeetingFragmentViewState item) {
+    void bindAndInitView(View view, AddMeetingFragmentViewState item, LayoutInflater inflater) {
 
-        TextView owner = view.findViewById(R.id.show_meeting_owner);
-        TextInputEditText subject = view.findViewById(R.id.show_meeting_subject);
-        ChipGroup participantsGroup = view.findViewById(R.id.show_meeting_participants_group);
-        TextInputEditText participantsField = view.findViewById(R.id.show_meeting_participants_field);
-        Button start = view.findViewById(R.id.show_meeting_start);
-        Button end = view.findViewById(R.id.show_meeting_end);
-        TextView id = view.findViewById(R.id.show_meeting_id);
-        FloatingActionButton create = view.findViewById(R.id.show_meeting_create);
-        Button room = view.findViewById(R.id.show_meeting_room);
+        TextView owner = view.findViewById(R.id.add_meeting_owner);
+        TextInputEditText subject = view.findViewById(R.id.add_meeting_subject);
+        ChipGroup participantsGroup = view.findViewById(R.id.add_meeting_participants_group);
+        TextInputEditText participantsField = view.findViewById(R.id.add_meeting_participants_field);
+        Button start = view.findViewById(R.id.add_meeting_start);
+        Button end = view.findViewById(R.id.add_meeting_end);
+        TextView id = view.findViewById(R.id.add_meeting_id);
+        FloatingActionButton create = view.findViewById(R.id.add_meeting_create);
+        Button room = view.findViewById(R.id.add_meeting_room);
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
@@ -62,22 +60,22 @@ public class AddMeetingFragment extends Fragment {
 
         // todo use addTextChangedListener(), en overridant seulement afterTextChanged()
         // todo setOnFocusChangeListener() is not triggered if I click a button bellow
+        subject.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         subject.setOnEditorActionListener((v, actionId, event) -> {
             mViewModel.setSubject(subject.getText());
             return true;
         });
 
-        LayoutInflater layoutInflater = getLayoutInflater();
         participantsGroup.removeAllViews();
         for (String participant : item.getParticipants()) {
-            Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant_add, participantsGroup, false);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip_participant_add, participantsGroup, false);
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
             chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
 
         participantsField.setText(item.getParticipant());
-        participantsField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        participantsField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         participantsField.setOnEditorActionListener((v, actionId, event) -> {
             mViewModel.addParticipant(participantsField.getText());
             return true;

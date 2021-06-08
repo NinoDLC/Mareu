@@ -51,11 +51,11 @@ public class MainFragmentViewState {
         if (o == null || getClass() != o.getClass()) return false;
         MainFragmentViewState that = (MainFragmentViewState) o;
         return mId == that.mId &&
-            mMeetingRoomColor == that.mMeetingRoomColor &&
-            Objects.equals(mUpLine, that.mUpLine) &&
-            Objects.equals(mOwner, that.mOwner) &&
-            Objects.equals(mParticipantsNumber, that.mParticipantsNumber) &&
-            Objects.equals(mMeetingRoomName, that.mMeetingRoomName);
+                mMeetingRoomColor == that.mMeetingRoomColor &&
+                Objects.equals(mUpLine, that.mUpLine) &&
+                Objects.equals(mOwner, that.mOwner) &&
+                Objects.equals(mParticipantsNumber, that.mParticipantsNumber) &&
+                Objects.equals(mMeetingRoomName, that.mMeetingRoomName);
     }
 
     @Override
@@ -67,12 +67,12 @@ public class MainFragmentViewState {
     @Override
     public String toString() {
         return "MeetingsRecyclerViewAdapterItem{" +
-            "mId=" + mId +
-            ", mUpLine='" + mUpLine + '\'' +
-            ", mOwner='" + mOwner + '\'' +
-            ", mParticipantsNumber='" + mParticipantsNumber + '\'' +
-            ", mMeetingRoomName='" + mMeetingRoomName + '\'' +
-            ", mMeetingRoomColor=" + mMeetingRoomColor +
-            '}';
+                "mId=" + mId +
+                ", mUpLine='" + mUpLine + '\'' +
+                ", mOwner='" + mOwner + '\'' +
+                ", mParticipantsNumber='" + mParticipantsNumber + '\'' +
+                ", mMeetingRoomName='" + mMeetingRoomName + '\'' +
+                ", mMeetingRoomColor=" + mMeetingRoomColor +
+                '}';
     }
 }

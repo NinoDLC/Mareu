@@ -2,52 +2,52 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/show_meeting_root"
+    android:id="@+id/add_meeting_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/show_meeting">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/show_meeting_owner"
+        android:id="@+id/add_meeting_owner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginTop="?attr/actionBarSize"
         android:drawableStart="@drawable/ic_baseline_emoji_people_24"
         android:hint="@string/hint_owner"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_subject"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_subject"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/first_names" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/show_meeting_subject"
+        android:id="@+id/add_meeting_subject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:drawableStart="@drawable/ic_baseline_contact_support_24"
         android:hint="@string/hint_subject"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_group"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_owner"
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_owner"
         tools:text="@tools:sample/lorem" />
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/show_meeting_participants_group"
+        android:id="@+id/add_meeting_participants_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         app:chipSpacingVertical="2dp"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_field"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_subject" />
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_subject" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/show_meeting_participants_field"
+        android:id="@+id/add_meeting_participants_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
@@ -55,36 +55,36 @@
         android:hint="@string/hint_participant"
         android:inputType="textEmailAddress"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_group"
         tools:text="@tools:sample/full_names" />
 
     <Button
-        android:id="@+id/show_meeting_start"
+        android:id="@+id/add_meeting_start"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_end"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_field"
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_field"
         tools:text="@tools:sample/date/hhmm" />
 
     <Button
-        android:id="@+id/show_meeting_end"
+        android:id="@+id/add_meeting_end"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:layout_constraintBottom_toTopOf="@id/show_meeting_room"
+        app:layout_constraintBottom_toTopOf="@id/add_meeting_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_start"
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_start"
         tools:text="@tools:sample/date/hhmm" />
 
     <Button
-        android:id="@+id/show_meeting_room"
+        android:id="@+id/add_meeting_room"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
@@ -92,11 +92,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_end"
+        app:layout_constraintTop_toBottomOf="@id/add_meeting_end"
         tools:text="@tools:sample/cities" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/show_meeting_id"
+        android:id="@+id/add_meeting_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing"
@@ -106,7 +106,7 @@
         tools:text="@tools:sample/us_zipcodes" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/show_meeting_create"
+        android:id="@+id/add_meeting_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

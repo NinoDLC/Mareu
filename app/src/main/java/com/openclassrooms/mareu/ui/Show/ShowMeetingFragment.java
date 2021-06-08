@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.ui.Show;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

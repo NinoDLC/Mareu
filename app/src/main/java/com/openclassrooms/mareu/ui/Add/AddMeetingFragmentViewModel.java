@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.ui.utils;
 
@@ -26,19 +25,18 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
-    private int mId;
+    private final int mId;
     private String mSubject;
     private LocalDateTime mStart;
     private LocalDateTime mStop;
     private String mParticipant;
     private HashSet<String> mParticipants;
-    private int mRoomid;
-    List<Integer> mFreeMeetingRoomIDs;
+    private int mRoomId;
+    private List<Integer> mFreeMeetingRoomIDs;
     private CharSequence[] mFreeMeetingRoomNames;
 
     public AddMeetingFragmentViewModel(
-            @NonNull MeetingsRepository meetingRepository,
-            @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
+            @NonNull MeetingsRepository meetingRepository) {
         mRepository = meetingRepository;
         mMeetingRooms = mRepository.getMeetingRooms();
 
@@ -47,21 +45,21 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
         mStop = mStart.plusMinutes(30);
         mParticipants = new HashSet<>(0);
-        mRoomid = mFreeMeetingRoomIDs.size() == 0 ? -1 : mFreeMeetingRoomIDs.get(0);
-        mFreeMeetingRoomIDs = mRepository.getFreeRooms(qsdmflkjsqml);
+        mFreeMeetingRoomIDs = mRepository.getFreeRooms(toMeeting());
+        mRoomId = mFreeMeetingRoomIDs.size() == 0 ? -1 : mFreeMeetingRoomIDs.get(0);
 
-        updateFreeRoomNames();
+        updateFreeRooms();
 
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
 
     }
 
     private Meeting toMeeting() {
-        return new Meeting(mId,PHONE_OWNER_EMAIL,new HashSet<String>(mParticipants),mSubject,mStart,mStop,mRoomid);
+        return new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mSubject, mStart, mStop, mRoomId);
     }
 
     private AddMeetingFragmentViewState toViewState() {
-        MeetingRoom meetingRoom = mMeetingRooms.get(mRoomid);
+        MeetingRoom meetingRoom = mMeetingRooms.get(mRoomId);
         // get() indeed returns null when key is not mapped to something.
 
         return new AddMeetingFragmentViewState(
@@ -86,7 +84,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return mAddMeetingFragmentItemMutableLiveData;
     }
 
-    private void updateFreeRoomNames() {
+    private void updateFreeRooms() {
         if (mStart.isAfter(mStop)) {
             mFreeMeetingRoomNames = new CharSequence[0];
             return;
@@ -103,23 +101,21 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     public void setRoom(int which) {
         MeetingRoom meetingRoom = mMeetingRooms.get(mFreeMeetingRoomIDs.get(which));
         if (meetingRoom == null) throw new NullPointerException("Requested non-existent room");
-        mMeetingBuilder.setMeetingRoomId(meetingRoom.getId());
-        toViewState();
+        mRoomId = meetingRoom.getId();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     public void setTime(boolean startButton, int hour, int minute) {
-        if (startButton)
-            mMeetingBuilder.setStart(LocalDateTime.now().withHour(hour).withMinute(minute));
-        else mMeetingBuilder.setStop(LocalDateTime.now().withHour(hour).withMinute(minute));
-        updateFreeRoomNames();
-        toViewState();
+        if (startButton) mStart = LocalDateTime.now().withHour(hour).withMinute(minute);
+        else mStop = LocalDateTime.now().withHour(hour).withMinute(minute);
+        updateFreeRooms();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     public void setSubject(Editable editable) {
         if (editable == null) return;
-        String string = editable.toString();
-        mMeetingBuilder.setSubject(string);
-        toViewState();
+        mSubject = editable.toString();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
     /* todo
         show useful error messages to user
@@ -130,30 +126,26 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (editable == null) return;
         String string = editable.toString();
         if (utils.isValidEmail(string)) {
-            HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
-            mMeetingBuilder.setParticipants(participants);
-            participants.add(string);
+            mParticipants = new HashSet<>(mParticipants);
+            mParticipants.add(string);
             mParticipant = "";
-            updateFreeRoomNames();
+            updateFreeRooms();
         } else {
             mParticipant = string;
         }
-        toViewState();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     public void removeParticipant(String participant) {
-        HashSet<String> participants = new HashSet<>(mMeetingBuilder.getParticipants());
-        participants.remove(participant);
-        mMeetingBuilder.setParticipants(participants);
-        updateFreeRoomNames();
-        toViewState();
+        mParticipants = new HashSet<>(mParticipants);
+        mParticipants.remove(participant);
+        updateFreeRooms();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     public boolean validate() {
-        if (mRepository.isValidMeeting(mMeetingBuilder.build())) {
-            mRepository.createMeeting(mMeetingBuilder.build());
-            return true;
-        }
+        if (mRepository.isValidMeeting(toMeeting()))
+            return mRepository.createMeeting(toMeeting());
         return false;
     }
 }
