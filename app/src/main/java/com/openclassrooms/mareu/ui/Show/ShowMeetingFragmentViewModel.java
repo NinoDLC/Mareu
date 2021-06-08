@@ -32,8 +32,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                 currentMeetingIdRepository.getCurrentIdMutableLiveData(),
                 id -> {
                     Meeting meeting = mRepository.getMeetingById(id);
-                    if (meeting == null)
-                        throw new NullPointerException("Inexistent meeting, id " + id);
+                    if (meeting == null) throw new NullPointerException("Inexistent meeting, id " + id);
 
                     MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
                     // get() indeed returns null when key is not mapped to something.
@@ -45,11 +44,8 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                             utils.niceTimeFormat(meeting.getStart()),
                             utils.niceTimeFormat(meeting.getStop()),
                             meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room),
-                            meeting.getParticipants().toArray(new String[0]),
-                            meeting.getStart().getHour(),
-                            meeting.getStart().getMinute(),
-                            meeting.getStop().getHour(),
-                            meeting.getStop().getMinute()));
+                            meeting.getParticipants().toArray(new String[0])
+                    ));
                 });
 
     }

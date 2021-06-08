@@ -8,13 +8,8 @@ public class ShowMeetingFragmentViewState {
     private final String mEndText;
     private final String mRoomName;
     private final String[] mParticipants;
-    private final int mStartHour;
-    private final int mStartMinute;
-    private final int mEndHour;
-    private final int mEndMinute;
 
-    public ShowMeetingFragmentViewState(String id, String owner, String subject, String startText, String endText, String roomName,
-                                        String[] participants, int startHour, int startMinute, int endHour, int endMinute) {
+    public ShowMeetingFragmentViewState(String id, String owner, String subject, String startText, String endText, String roomName, String[] participants) {
         mId = id;
         mOwner = owner;
         mSubject = subject;
@@ -22,10 +17,6 @@ public class ShowMeetingFragmentViewState {
         mEndText = endText;
         mRoomName = roomName;
         mParticipants = participants;
-        mStartHour = startHour;
-        mStartMinute = startMinute;
-        mEndHour = endHour;
-        mEndMinute = endMinute;
     }
 
     public String getId() {
@@ -54,21 +45,5 @@ public class ShowMeetingFragmentViewState {
 
     public String[] getParticipants() {
         return mParticipants;
-    }
-
-    public int getStartHour() {
-        return mStartHour;
-    }
-
-    public int getStartMinute() {
-        return mStartMinute;
-    }
-
-    public int getEndHour() {
-        return mEndHour;
-    }
-
-    public int getEndMinute() {
-        return mEndMinute;
     }
 }

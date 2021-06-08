@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.openclassrooms.mareu.R;
+import com.openclassrooms.mareu.ui.Add.AddMeetingFragment;
 import com.openclassrooms.mareu.ui.Main.MainFragment;
 import com.openclassrooms.mareu.ui.Show.ShowMeetingFragment;
 
@@ -49,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
             mFragmentManager.beginTransaction().replace(mViewDetail, new Fragment(R.layout.fragment_empty), null).commit();
     }
 
-    public void setDetailedViewContent() {
+    public void showInDetail() {
         mFragmentManager.beginTransaction().replace(mViewDetail, new ShowMeetingFragment(), null).commit();
     }
+
+    public void newInDetail() {
+        mFragmentManager.beginTransaction().replace(mViewDetail, new AddMeetingFragment(), null).commit();
+    }
+
 }
 

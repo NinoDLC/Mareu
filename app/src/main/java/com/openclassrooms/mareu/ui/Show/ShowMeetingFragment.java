@@ -1,5 +1,6 @@
 package com.openclassrooms.mareu.ui.Show;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +33,11 @@ public class ShowMeetingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_meeting, container, false);
 
-        mViewModel.getShowMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item));
+        mViewModel.getShowMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item, inflater));
         return view;
     }
 
-    void bindAndInitView(View view, ShowMeetingFragmentViewState item) {
+    void bindAndInitView(View view, ShowMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.show_meeting_owner);
         TextView subject = view.findViewById(R.id.show_meeting_subject);
@@ -54,10 +55,9 @@ public class ShowMeetingFragment extends Fragment {
         end.setText(item.getEndText());
         room.setText(item.getRoomName());
 
-        LayoutInflater layoutInflater = getLayoutInflater();
         participantsGroup.removeAllViews();
         for (String participant : item.getParticipants()) {
-            Chip chip = (Chip) layoutInflater.inflate(R.layout.chip_participant, participantsGroup, false);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip_participant, participantsGroup, false);
             chip.setText(participant);
             participantsGroup.addView(chip, participantsGroup.getChildCount());
         }

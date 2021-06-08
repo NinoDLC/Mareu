@@ -9,15 +9,15 @@ import java.util.Random;
 
 public abstract class DummyMeetingRoomsGenerator {
 
-    private static final String[] mDevices = {"Beamer", "Whiteboard", "Blackboard", "Hi-fi", "Augmented reality"};
+    private static final String[] DEVICES = {"Beamer", "Whiteboard", "Blackboard", "Hi-fi", "Augmented reality"};
 
-    private static final Random mRand = new Random();
+    private static final Random RANDOM = new Random();
 
     private static String[] generateDevices() {
-        int participantsNumber = mRand.nextInt(2);
+        int participantsNumber = RANDOM.nextInt(2);
         HashSet<String> devices = new HashSet<>();
         while (devices.size() < participantsNumber) {
-            devices.add(mDevices[mRand.nextInt(mDevices.length)]);
+            devices.add(DEVICES[RANDOM.nextInt(DEVICES.length)]);
         }
         return devices.toArray(new String[0]);
     }

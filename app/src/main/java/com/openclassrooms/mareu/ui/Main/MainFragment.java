@@ -38,7 +38,8 @@ public class MainFragment extends Fragment {
                 new MainFragmentAdapter.Listener() {
                     @Override
                     public void itemClicked(int id) {
-                        openDetailFragment(id);
+                        mViewModel.setDetailId(id);
+                        mMainActivity.showInDetail();
                     }
 
                     @Override
@@ -57,18 +58,14 @@ public class MainFragment extends Fragment {
         );
     }
 
-    void openDetailFragment(int id) {
-        mViewModel.setDetailId(id);
-        mMainActivity.setDetailedViewContent();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         setHasOptionsMenu(true);
-        view.findViewById(R.id.fab).setOnClickListener(v -> openDetailFragment(0));
+
+        view.findViewById(R.id.fab).setOnClickListener(v -> mMainActivity.newInDetail());
 
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
         recyclerView.setAdapter(mAdapter);

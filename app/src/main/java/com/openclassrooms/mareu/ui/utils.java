@@ -6,15 +6,14 @@ import java.util.regex.Pattern;
 
 public final class utils {
 
-    private static final String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    private static final Pattern pattern = Pattern.compile(regex);
-
+    private static final String REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     public static String niceTimeFormat(LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("kk'h'mm"));
     }
 
     public static boolean isValidEmail(String string) {
-        return pattern.matcher(string).matches();
+        return PATTERN.matcher(string).matches();
     }
 }

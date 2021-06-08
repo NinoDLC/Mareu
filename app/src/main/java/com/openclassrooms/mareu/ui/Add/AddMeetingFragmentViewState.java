@@ -1,11 +1,13 @@
 package com.openclassrooms.mareu.ui.Add;
 
-public class AddMeetingFragmentItem {
+import java.util.List;
+
+public class AddMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
     private final String mSubject;
-    private final String mStartText;
-    private final String mEndText;
+    private final String mStartAsText;
+    private final String mEndAsText;
     private final String mRoomName;
     private final String mParticipant;
     private final String[] mParticipants;
@@ -13,16 +15,15 @@ public class AddMeetingFragmentItem {
     private final int mStartMinute;
     private final int mEndHour;
     private final int mEndMinute;
-    private final CharSequence[] mMeetingRooms;
+    private final CharSequence[] mFreeMeetingRoomNames;
 
-
-    public AddMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName, String participant,
-                                  String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] meetingRooms) {
+    public AddMeetingFragmentViewState(String id, String owner, String subject, String startAsText, String endAsText, String roomName, String participant,
+                                       String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] freeMeetingRoomNames) {
         mId = id;
         mOwner = owner;
         mSubject = subject;
-        mStartText = startText;
-        mEndText = endText;
+        mStartAsText = startAsText;
+        mEndAsText = endAsText;
         mRoomName = roomName;
         mParticipant = participant;
         mParticipants = participants;
@@ -30,7 +31,7 @@ public class AddMeetingFragmentItem {
         mStartMinute = startMinute;
         mEndHour = endHour;
         mEndMinute = endMinute;
-        mMeetingRooms = meetingRooms;
+        mFreeMeetingRoomNames = freeMeetingRoomNames;
     }
 
     public String getId() {
@@ -45,12 +46,12 @@ public class AddMeetingFragmentItem {
         return mSubject;
     }
 
-    public String getStartText() {
-        return mStartText;
+    public String getStartAsText() {
+        return mStartAsText;
     }
 
-    public String getEndText() {
-        return mEndText;
+    public String getEndAsText() {
+        return mEndAsText;
     }
 
     public String getRoomName() {
@@ -81,7 +82,7 @@ public class AddMeetingFragmentItem {
         return mEndMinute;
     }
 
-    public CharSequence[] getMeetingRooms() {
-        return mMeetingRooms;
+    public CharSequence[] getFreeMeetingRoomNames() {
+        return mFreeMeetingRoomNames;
     }
 }

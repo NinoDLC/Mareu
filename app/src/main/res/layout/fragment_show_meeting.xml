@@ -40,6 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
+        app:chipSpacingVertical="2dp"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

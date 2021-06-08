@@ -10,13 +10,13 @@ public abstract class DummyMeetingGenerator {
 
     private static final String[] FIRST_NAMES = {"Chuck", "Hans", "Franck", "Marc", "Tedy", "Joe", "Jack", "Fred", "Henry", "Jasmine", "Claire", "Morgan"};
 
-    private static final String[] mCompanies = {"LamZone", "NerdzHerdz", "Buy More"};
+    private static final String[] COMPANIES = {"LamZone", "NerdzHerdz", "Buy More"};
 
-    private static final String[] mDomains = {"fr", "com", "org", "net"};
+    private static final String[] DOMAINS = {"fr", "com", "org", "net"};
 
-    private static final String[] mSubjects = {"Coffee break", "Code red", "Daily meetup", "Agile sprint", "Project xXx", "Global warming"};
+    private static final String[] SUBJECTS = {"Coffee break", "Code red", "Daily meetup", "Agile sprint", "Project xXx", "Global warming"};
 
-    private static final Random mRand = new Random();
+    private static final Random RANDOM = new Random();
 
     private static int i = 1;
 
@@ -33,23 +33,23 @@ public abstract class DummyMeetingGenerator {
                 getNextId(),
                 generateEmail(),
                 generateParticipants(),
-                mSubjects[mRand.nextInt(mSubjects.length)],
+                SUBJECTS[RANDOM.nextInt(SUBJECTS.length)],
                 start,
                 generateStop(start),
-                mRand.nextInt(10) + 1)
+                RANDOM.nextInt(10) + 1)
         );
     }
 
     private static String generateEmail() {
-        String name = FIRST_NAMES[mRand.nextInt(FIRST_NAMES.length)];
-        String company = mCompanies[mRand.nextInt(mCompanies.length)];
-        String domain = mDomains[mRand.nextInt(mDomains.length)];
+        String name = FIRST_NAMES[RANDOM.nextInt(FIRST_NAMES.length)];
+        String company = COMPANIES[RANDOM.nextInt(COMPANIES.length)];
+        String domain = DOMAINS[RANDOM.nextInt(DOMAINS.length)];
         String email = name + "@" + company + "." + domain;
         return email.replaceAll("\\s+", "").toLowerCase();
     }
 
     private static HashSet<String> generateParticipants() {
-        int participantsNumber = mRand.nextInt(4);
+        int participantsNumber = RANDOM.nextInt(4);
         HashSet<String> participants = new HashSet<>();
         while (participants.size() < participantsNumber) {
             participants.add(generateEmail());
@@ -59,11 +59,11 @@ public abstract class DummyMeetingGenerator {
 
     private static LocalDateTime generateStart() {
         LocalDateTime roundedNow = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
-        return roundedNow.plusHours(mRand.nextInt(10)).withMinute(mRand.nextInt(12) * 5);
+        return roundedNow.plusHours(RANDOM.nextInt(10)).withMinute(RANDOM.nextInt(12) * 5);
     }
 
     private static LocalDateTime generateStop(LocalDateTime start) {
-        return start.plusMinutes(mRand.nextInt(18) * 5);
+        return start.plusMinutes(RANDOM.nextInt(18) * 5);
     }
 
 }
