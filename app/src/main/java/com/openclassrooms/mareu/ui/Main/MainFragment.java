@@ -15,15 +15,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.ui.MainActivity;
-import com.openclassrooms.mareu.utils.ViewModelFactory;
+import com.openclassrooms.mareu.ViewModelFactory;
 
 public class MainFragment extends Fragment {
 
     private MainActivity mMainActivity;
     private MainFragmentViewModel mViewModel;
-    private MeetingsRecyclerViewAdapter mAdapter;
+    private MainFragmentAdapter mAdapter;
     private boolean[] mSelectedRooms;
 
     @Override
@@ -34,8 +34,8 @@ public class MainFragment extends Fragment {
         mMainActivity = (MainActivity) requireActivity();
 
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
-        mAdapter = new MeetingsRecyclerViewAdapter(
-                new MeetingsRecyclerViewAdapter.Listener() {
+        mAdapter = new MainFragmentAdapter(
+                new MainFragmentAdapter.Listener() {
                     @Override
                     public void itemClicked(int id) {
                         openDetailFragment(id);
@@ -48,8 +48,8 @@ public class MainFragment extends Fragment {
                 }
         );
 
-        mViewModel.getMeetingsLiveData().observe(mMainActivity, items -> mAdapter.submitList(items));
-        mViewModel.getSelectedRooms().observe(
+        mViewModel.getViewStateListLiveData().observe(mMainActivity, items -> mAdapter.submitList(items));
+        mViewModel.getRoomFilter().observe(
                 mMainActivity, booleans -> {
                     mSelectedRooms = booleans;
                     mMainActivity.supportInvalidateOptionsMenu();
@@ -111,7 +111,7 @@ public class MainFragment extends Fragment {
                             .setMultiChoiceItems(
                                     mViewModel.getMeetingRoomNames(),
                                     mSelectedRooms,
-                                    (dialog, which, isChecked) -> mViewModel.toggleRoomSelection(which)
+                                    (dialog, which, isChecked) -> mViewModel.setRoomFilter(which, isChecked)
                             )
                             .setPositiveButton("Apply", (dialog, which) -> {
                             })

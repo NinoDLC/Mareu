@@ -1,26 +1,17 @@
 package com.openclassrooms.mareu.ui.Add;
 
-import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.utils.ViewModelFactory;
+import com.openclassrooms.mareu.ViewModelFactory;
 
 public class AddMeetingFragment extends Fragment {
     private AddMeetingFragmentViewModel mViewModel;
@@ -60,6 +51,7 @@ public class AddMeetingFragment extends Fragment {
         end.setText(item.getEndText());
         room.setText(item.getRoomName());
 
+        // todo use addTextChangedListener(), en overridant seulement afterTextChanged()
         // todo setOnFocusChangeListener() is not triggered if I click a button bellow
         subject.setOnEditorActionListener((v, actionId, event) -> {
             mViewModel.setSubject(subject.getText());

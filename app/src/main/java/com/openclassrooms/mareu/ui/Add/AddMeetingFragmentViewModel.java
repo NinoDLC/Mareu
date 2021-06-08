@@ -12,7 +12,7 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
-import com.openclassrooms.mareu.utils.utils;
+import com.openclassrooms.mareu.ui.utils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import java.util.List;
 
 public class AddMeetingFragmentViewModel extends ViewModel {
 
-    /*
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private final MeetingsRepository mRepository;
 
@@ -30,19 +29,19 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private CharSequence[] mFreeRoomNames;
     private String mParticipant;
     private Meeting.MeetingBuilder mMeetingBuilder;
-    private final MutableLiveData<ShowMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<AddMeetingFragmentItem> mShowMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
-    public ShowMeetingFragmentViewModel(
+    public AddMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
             @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
         mRepository = meetingRepository;
         mMeetingRooms = mRepository.getMeetingRooms();
 
-        initMeeting(currentMeetingIdRepository.getCurrentId());
+        initMeeting(currentMeetingIdRepository.getCurrentIdMutableLiveData().getValue());
         updateItem();
     }
 
-    public LiveData<ShowMeetingFragmentItem> getShowMeetingFragmentItem() {
+    public LiveData<AddMeetingFragmentItem> getShowMeetingFragmentItem() {
         return mShowMeetingFragmentItemMutableLiveData;
     }
 
@@ -84,7 +83,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
         // get() indeed returns null when key is not mapped to something.
 
-        ShowMeetingFragmentItem item = new ShowMeetingFragmentItem(
+        AddMeetingFragmentItem item = new AddMeetingFragmentItem(
                 String.valueOf(meeting.getId()),
                 meeting.getOwner(),
                 meeting.getSubject(),
@@ -141,7 +140,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         show useful error messages to user
         also implement restrict edit mode for meetings we don't own
      */
-/*
+
     public void addParticipant(Editable editable) {
         if (editable == null) return;
         String string = editable.toString();
@@ -175,6 +174,4 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         }
         return false;
     }
-*/
-
 }

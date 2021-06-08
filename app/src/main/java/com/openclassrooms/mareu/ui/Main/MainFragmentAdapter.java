@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.mareu.R;
 
-public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerViewAdapterItem, MeetingsRecyclerViewAdapter.ViewHolder> {
+public class MainFragmentAdapter extends ListAdapter<MainFragmentViewState, MainFragmentAdapter.ViewHolder> {
 
     private final Listener mListener;
 
-    public MeetingsRecyclerViewAdapter(@NonNull Listener listener) {
+    public MainFragmentAdapter(@NonNull Listener listener) {
         super(new MeetingsDiffCallback());
         mListener = listener;
     }
@@ -32,9 +32,9 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MeetingsRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainFragmentAdapter.ViewHolder holder, int position) {
         // getItem() is defined in ListAdapter, with recyclerViewAdapter, we'd have mMeetings field and do mMeetings.get()
-        MeetingsRecyclerViewAdapterItem item = getItem(position);
+        MainFragmentViewState item = getItem(position);
         holder.bind(item, mListener);
     }
 
@@ -56,7 +56,7 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
             mMore = view.findViewById(R.id.meeting_participants_more);
         }
 
-        public void bind(@NonNull MeetingsRecyclerViewAdapterItem item, @NonNull Listener listener) {
+        public void bind(@NonNull MainFragmentViewState item, @NonNull Listener listener) {
             mText.setText(item.getUpLine());
             mParticipants.setText(item.getOwner());
             mMore.setText(item.getParticipantsNumber());
@@ -67,14 +67,14 @@ public class MeetingsRecyclerViewAdapter extends ListAdapter<MeetingsRecyclerVie
         }
     }
 
-    public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<MeetingsRecyclerViewAdapterItem> {
+    public static class MeetingsDiffCallback extends DiffUtil.ItemCallback<MainFragmentViewState> {
         @Override
-        public boolean areItemsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
+        public boolean areItemsTheSame(@NonNull MainFragmentViewState oldItem, @NonNull MainFragmentViewState newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull MeetingsRecyclerViewAdapterItem oldItem, @NonNull MeetingsRecyclerViewAdapterItem newItem) {
+        public boolean areContentsTheSame(@NonNull MainFragmentViewState oldItem, @NonNull MainFragmentViewState newItem) {
             return oldItem.equals(newItem);
         }
     }

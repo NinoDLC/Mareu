@@ -15,7 +15,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.openclassrooms.mareu.R;
-import com.openclassrooms.mareu.utils.ViewModelFactory;
+import com.openclassrooms.mareu.ViewModelFactory;
 
 public class ShowMeetingFragment extends Fragment {
     private ShowMeetingFragmentViewModel mViewModel;
@@ -36,7 +36,7 @@ public class ShowMeetingFragment extends Fragment {
         return view;
     }
 
-    void bindAndInitView(View view, ShowMeetingFragmentItem item) {
+    void bindAndInitView(View view, ShowMeetingFragmentViewState item) {
 
         TextView owner = view.findViewById(R.id.show_meeting_owner);
         TextView subject = view.findViewById(R.id.show_meeting_subject);

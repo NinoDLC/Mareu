@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.utils;
+package com.openclassrooms.mareu;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

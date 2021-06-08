@@ -1,9 +1,10 @@
 package com.openclassrooms.mareu.ui.Main;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
-// todo: this is a viewstate !
-public class MeetingsRecyclerViewAdapterItem {
+public class MainFragmentViewState {
     private final int mId;
     private final String mUpLine;
     private final String mOwner;
@@ -11,7 +12,7 @@ public class MeetingsRecyclerViewAdapterItem {
     private final String mMeetingRoomName;
     private final int mMeetingRoomColor;
 
-    public MeetingsRecyclerViewAdapterItem(int id, String upLine, String owner, String participantsNumber, String meetingRoomName, int meetingRoomColor) {
+    public MainFragmentViewState(int id, String upLine, String owner, String participantsNumber, String meetingRoomName, int meetingRoomColor) {
         mId = id;
         mUpLine = upLine;
         mOwner = owner;
@@ -48,7 +49,7 @@ public class MeetingsRecyclerViewAdapterItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MeetingsRecyclerViewAdapterItem that = (MeetingsRecyclerViewAdapterItem) o;
+        MainFragmentViewState that = (MainFragmentViewState) o;
         return mId == that.mId &&
             mMeetingRoomColor == that.mMeetingRoomColor &&
             Objects.equals(mUpLine, that.mUpLine) &&
@@ -62,6 +63,7 @@ public class MeetingsRecyclerViewAdapterItem {
         return Objects.hash(mId, mUpLine, mOwner, mParticipantsNumber, mMeetingRoomName, mMeetingRoomColor);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MeetingsRecyclerViewAdapterItem{" +

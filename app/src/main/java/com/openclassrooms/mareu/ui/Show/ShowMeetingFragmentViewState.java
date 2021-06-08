@@ -1,6 +1,6 @@
 package com.openclassrooms.mareu.ui.Show;
 
-public class ShowMeetingFragmentItem {
+public class ShowMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
     private final String mSubject;
@@ -13,8 +13,8 @@ public class ShowMeetingFragmentItem {
     private final int mEndHour;
     private final int mEndMinute;
 
-    public ShowMeetingFragmentItem(String id, String owner, String subject, String startText, String endText, String roomName,
-                                   String[] participants, int startHour, int startMinute, int endHour, int endMinute) {
+    public ShowMeetingFragmentViewState(String id, String owner, String subject, String startText, String endText, String roomName,
+                                        String[] participants, int startHour, int startMinute, int endHour, int endMinute) {
         mId = id;
         mOwner = owner;
         mSubject = subject;

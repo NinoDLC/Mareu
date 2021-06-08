@@ -1,8 +1,8 @@
 package com.openclassrooms.mareu.ui.Main;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -10,7 +10,7 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
-import com.openclassrooms.mareu.utils.utils;
+import com.openclassrooms.mareu.ui.utils;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -25,82 +25,70 @@ public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
     private final CurrentMeetingIdRepository mCurrentMeetingIdRepository;
-    // todo when going with livedata on repo, remove all setvalues()
-
-    private final MutableLiveData<List<MeetingsRecyclerViewAdapterItem>> mMutableMeetingsLiveData = new MutableLiveData<>();
-
     private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
-    private final boolean[] mSelectedRooms;
+    private final MediatorLiveData<List<MainFragmentViewState>> mMutableMeetingsLiveData = new MediatorLiveData<>();
 
-    @Nullable
-    private LocalDateTime mTimeFilter;
-
-    private final MutableLiveData<boolean[]> mMutableSelectedRoomsLiveData = new MutableLiveData<>();
+    private final LiveData<List<Meeting>> mMeetingListMutableLivedata;
+    private final MutableLiveData<boolean[]> mSelectedRoomsMutableLivedata = new MutableLiveData<>();
+    private final MutableLiveData<LocalDateTime> mSelectedTimeMutableLiveData = new MutableLiveData<>();
 
     public MainFragmentViewModel(
             @NonNull MeetingsRepository meetingsRepository,
             @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
         mMeetingsRepository = meetingsRepository;
         mCurrentMeetingIdRepository = currentMeetingIdRepository;
-
         mMeetingRooms = mMeetingsRepository.getMeetingRooms();
-        mSelectedRooms = new boolean[mMeetingRooms.size()];
+        mMeetingListMutableLivedata = mMeetingsRepository.getMeetings();
+
         resetRoomFilter();
+
+        mMutableMeetingsLiveData.addSource(
+                mMeetingListMutableLivedata,
+                meetings -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                        meetings,
+                        mSelectedTimeMutableLiveData.getValue(),
+                        mSelectedRoomsMutableLivedata.getValue()
+                )));
+        mMutableMeetingsLiveData.addSource(
+                mSelectedTimeMutableLiveData,
+                localDateTime -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                        mMeetingListMutableLivedata.getValue(),
+                        localDateTime,
+                        mSelectedRoomsMutableLivedata.getValue()
+                )));
+        mMutableMeetingsLiveData.addSource(
+                mSelectedRoomsMutableLivedata,
+                booleans -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                        mMeetingListMutableLivedata.getValue(),
+                        mSelectedTimeMutableLiveData.getValue(),
+                        booleans
+                )));
     }
 
-    public LiveData<List<MeetingsRecyclerViewAdapterItem>> getMeetingsLiveData() {
+    public LiveData<List<MainFragmentViewState>> getViewStateListLiveData() {
         return mMutableMeetingsLiveData;
     }
 
-    public void setDetailId(int id) {
-        mCurrentMeetingIdRepository.setCurrentId(id);
-    }
+    private List<MainFragmentViewState> filterMeetings(List<Meeting> meetings, LocalDateTime timeFilter, boolean[] roomFilter) {
+        if (meetings == null || roomFilter == null)
+            throw new IllegalStateException("uninitialized LiveData");
 
-    public CharSequence[] getMeetingRoomNames() {
-        List<CharSequence> meetingRoomNames = new ArrayList<>();
-        for (MeetingRoom meetingRoom : mMeetingRooms.values()) {
-            meetingRoomNames.add(meetingRoom.getName());
+        List<MainFragmentViewState> itemsList = new ArrayList<>();
+        for (Meeting meeting : meetings) {
+            if (roomFilter[meeting.getMeetingRoomId() - 1] && (
+                    timeFilter == null ||
+                            (meeting.getStart().isBefore(timeFilter) && meeting.getStop().isAfter(timeFilter))))
+                itemsList.add(toViewState(meeting));
         }
-        return meetingRoomNames.toArray(new CharSequence[0]);
+        return itemsList;
     }
 
-    public LiveData<boolean[]> getSelectedRooms() {
-        return mMutableSelectedRoomsLiveData;
-    }
-
-    public void toggleRoomSelection(int position) {
-        mSelectedRooms[position] = !mSelectedRooms[position];
-        mMutableSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
-        updateMeetingsList();
-    }
-
-    public void resetRoomFilter() {
-        Arrays.fill(mSelectedRooms, true);
-        mMutableSelectedRoomsLiveData.setValue(copyOf(mSelectedRooms, mSelectedRooms.length));
-        updateMeetingsList();
-    }
-
-    protected void deleteButtonClicked(int id) {
-        mMeetingsRepository.removeMeetingById(id);
-        updateMeetingsList();
-    }
-
-    private void updateMeetingsList() {
-        // TODO new ArrayList no longer necessary when repo is liveData.
-        List<MeetingsRecyclerViewAdapterItem> itemsList = new ArrayList<>();
-        for (Meeting meeting : mMeetingsRepository.getMeetings()) {
-            if (mSelectedRooms[meeting.getMeetingRoomId() - 1] && meetsTimeConditions(meeting))
-                itemsList.add(makeRecyclerViewItem(meeting));
-        }
-        mMutableMeetingsLiveData.setValue(new ArrayList<>(itemsList));
-    }
-
-    private MeetingsRecyclerViewAdapterItem makeRecyclerViewItem(@NonNull Meeting meeting) {
+    private MainFragmentViewState toViewState(@NonNull Meeting meeting) {
         MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
         if (mr == null)
             throw new NullPointerException("null MeetingRoom object");
-        return new MeetingsRecyclerViewAdapterItem(
+        return new MainFragmentViewState(
                 meeting.getId(),
                 MessageFormat.format("{0} - {1}",
                         utils.niceTimeFormat(meeting.getStart()),
@@ -113,27 +101,55 @@ public class MainFragmentViewModel extends ViewModel {
         );
     }
 
-    private boolean meetsTimeConditions(@NonNull Meeting meeting) {
-        if (mTimeFilter == null) return true;
-        return meeting.getStart().isBefore(mTimeFilter) && meeting.getStop().isAfter(mTimeFilter);
+    public void setDetailId(int id) {
+        mCurrentMeetingIdRepository.setCurrentId(id);
+    }
+
+    protected void deleteButtonClicked(int id) {
+        mMeetingsRepository.removeMeetingById(id);
+    }
+
+    public CharSequence[] getMeetingRoomNames() {
+        List<CharSequence> meetingRoomNames = new ArrayList<>();
+        for (MeetingRoom meetingRoom : mMeetingRooms.values()) {
+            meetingRoomNames.add(meetingRoom.getName());
+        }
+        return meetingRoomNames.toArray(new CharSequence[0]);
+    }
+
+    public LiveData<boolean[]> getRoomFilter() {
+        return mSelectedRoomsMutableLivedata;
+    }
+
+    public void resetRoomFilter() {
+        boolean[] state = new boolean[mMeetingRooms.size()];
+        Arrays.fill(state, true);
+        mSelectedRoomsMutableLivedata.setValue(state);
+    }
+
+    public void setRoomFilter(int position, boolean checked) {
+        boolean[] temp = mSelectedRoomsMutableLivedata.getValue();
+        if (temp == null) throw new IllegalStateException("uninitialized room filter");
+        boolean[] state = copyOf(temp,mMeetingRooms.size());
+        state[position] = checked;
+        mSelectedRoomsMutableLivedata.setValue(state);
     }
 
     public void setTimeFilter(int hourOfDay, int minute) {
-        mTimeFilter = LocalDateTime.now().withHour(hourOfDay).withMinute(minute).withSecond(1);
-        updateMeetingsList();
+        mSelectedTimeMutableLiveData.setValue(LocalDateTime.now().withHour(hourOfDay).withMinute(minute).withSecond(1));
     }
 
     public void resetTimeFilter() {
-        mTimeFilter = null;
-        updateMeetingsList();
+        mSelectedTimeMutableLiveData.setValue(null);
     }
 
     public int getTimeFilterHour() {
-        return mTimeFilter == null ? LocalDateTime.now().getHour() : mTimeFilter.getHour();
+        LocalDateTime dateTime = mSelectedTimeMutableLiveData.getValue();
+        return dateTime == null ? LocalDateTime.now().getHour() : dateTime.getHour();
     }
 
     public int getTimeFilterMinute() {
-        return mTimeFilter == null ? LocalDateTime.now().getMinute() : mTimeFilter.getMinute();
+        LocalDateTime dateTime = mSelectedTimeMutableLiveData.getValue();
+        return dateTime == null ? LocalDateTime.now().getMinute() : dateTime.getMinute();
     }
-
 }

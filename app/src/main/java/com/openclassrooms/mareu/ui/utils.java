@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.utils;
+package com.openclassrooms.mareu.ui;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
