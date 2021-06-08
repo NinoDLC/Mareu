@@ -30,9 +30,10 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mSubject;
     private LocalDateTime mStart;
     private LocalDateTime mStop;
-    private int mRoomid;
     private String mParticipant;
-    private String[] mParticipants;
+    private HashSet<String> mParticipants;
+    private int mRoomid;
+    List<Integer> mFreeMeetingRoomIDs;
     private CharSequence[] mFreeMeetingRoomNames;
 
     public AddMeetingFragmentViewModel(
@@ -40,70 +41,70 @@ public class AddMeetingFragmentViewModel extends ViewModel {
             @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
         mRepository = meetingRepository;
         mMeetingRooms = mRepository.getMeetingRooms();
+
+        mId = mRepository.getNextMeetingId();
+        LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
+        mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
+        mStop = mStart.plusMinutes(30);
+        mParticipants = new HashSet<>(0);
+        mRoomid = mFreeMeetingRoomIDs.size() == 0 ? -1 : mFreeMeetingRoomIDs.get(0);
+        mFreeMeetingRoomIDs = mRepository.getFreeRooms(qsdmflkjsqml);
+
+        updateFreeRoomNames();
+
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+
     }
+
+    private Meeting toMeeting() {
+        return new Meeting(mId,PHONE_OWNER_EMAIL,new HashSet<String>(mParticipants),mSubject,mStart,mStop,mRoomid);
+    }
+
+    private AddMeetingFragmentViewState toViewState() {
+        MeetingRoom meetingRoom = mMeetingRooms.get(mRoomid);
+        // get() indeed returns null when key is not mapped to something.
+
+        return new AddMeetingFragmentViewState(
+                String.valueOf(mId),
+                PHONE_OWNER_EMAIL,
+                mSubject,
+                utils.niceTimeFormat(mStart),
+                utils.niceTimeFormat(mStop),
+                meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room),
+                mParticipant,
+                mParticipants.toArray(new String[0]),
+                mStart.getHour(),
+                mStart.getMinute(),
+                mStop.getHour(),
+                mStop.getMinute(),
+                mFreeMeetingRoomNames
+        );
+    }
+
 
     public LiveData<AddMeetingFragmentViewState> getAddMeetingFragmentItem() {
         return mAddMeetingFragmentItemMutableLiveData;
     }
 
-    private void initMeeting() {
-        LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
-        LocalDateTime start = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
-        LocalDateTime stop = start.plusMinutes(30);
-        mMeetingBuilder = new Meeting.MeetingBuilder()
-                .setId(0)
-                .setOwner(PHONE_OWNER_EMAIL)
-                .setParticipants(new HashSet<>(0))
-                // not setting subject
-                .setStart(start)
-                .setStop(stop);
-        List<Integer> freeMeetingRoomIDs = mRepository.getFreeRooms(mMeetingBuilder.build());
-        mMeetingBuilder.setMeetingRoomId(freeMeetingRoomIDs.size() == 0 ? -1 : freeMeetingRoomIDs.get(0));
-
-        updateFreeRoomNames();
-    }
-
-    private void meetingToViewState(Meeting meeting) {
-        MeetingRoom meetingRoom = mMeetingRooms.get(meeting.getMeetingRoomId());
-        // get() indeed returns null when key is not mapped to something.
-
-        AddMeetingFragmentViewState item = new AddMeetingFragmentViewState(
-                String.valueOf(meeting.getId()),
-                meeting.getOwner(),
-                meeting.getSubject(),
-                utils.niceTimeFormat(meeting.getStart()),
-                utils.niceTimeFormat(meeting.getStop()),
-                meetingRoom != null ? meetingRoom.getName() : String.valueOf(R.string.hint_meeting_room),
-                mParticipant,
-                meeting.getParticipants().toArray(new String[0]),
-                meeting.getStart().getHour(),
-                meeting.getStart().getMinute(),
-                meeting.getStop().getHour(),
-                meeting.getStop().getMinute(),
-                mFreeMeetingRoomNames
-        );
-        mAddMeetingFragmentItemMutableLiveData.setValue(item);
-    }
-
     private void updateFreeRoomNames() {
-        if (mMeetingBuilder.getStart().isAfter(mMeetingBuilder.getStop())) {
-            mFreeRoomNames = new CharSequence[0];
+        if (mStart.isAfter(mStop)) {
+            mFreeMeetingRoomNames = new CharSequence[0];
             return;
         }
-        mFreeRoomIds = mRepository.getFreeRooms(mMeetingBuilder.build());
-        mFreeRoomNames = new CharSequence[mFreeRoomIds.size()];
-        for (int id = 0; id < mFreeRoomIds.size(); id++) {
-            MeetingRoom meetingRoom = mMeetingRooms.get(mFreeRoomIds.get(id));
+        mFreeMeetingRoomIDs = mRepository.getFreeRooms(toMeeting());
+        mFreeMeetingRoomNames = new CharSequence[mFreeMeetingRoomIDs.size()];
+        for (int id = 0; id < mFreeMeetingRoomIDs.size(); id++) {
+            MeetingRoom meetingRoom = mMeetingRooms.get(mFreeMeetingRoomIDs.get(id));
             if (meetingRoom == null) throw new NullPointerException("Exceeded rooms number");
-            mFreeRoomNames[id] = meetingRoom.getName();
+            mFreeMeetingRoomNames[id] = meetingRoom.getName();
         }
     }
 
     public void setRoom(int which) {
-        MeetingRoom meetingRoom = mMeetingRooms.get(mFreeRoomIds.get(which));
+        MeetingRoom meetingRoom = mMeetingRooms.get(mFreeMeetingRoomIDs.get(which));
         if (meetingRoom == null) throw new NullPointerException("Requested non-existent room");
         mMeetingBuilder.setMeetingRoomId(meetingRoom.getId());
-        meetingToViewState();
+        toViewState();
     }
 
     public void setTime(boolean startButton, int hour, int minute) {
@@ -111,14 +112,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
             mMeetingBuilder.setStart(LocalDateTime.now().withHour(hour).withMinute(minute));
         else mMeetingBuilder.setStop(LocalDateTime.now().withHour(hour).withMinute(minute));
         updateFreeRoomNames();
-        meetingToViewState();
+        toViewState();
     }
 
     public void setSubject(Editable editable) {
         if (editable == null) return;
         String string = editable.toString();
         mMeetingBuilder.setSubject(string);
-        meetingToViewState();
+        toViewState();
     }
     /* todo
         show useful error messages to user
@@ -137,7 +138,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         } else {
             mParticipant = string;
         }
-        meetingToViewState();
+        toViewState();
     }
 
     public void removeParticipant(String participant) {
@@ -145,14 +146,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         participants.remove(participant);
         mMeetingBuilder.setParticipants(participants);
         updateFreeRoomNames();
-        meetingToViewState();
+        toViewState();
     }
 
     public boolean validate() {
         if (mRepository.isValidMeeting(mMeetingBuilder.build())) {
-            int id = mMeetingBuilder.getId();
-            if (id != 0) mRepository.removeMeetingById(id);
-            mMeetingBuilder.setId(mRepository.getNextMeetingId());
             mRepository.createMeeting(mMeetingBuilder.build());
             return true;
         }
