@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu.ui.add;
 
+import android.text.Editable;
+
 public class AddMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
@@ -7,16 +9,21 @@ public class AddMeetingFragmentViewState {
     private final String mStartAsText;
     private final String mEndAsText;
     private final String mRoomName;
-    private final String mParticipant;
+    private final Editable mParticipant;
     private final String[] mParticipants;
     private final int mStartHour;
     private final int mStartMinute;
     private final int mEndHour;
     private final int mEndMinute;
     private final CharSequence[] mFreeMeetingRoomNames;
+    private final String mParticipantError;
+    private final String mSubjectError;
+    private final String mGeneralError;
 
-    public AddMeetingFragmentViewState(String id, String owner, String subject, String startAsText, String endAsText, String roomName, String participant,
-                                       String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] freeMeetingRoomNames) {
+    // todo : lesquels sont nullable ?
+    public AddMeetingFragmentViewState(String id, String owner, String subject, String startAsText, String endAsText, String roomName, Editable participant,
+                                       String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] freeMeetingRoomNames,
+                                       String participantError, String subjectError, String generalError) {
         mId = id;
         mOwner = owner;
         mSubject = subject;
@@ -30,6 +37,9 @@ public class AddMeetingFragmentViewState {
         mEndHour = endHour;
         mEndMinute = endMinute;
         mFreeMeetingRoomNames = freeMeetingRoomNames;
+        mParticipantError = participantError;
+        mSubjectError = subjectError;
+        mGeneralError = generalError;
     }
 
     public String getId() {
@@ -56,7 +66,7 @@ public class AddMeetingFragmentViewState {
         return mRoomName;
     }
 
-    public String getParticipant() {
+    public Editable getParticipant() {
         return mParticipant;
     }
 
@@ -82,5 +92,17 @@ public class AddMeetingFragmentViewState {
 
     public CharSequence[] getFreeMeetingRoomNames() {
         return mFreeMeetingRoomNames;
+    }
+
+    public String getParticipantError() {
+        return mParticipantError;
+    }
+
+    public String getSubjectError() {
+        return mSubjectError;
+    }
+
+    public String getGeneralError() {
+        return mGeneralError;
     }
 }

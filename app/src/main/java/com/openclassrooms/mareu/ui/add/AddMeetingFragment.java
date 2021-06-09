@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
@@ -50,6 +52,8 @@ public class AddMeetingFragment extends Fragment {
         TextView id = view.findViewById(R.id.add_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.add_meeting_create);
         Button room = view.findViewById(R.id.add_meeting_room);
+        TextInputLayout subjectTil = view.findViewById(R.id.add_meeting_subject_til);
+        TextInputLayout participantTil = view.findViewById(R.id.add_meeting_participants_til);
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
@@ -57,6 +61,11 @@ public class AddMeetingFragment extends Fragment {
         start.setText(item.getStartAsText());
         end.setText(item.getEndAsText());
         room.setText(item.getRoomName());
+
+        subjectTil.setError(item.getSubjectError());
+        participantTil.setError(item.getParticipantError());
+        if (item.getGeneralError() != null)
+            Toast.makeText(requireContext(), item.getGeneralError(), Toast.LENGTH_LONG).show();
 
         // todo use addTextChangedListener(), en overridant seulement afterTextChanged()
         // todo setOnFocusChangeListener() is not triggered if I click a button bellow

@@ -20,6 +20,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private static final String SELECT_ROOM = "Select a room";
+    private static final String EMAIL_ERROR = "Enter a valid email address";
+    private static final String SUBJECT_ERROR = "Set a topic";
     private final MeetingsRepository mRepository;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
@@ -27,10 +29,13 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mSubject;
     private LocalDateTime mStart;
     private LocalDateTime mStop;
-    private String mParticipant;
+    private Editable mParticipant;
     private HashSet<String> mParticipants;
     private MeetingRoom mRoom;
     private List<MeetingRoom> mValidRooms;
+    private String mParticipantError;
+    private String mSubjectError;
+    private String mGeneralError;
 
     public AddMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository) {
@@ -64,8 +69,10 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 mStart.getMinute(),
                 mStop.getHour(),
                 mStop.getMinute(),
-                validRoomNames()
-        );
+                validRoomNames(),
+                mParticipantError,
+                mSubjectError,
+                mGeneralError);
     }
 
     CharSequence[] validRoomNames() {
@@ -92,25 +99,25 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     }
 
     public void setSubject(Editable editable) {
-        if (editable == null) return;
-        mSubject = editable.toString();
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        if (editable == null) mSubjectError = SUBJECT_ERROR;
+        else {
+            mSubjectError = null;
+            mSubject = editable.toString();
+            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        }
     }
-    /* todo
-        show useful error messages to user
-        also implement restrict edit mode for meetings we don't own
-     */
 
-    public void addParticipant(Editable editable) {
-        if (editable == null) return;
-        String string = editable.toString();
+    public void addParticipant(@NonNull Editable editable) {
+        String string = editable.toString().trim();
         if (utils.isValidEmail(string)) {
             mParticipants = new HashSet<>(mParticipants);
-            mParticipants.add(string);
-            mParticipant = "";
+            mParticipants.add(editable.toString());
+            mParticipant = null;
             mValidRooms = mRepository.getValidRooms(toMeeting());
+            mParticipantError = null;
         } else {
-            mParticipant = string;
+            mParticipantError = string.isEmpty() ? null : EMAIL_ERROR;
+            mParticipant = editable;
         }
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
@@ -126,5 +133,10 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (mRepository.isValidMeeting(toMeeting()))
             return mRepository.createMeeting(toMeeting());
         return false;
+
+    /* todo
+        show useful error messages to user
+        also implement restrict edit mode for meetings we don't own
+     */
     }
 }
