@@ -1,7 +1,5 @@
 package com.openclassrooms.mareu;
 
-import com.openclassrooms.mareu.repository.MeetingsRepository;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu.repository;
 
 import com.openclassrooms.mareu.model.Meeting;
+import com.openclassrooms.mareu.model.MeetingRoom;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -36,8 +37,8 @@ public abstract class DummyMeetingGenerator {
                 SUBJECTS[RANDOM.nextInt(SUBJECTS.length)],
                 start,
                 generateStop(start),
-                RANDOM.nextInt(10) + 1)
-        );
+                MeetingRoom.values()[RANDOM.nextInt(MeetingRoom.values().length)]
+        ));
     }
 
     private static String generateEmail() {

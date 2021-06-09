@@ -16,16 +16,16 @@ public class Meeting implements Comparable<Meeting> {
     private final String mSubject;
     private final LocalDateTime mStart;
     private final LocalDateTime mStop;
-    private final int mMeetingRoomId;
+    private final MeetingRoom mRoom;
 
-    public Meeting(int id, String owner, HashSet<String> participants, String subject, LocalDateTime start, LocalDateTime stop, int meetingRoomId) {
+    public Meeting(int id, String owner, HashSet<String> participants, String subject, LocalDateTime start, LocalDateTime stop, MeetingRoom room) {
         this.mId = id;
         this.mOwner = owner;
         this.mParticipants = Collections.unmodifiableSet(participants);
         this.mSubject = subject;
         this.mStart = start;
         this.mStop = stop;
-        this.mMeetingRoomId = meetingRoomId;
+        this.mRoom = room;
     }
 
     public int getId() {
@@ -52,8 +52,8 @@ public class Meeting implements Comparable<Meeting> {
         return mStop;
     }
 
-    public int getMeetingRoomId() {
-        return mMeetingRoomId;
+    public MeetingRoom getRoom() {
+        return mRoom;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Meeting implements Comparable<Meeting> {
         if (o == null || getClass() != o.getClass()) return false;
         Meeting meeting = (Meeting) o;
         return mId == meeting.mId &&
-                mMeetingRoomId == meeting.mMeetingRoomId &&
+                mRoom == meeting.mRoom &&
                 Objects.equals(mOwner, meeting.mOwner) &&
                 Objects.equals(mParticipants, meeting.mParticipants) &&
                 Objects.equals(mSubject, meeting.mSubject) &&
@@ -77,7 +77,7 @@ public class Meeting implements Comparable<Meeting> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(mId, mOwner, mParticipants, mSubject, mStart, mStop, mMeetingRoomId);
+        return Objects.hash(mId, mOwner, mParticipants, mSubject, mStart, mStop, mRoom);
     }
 
     @NonNull
@@ -90,7 +90,7 @@ public class Meeting implements Comparable<Meeting> {
                 ", mSubject='" + mSubject + '\'' +
                 ", mStart=" + mStart +
                 ", mStop=" + mStop +
-                ", mMeetingRoomId=" + mMeetingRoomId +
+                ", mMeetingRoomId=" + mRoom +
                 '}';
     }
 }

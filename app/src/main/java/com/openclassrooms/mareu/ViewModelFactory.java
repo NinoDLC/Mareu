@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
-import com.openclassrooms.mareu.repository.LocalMeetingsRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.ui.Add.AddMeetingFragmentViewModel;
 import com.openclassrooms.mareu.ui.Main.MainFragmentViewModel;
@@ -20,7 +19,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             synchronized (ViewModelFactory.class) {
                 if (factory == null) {
                     factory = new ViewModelFactory(
-                            new LocalMeetingsRepository(),
+                            new MeetingsRepository(),
                             new CurrentMeetingIdRepository()
                     );
                 }

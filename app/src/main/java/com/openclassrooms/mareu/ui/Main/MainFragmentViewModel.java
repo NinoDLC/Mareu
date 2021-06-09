@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import static java.util.Arrays.copyOf;
@@ -25,7 +24,6 @@ public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
     private final CurrentMeetingIdRepository mCurrentMeetingIdRepository;
-    private final HashMap<Integer, MeetingRoom> mMeetingRooms;
 
     private final MediatorLiveData<List<MainFragmentViewState>> mMutableMeetingsLiveData = new MediatorLiveData<>();
 
@@ -38,7 +36,6 @@ public class MainFragmentViewModel extends ViewModel {
             @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
         mMeetingsRepository = meetingsRepository;
         mCurrentMeetingIdRepository = currentMeetingIdRepository;
-        mMeetingRooms = mMeetingsRepository.getMeetingRooms();
         mMeetingListMutableLivedata = mMeetingsRepository.getMeetings();
 
         resetRoomFilter();
@@ -76,7 +73,7 @@ public class MainFragmentViewModel extends ViewModel {
 
         List<MainFragmentViewState> itemsList = new ArrayList<>();
         for (Meeting meeting : meetings) {
-            if (roomFilter[meeting.getMeetingRoomId() - 1] && (
+            if (roomFilter[meeting.getRoom().ordinal()] && (
                     timeFilter == null ||
                             (meeting.getStart().isBefore(timeFilter) && meeting.getStop().isAfter(timeFilter))))
                 itemsList.add(toViewState(meeting));
@@ -85,9 +82,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     private MainFragmentViewState toViewState(@NonNull Meeting meeting) {
-        MeetingRoom mr = mMeetingRooms.get(meeting.getMeetingRoomId());
-        if (mr == null)
-            throw new NullPointerException("null MeetingRoom object");
+        if (meeting.getRoom() == null) throw new NullPointerException("null MeetingRoom object");
         return new MainFragmentViewState(
                 meeting.getId(),
                 MessageFormat.format("{0} - {1}",
@@ -96,8 +91,8 @@ public class MainFragmentViewModel extends ViewModel {
                 ),
                 meeting.getOwner(),
                 MessageFormat.format("+{0}", meeting.getParticipants().size()),
-                mr.getName(),
-                mr.getTextColor()  // todo could I store the color itself?
+                meeting.getRoom().getName(),
+                meeting.getRoom().getTextColor()
         );
     }
 
@@ -110,11 +105,10 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public CharSequence[] getMeetingRoomNames() {
-        List<CharSequence> meetingRoomNames = new ArrayList<>();
-        for (MeetingRoom meetingRoom : mMeetingRooms.values()) {
-            meetingRoomNames.add(meetingRoom.getName());
-        }
-        return meetingRoomNames.toArray(new CharSequence[0]);
+        CharSequence[] names = new CharSequence[MeetingRoom.values().length];
+        for (MeetingRoom meetingRoom : MeetingRoom.values())
+            names[meetingRoom.ordinal()]=meetingRoom.getName();
+        return names;
     }
 
     public LiveData<boolean[]> getRoomFilter() {
@@ -122,7 +116,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public void resetRoomFilter() {
-        boolean[] state = new boolean[mMeetingRooms.size()];
+        boolean[] state = new boolean[MeetingRoom.values().length];
         Arrays.fill(state, true);
         mSelectedRoomsMutableLivedata.setValue(state);
     }
@@ -130,7 +124,7 @@ public class MainFragmentViewModel extends ViewModel {
     public void setRoomFilter(int position, boolean checked) {
         boolean[] temp = mSelectedRoomsMutableLivedata.getValue();
         if (temp == null) throw new IllegalStateException("uninitialized room filter");
-        boolean[] state = copyOf(temp, mMeetingRooms.size());
+        boolean[] state = copyOf(temp, MeetingRoom.values().length);
         state[position] = checked;
         mSelectedRoomsMutableLivedata.setValue(state);
     }

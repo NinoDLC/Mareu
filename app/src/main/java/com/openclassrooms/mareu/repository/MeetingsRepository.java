@@ -1,35 +1,141 @@
 package com.openclassrooms.mareu.repository;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public interface MeetingsRepository {
+public class MeetingsRepository {
 
-    HashMap<Integer, MeetingRoom> getMeetingRooms();
+    private int mNextMeetingId;
 
-    LiveData<List<Meeting>> getMeetings();
+    private final List<Meeting> mMeetings = new ArrayList<>();
 
-    int getNextMeetingId();
+    private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>();
+
+    public MeetingsRepository() {
+        while (mMeetings.size() < 20) {
+            // createMeeting() runs isValidMeeting(), returns boolean
+            createMeeting(DummyMeetingGenerator.generateMeeting());
+            // todo: this loop updates the livedata 20+ times at launch
+        }
+        Collections.sort(mMeetings, (o1, o2) -> Integer.compare(o1.getId(), o2.getId()));
+        mNextMeetingId = mMeetings.get(mMeetings.size() - 1).getId();
+        sortMeetings();
+    }
+
+    private void sortMeetings() {
+        Collections.sort(mMeetings, Meeting::compareTo);
+    }
+
+    public LiveData<List<Meeting>> getMeetings() {
+        return mMeetingListMutableLiveData;
+    }
+
+    public int getNextMeetingId() {
+        return ++mNextMeetingId;
+    }
 
     @Nullable
-    Meeting getMeetingById(int id);
+    public Meeting getMeetingById(int id) {
+        for (Meeting meeting : mMeetings) {
+            if (meeting.getId() == id)
+                return meeting;
+        }
+        return null;
+    }
 
-    /*
-     * returns false if meeting could not be created
-     * (meetings are only added if valid)
-     */
-    boolean createMeeting(Meeting meeting);
+    public boolean createMeeting(@NonNull Meeting meeting) {
+        if (!isValidMeeting(meeting)) return false;
+        if (getMeetingById(meeting.getId()) != null) return false;
+        if (!mMeetings.add(meeting)) return false;
+        sortMeetings();
+        mMeetingListMutableLiveData.setValue(mMeetings);
+        return true;
+    }
 
-    void removeMeetingById(int meetingId);
+    // not using getMeetingById to be gentler and use that iterator for loop.
+    public void removeMeetingById(int meetingId) {
+        for (Iterator<Meeting> iterator = mMeetings.iterator(); iterator.hasNext(); ) {
+            Meeting meeting = iterator.next();
+            if (meeting.getId() == meetingId)
+                iterator.remove();
+        }
+        mMeetingListMutableLiveData.setValue(mMeetings);
+    }
 
-    // todo: do those last two have their place in the repo?
-    List<Integer> getFreeRooms(Meeting meeting);
+    // Opinionated choice: return Meeting objects, not ids
+    private List<Meeting> getRoomMeetings(MeetingRoom room) {
+        List<Meeting> meetings = new ArrayList<>();
+        for (Meeting meeting : mMeetings) {
+            if (meeting.getRoom() == room)
+                meetings.add(meeting);
+        }
+        return meetings;
+    }
 
-    boolean isValidMeeting(Meeting meeting);
+    private boolean isRoomFree(MeetingRoom room, Meeting meeting) {
+        for (Meeting m : getRoomMeetings(room)) {
+            if (m.getStart().isBefore(meeting.getStop())
+                    && m.getStop().isAfter(meeting.getStart())
+                    && meeting.getId() != m.getId()
+            ) return false;
+        }
+        return true;
+    }
+
+    public List<MeetingRoom> getValidRooms(@NonNull Meeting meeting) {
+        int seats = meeting.getParticipants().size() + 1;  // account for owner also
+        int smallestFittingCapacity = Integer.MAX_VALUE;
+        List<MeetingRoom> list = new ArrayList<>();
+
+        for (MeetingRoom room : MeetingRoom.values()) {
+            if (isRoomFree(room, meeting) && room.getCapacity() >= seats)
+                if (room.getCapacity() < smallestFittingCapacity) {
+                    smallestFittingCapacity = room.getCapacity();
+                    list.add(0, room);
+                } else list.add(room);
+        }
+        return list;
+    }
+
+    public boolean isValidMeeting(@NonNull Meeting meeting) {
+        if (meeting.getStop().isBefore(meeting.getStart())) {
+            Log.e("Utils", "isValidMeeting(): can't stop before starting");
+            return false;
+        }
+        if (meeting.getRoom() == null) {
+            Log.e("Utils", "isValidMeeting(): no meeting room set");
+            return false;
+        }
+        if (!isRoomFree(meeting.getRoom(), meeting)) {
+            Log.e("Utils", "isValidMeeting(): room is not free");
+            return false;
+        }
+        for (String email : meeting.getParticipants()) {
+            if (email.equals(meeting.getOwner())) {
+                Log.e("Utils", "isValidMeeting(): meeting owner also in participants");
+                return false;
+            }
+        }
+        if (meeting.getRoom() == null) {
+            Log.e("Utils", "isValidMeeting(): nonexistent meeting room");
+            return false;
+        }
+        if (meeting.getParticipants().size() > meeting.getRoom().getCapacity()) {
+            Log.e("Utils", "isValidMeeting(): meeting room is too small");
+            return false;
+        }
+        return true;
+    }
 }
