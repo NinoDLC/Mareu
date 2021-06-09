@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
-import com.openclassrooms.mareu.ui.utils;
+import com.openclassrooms.mareu.utils;
 
 public class ShowMeetingFragmentViewModel extends ViewModel {
 

@@ -10,7 +10,7 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
-import com.openclassrooms.mareu.ui.utils;
+import com.openclassrooms.mareu.utils;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
