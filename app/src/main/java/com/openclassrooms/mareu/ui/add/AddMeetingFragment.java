@@ -42,7 +42,7 @@ public class AddMeetingFragment extends Fragment {
     void bindAndInitView(View view, AddMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.add_meeting_owner);
-        TextInputEditText subject = view.findViewById(R.id.add_meeting_subject);
+        TextInputEditText subject = view.findViewById(R.id.add_meeting_subject_field);
         ChipGroup participantsGroup = view.findViewById(R.id.add_meeting_participants_group);
         TextInputEditText participantsField = view.findViewById(R.id.add_meeting_participants_field);
         Button start = view.findViewById(R.id.add_meeting_start);

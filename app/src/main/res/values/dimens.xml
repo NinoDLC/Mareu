@@ -1,5 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="spacing">15dp</dimen>
-    <dimen name="show_fields_spacing">40dp</dimen>
+    <dimen name="add_fields_spacing">7dp</dimen>
+    <dimen name="fields_horizontal_spacing">40dp</dimen>
 </resources>

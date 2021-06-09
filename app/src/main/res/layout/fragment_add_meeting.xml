@@ -2,117 +2,145 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_meeting_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/add_meeting">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/add_meeting_owner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:drawableStart="@drawable/ic_baseline_emoji_people_24"
-        app:drawableTint="@color/blue"
-        android:hint="@string/hint_owner"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_subject"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/first_names" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:theme="@style/add_meeting">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_meeting_subject"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:drawableStart="@drawable/ic_baseline_contact_support_24"
-        android:hint="@string/hint_subject"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_owner"
-        tools:text="@tools:sample/lorem">
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_meeting_root"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/add_meeting_participants_group"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:chipSpacingVertical="2dp"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_subject" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/add_meeting_owner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="@dimen/add_fields_spacing"
+                android:drawableStart="@drawable/ic_baseline_emoji_people_24"
+                android:hint="@string/hint_owner"
+                android:paddingHorizontal="12dp"
+                app:drawableTint="@color/blue"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_subject_til"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/first_names" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_meeting_participants_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:drawableStart="@drawable/ic_baseline_person_add_24"
-        android:hint="@string/hint_participant"
-        android:inputType="textEmailAddress"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_group"
-        tools:text="@tools:sample/full_names">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_meeting_subject_til"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginVertical="@dimen/add_fields_spacing"
+                android:hint="@string/hint_subject"
+                android:singleLine="true"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_group"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_owner"
+                app:startIconDrawable="@drawable/ic_baseline_contact_support_24"
+                app:startIconTint="@color/blue"
+                tools:text="@tools:sample/lorem">
 
-    <Button
-        android:id="@+id/add_meeting_start"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_field"
-        tools:text="@tools:sample/date/hhmm" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_meeting_subject_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/add_meeting_end"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        app:layout_constraintBottom_toTopOf="@id/add_meeting_room"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_start"
-        tools:text="@tools:sample/date/hhmm" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/add_meeting_participants_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginVertical="@dimen/add_fields_spacing"
+                app:chipSpacingVertical="2dp"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_til"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_subject_til" />
 
-    <Button
-        android:id="@+id/add_meeting_room"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/show_fields_spacing"
-        android:layout_marginBottom="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_meeting_end"
-        tools:text="@tools:sample/cities" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_meeting_participants_til"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginVertical="@dimen/add_fields_spacing"
+                android:hint="@string/hint_participant"
+                android:singleLine="true"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_start"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_group"
+                app:startIconDrawable="@drawable/ic_baseline_person_add_24"
+                app:startIconTint="@color/blue"
+                tools:text="@tools:sample/full_names">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/add_meeting_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing"
-        android:textColor="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@tools:sample/us_zipcodes" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_meeting_participants_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/add_meeting_start"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginVertical="@dimen/add_fields_spacing"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_til"
+                tools:text="@tools:sample/date/hhmm" />
+
+            <Button
+                android:id="@+id/add_meeting_end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginVertical="@dimen/add_fields_spacing"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_room"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_start"
+                tools:text="@tools:sample/date/hhmm" />
+
+            <Button
+                android:id="@+id/add_meeting_room"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
+                android:layout_marginTop="@dimen/add_fields_spacing"
+                android:layout_marginBottom="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_end"
+                tools:text="@tools:sample/cities" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/add_meeting_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing"
+                android:textColor="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@tools:sample/us_zipcodes" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_meeting_create"

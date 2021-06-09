@@ -9,8 +9,8 @@
     android:clickable="false"
     android:focusable="true"
     app:chipMinTouchTargetSize="2dp"
-    app:chipStrokeColor="@color/blue"
-    app:chipStrokeWidth="2dp"
-    app:closeIconTint="@color/red"
+    app:chipBackgroundColor="@color/blue"
+    android:textColor="@color/white"
+    app:closeIconTint="@color/white"
     tools:text="@tools:sample/full_names" />
 
