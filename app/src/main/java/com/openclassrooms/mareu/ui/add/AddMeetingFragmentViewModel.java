@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui.Add;
+package com.openclassrooms.mareu.ui.add;
 
 import android.text.Editable;
 
@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -20,6 +19,7 @@ import java.util.List;
 public class AddMeetingFragmentViewModel extends ViewModel {
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
+    private static final String SELECT_ROOM = "Select a room";
     private final MeetingsRepository mRepository;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
@@ -42,9 +42,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mStop = mStart.plusMinutes(30);
         mParticipants = new HashSet<>(0);
         mValidRooms = mRepository.getValidRooms(toMeeting());
-
+        if (mValidRooms.size() > 0) mRoom = mValidRooms.get(0);
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
-
     }
 
     private Meeting toMeeting() {
@@ -58,7 +57,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 mSubject,
                 utils.niceTimeFormat(mStart),
                 utils.niceTimeFormat(mStop),
-                mRoom != null ? mRoom.getName() : String.valueOf(R.string.hint_meeting_room),
+                mRoom != null ? mRoom.getName() : SELECT_ROOM,
                 mParticipant,
                 mParticipants.toArray(new String[0]),
                 mStart.getHour(),
@@ -69,7 +68,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         );
     }
 
-    CharSequence[] validRoomNames(){
+    CharSequence[] validRoomNames() {
         CharSequence[] names = new CharSequence[mValidRooms.size()];
         for (MeetingRoom room : mValidRooms)
             names[mValidRooms.indexOf(room)] = room.getName();

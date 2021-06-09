@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui.Show;
+package com.openclassrooms.mareu.ui.show;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

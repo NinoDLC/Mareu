@@ -12,15 +12,6 @@ import static org.junit.Assert.assertEquals;
 
 public class RepositoryUnitTests {
 
-    private final MeetingsRepository repo = DependencyInjection.getNewMeetingsRepository();
-
-
-    @Test
-    public void printRepoContent() {
-
-        System.out.println(repo.getMeetings());
-        assertEquals(4, 2 + 2);
-    }
 
 
 }

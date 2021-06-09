@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
-import com.openclassrooms.mareu.ui.Add.AddMeetingFragmentViewModel;
-import com.openclassrooms.mareu.ui.Main.MainFragmentViewModel;
-import com.openclassrooms.mareu.ui.Show.ShowMeetingFragmentViewModel;
+import com.openclassrooms.mareu.ui.add.AddMeetingFragmentViewModel;
+import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
+import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 

@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui.Add;
+package com.openclassrooms.mareu.ui.add;
 
 public class AddMeetingFragmentViewState {
     private final String mId;

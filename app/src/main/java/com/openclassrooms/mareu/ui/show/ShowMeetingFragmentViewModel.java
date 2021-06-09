@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui.Show;
+package com.openclassrooms.mareu.ui.show;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -35,7 +35,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                             meeting.getSubject(),
                             utils.niceTimeFormat(meeting.getStart()),
                             utils.niceTimeFormat(meeting.getStop()),
-                            meeting.getRoom() != null ? meeting.getRoom().getName() : String.valueOf(R.string.hint_meeting_room),
+                            meeting.getRoom().getName(),
                             meeting.getParticipants().toArray(new String[0])
                     ));
                 });

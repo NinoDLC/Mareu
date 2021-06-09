@@ -5,6 +5,7 @@
     android:id="@+id/show_meeting_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     android:theme="@style/show_meeting">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -14,7 +15,6 @@
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginTop="?attr/actionBarSize"
         android:drawableStart="@drawable/ic_baseline_emoji_people_24"
-        android:hint="@string/hint_owner"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_subject"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,8 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:drawableStart="@drawable/ic_baseline_contact_support_24"
-        android:hint="@string/hint_subject"
-        android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@id/show_meeting_participants_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.openclassrooms.mareu.ui.Add.AddMeetingFragment;
-import com.openclassrooms.mareu.ui.Main.MainFragment;
-import com.openclassrooms.mareu.ui.Show.ShowMeetingFragment;
+import com.openclassrooms.mareu.ui.add.AddMeetingFragment;
+import com.openclassrooms.mareu.ui.main.MainFragment;
+import com.openclassrooms.mareu.ui.show.ShowMeetingFragment;
 
 public class MainActivity extends AppCompatActivity {
 

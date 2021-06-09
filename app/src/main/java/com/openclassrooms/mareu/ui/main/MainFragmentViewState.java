@@ -1,4 +1,4 @@
-package com.openclassrooms.mareu.ui.Main;
+package com.openclassrooms.mareu.ui.main;
 
 import androidx.annotation.NonNull;
 

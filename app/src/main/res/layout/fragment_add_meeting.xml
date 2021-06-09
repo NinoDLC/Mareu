@@ -5,7 +5,7 @@
     android:id="@+id/add_meeting_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/show_meeting">
+    android:theme="@style/add_meeting">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/add_meeting_owner"
@@ -14,6 +14,7 @@
         android:layout_marginHorizontal="@dimen/show_fields_spacing"
         android:layout_marginTop="?attr/actionBarSize"
         android:drawableStart="@drawable/ic_baseline_emoji_people_24"
+        app:drawableTint="@color/blue"
         android:hint="@string/hint_owner"
         app:layout_constraintBottom_toTopOf="@id/add_meeting_subject"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/first_names" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_meeting_subject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +34,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_meeting_owner"
-        tools:text="@tools:sample/lorem" />
+        tools:text="@tools:sample/lorem">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/add_meeting_participants_group"
@@ -46,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_meeting_subject" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_meeting_participants_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,7 +64,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_group"
-        tools:text="@tools:sample/full_names" />
+        tools:text="@tools:sample/full_names">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/add_meeting_start"
