@@ -1,15 +1,13 @@
 package com.openclassrooms.mareu.ui.add;
 
-import android.text.Editable;
+import androidx.annotation.NonNull;
 
 public class AddMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
-    private final String mSubject;
     private final String mStartAsText;
     private final String mEndAsText;
     private final String mRoomName;
-    private final Editable mParticipant;
     private final String[] mParticipants;
     private final int mStartHour;
     private final int mStartMinute;
@@ -20,17 +18,26 @@ public class AddMeetingFragmentViewState {
     private final String mSubjectError;
     private final String mGeneralError;
 
-    // todo : lesquels sont nullable ?
-    public AddMeetingFragmentViewState(String id, String owner, String subject, String startAsText, String endAsText, String roomName, Editable participant,
-                                       String[] participants, int startHour, int startMinute, int endHour, int endMinute, CharSequence[] freeMeetingRoomNames,
-                                       String participantError, String subjectError, String generalError) {
+    public AddMeetingFragmentViewState(
+            @NonNull String id,
+            @NonNull String owner,
+            @NonNull String startAsText,
+            @NonNull String endAsText,
+            String roomName,
+            @NonNull String[] participants,
+            int startHour,
+            int startMinute,
+            int endHour,
+            int endMinute,
+            CharSequence[] freeMeetingRoomNames,
+            String participantError,
+            String subjectError,
+            String generalError) {
         mId = id;
         mOwner = owner;
-        mSubject = subject;
         mStartAsText = startAsText;
         mEndAsText = endAsText;
         mRoomName = roomName;
-        mParticipant = participant;
         mParticipants = participants;
         mStartHour = startHour;
         mStartMinute = startMinute;
@@ -50,10 +57,6 @@ public class AddMeetingFragmentViewState {
         return mOwner;
     }
 
-    public String getSubject() {
-        return mSubject;
-    }
-
     public String getStartAsText() {
         return mStartAsText;
     }
@@ -64,10 +67,6 @@ public class AddMeetingFragmentViewState {
 
     public String getRoomName() {
         return mRoomName;
-    }
-
-    public Editable getParticipant() {
-        return mParticipant;
     }
 
     public String[] getParticipants() {

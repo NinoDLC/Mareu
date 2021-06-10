@@ -18,8 +18,7 @@ public class Meeting implements Comparable<Meeting> {
     private final LocalDateTime mStop;
     private final MeetingRoom mRoom;
 
-    // todo: should participants be NonNull?
-    public Meeting(int id, @NonNull String owner, HashSet<String> participants, @NonNull String subject,
+    public Meeting(int id, @NonNull String owner, @NonNull HashSet<String> participants, @NonNull String subject,
                    @NonNull LocalDateTime start, @NonNull LocalDateTime stop, @NonNull MeetingRoom room) {
         this.mId = id;
         this.mOwner = owner;
@@ -39,6 +38,7 @@ public class Meeting implements Comparable<Meeting> {
         return mOwner;
     }
 
+    @NonNull
     public Set<String> getParticipants() {
         return mParticipants;
     }

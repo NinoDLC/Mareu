@@ -5,7 +5,6 @@
     android:id="@+id/show_meeting_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
     android:theme="@style/show_meeting">
 
     <androidx.appcompat.widget.AppCompatTextView

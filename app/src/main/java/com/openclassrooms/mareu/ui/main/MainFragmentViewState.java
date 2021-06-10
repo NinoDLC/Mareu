@@ -12,7 +12,13 @@ public class MainFragmentViewState {
     private final String mMeetingRoomName;
     private final int mMeetingRoomColor;
 
-    public MainFragmentViewState(int id, String upLine, String owner, String participantsNumber, String meetingRoomName, int meetingRoomColor) {
+    public MainFragmentViewState(
+            int id,
+            @NonNull String upLine,
+            @NonNull String owner,
+            @NonNull String participantsNumber,
+            @NonNull String meetingRoomName,
+            int meetingRoomColor) {
         mId = id;
         mUpLine = upLine;
         mOwner = owner;
@@ -25,18 +31,22 @@ public class MainFragmentViewState {
         return mId;
     }
 
+    @NonNull
     public String getUpLine() {
         return mUpLine;
     }
 
+    @NonNull
     public String getOwner() {
         return mOwner;
     }
 
+    @NonNull
     public String getParticipantsNumber() {
         return mParticipantsNumber;
     }
 
+    @NonNull
     public String getMeetingRoomName() {
         return mMeetingRoomName;
     }

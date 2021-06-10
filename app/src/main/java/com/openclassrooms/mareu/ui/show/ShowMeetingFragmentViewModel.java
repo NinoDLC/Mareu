@@ -26,7 +26,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                 id -> {
                     Meeting meeting = mRepository.getMeetingById(id);
                     if (meeting == null)
-                        throw new NullPointerException("Inexistent meeting, id " + id);
+                        throw new NullPointerException(String.format("Non-existent meeting, id %d", id));
 
                     mShowMeetingFragmentItemLiveData.setValue(new ShowMeetingFragmentViewState(
                             String.valueOf(meeting.getId()),
@@ -38,7 +38,6 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                             meeting.getParticipants().toArray(new String[0])
                     ));
                 });
-
     }
 
     public LiveData<ShowMeetingFragmentViewState> getShowMeetingFragmentItem() {

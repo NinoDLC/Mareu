@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu.ui.show;
 
+import androidx.annotation.NonNull;
+
 public class ShowMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
@@ -9,7 +11,14 @@ public class ShowMeetingFragmentViewState {
     private final String mRoomName;
     private final String[] mParticipants;
 
-    public ShowMeetingFragmentViewState(String id, String owner, String subject, String startText, String endText, String roomName, String[] participants) {
+    public ShowMeetingFragmentViewState(
+            @NonNull String id,
+            @NonNull String owner,
+            @NonNull String subject,
+            @NonNull String startText,
+            @NonNull String endText,
+            @NonNull String roomName,
+            @NonNull String[] participants) {
         mId = id;
         mOwner = owner;
         mSubject = subject;
@@ -19,30 +28,37 @@ public class ShowMeetingFragmentViewState {
         mParticipants = participants;
     }
 
+    @NonNull
     public String getId() {
         return mId;
     }
 
+    @NonNull
     public String getOwner() {
         return mOwner;
     }
 
+    @NonNull
     public String getSubject() {
         return mSubject;
     }
 
+    @NonNull
     public String getStartText() {
         return mStartText;
     }
 
+    @NonNull
     public String getEndText() {
         return mEndText;
     }
 
+    @NonNull
     public String getRoomName() {
         return mRoomName;
     }
 
+    @NonNull
     public String[] getParticipants() {
         return mParticipants;
     }

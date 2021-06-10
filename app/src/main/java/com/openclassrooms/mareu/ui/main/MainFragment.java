@@ -110,9 +110,9 @@ public class MainFragment extends Fragment {
                                     mSelectedRooms,
                                     (dialog, which, isChecked) -> mViewModel.setRoomFilter(which, isChecked)
                             )
-                            .setPositiveButton("Apply", (dialog, which) -> {
+                            .setPositiveButton(R.string.apply, (dialog, which) -> {
                             })
-                            .setNegativeButton("Reset", (dialog, id) -> mViewModel.resetRoomFilter())
+                            .setNegativeButton(R.string.reset, (dialog, id) -> mViewModel.resetRoomFilter())
                             .create().show();
                     return false;
                 }

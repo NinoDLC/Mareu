@@ -1,7 +1,5 @@
 package com.openclassrooms.mareu.ui.add;
 
-import android.text.Editable;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -37,7 +35,6 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mSubject;
     private LocalDateTime mStart;
     private LocalDateTime mStop;
-    private Editable mParticipant;
     private final HashSet<String> mParticipants;
     private MeetingRoom mRoom;
     private List<MeetingRoom> mValidRooms;
@@ -50,7 +47,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
         mId = mRepository.getNextMeetingId();
         if (mRepository.getMeetingById(mId) != null)
-            throw new IllegalStateException("Attributed id already in use");
+            throw new IllegalStateException(String.format("Attributed id already in use %d", mId));
 
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
@@ -59,6 +56,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mValidRooms = getValidRooms(toMeeting());
         if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
         mGeneralError = null;
+        mSubjectError = null;
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
@@ -73,6 +71,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         else if (mParticipants.size() > mRoom.getCapacity()) mGeneralError = ROOM_TOO_SMALL;
         Meeting meeting = new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mSubject, mStart, mStop, mRoom);
         if (!isRoomFree(meeting)) mGeneralError = ROOM_NOT_FREE;
+        if (mSubject == null || mSubject.isEmpty()) mSubjectError = SUBJECT_ERROR;
         return meeting;
     }
 
@@ -81,11 +80,9 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return new AddMeetingFragmentViewState(
                 String.valueOf(mId),
                 PHONE_OWNER_EMAIL,
-                mSubject,
                 utils.niceTimeFormat(mStart),
                 utils.niceTimeFormat(mStop),
                 mRoom != null ? mRoom.getName() : SELECT_ROOM,
-                mParticipant,
                 mParticipants.toArray(new String[0]),
                 mStart.getHour(),
                 mStart.getMinute(),
@@ -122,30 +119,25 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    public void setSubject(@Nullable Editable editable) {
-        mSubjectError = null;
-        if (editable == null) {
-            mSubjectError = SUBJECT_ERROR;
-            return;
-        }
-        mSubject = editable.toString();
+    public void setSubject(@NonNull String string) {
+        mSubject = string;
+        if (!string.isEmpty()) mSubjectError = null;
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    public void addParticipant(@NonNull Editable editable) {
+    public boolean addParticipant(@NonNull String string) {
         mParticipantError = null;
-        mParticipant = editable;
-        String string = editable.toString().trim();
-
-        if (string.isEmpty()) return;
+        if (string.isEmpty()) return true;
         if (!utils.isValidEmail(string)) mParticipantError = EMAIL_ERROR;
         if (inParticipants(string)) mParticipantError = ALREADY_AN_ATTENDEE;
-        if (mParticipantError == null) {
-            mParticipants.add(string);
-            mParticipant = null;
-            mValidRooms = getValidRooms(toMeeting());
+        if (mParticipantError != null) {
+            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+            return false;
         }
+        mParticipants.add(string);
+        mValidRooms = getValidRooms(toMeeting());
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        return true;
     }
 
     private boolean inParticipants(@NonNull String participant) {

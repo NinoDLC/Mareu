@@ -2,23 +2,26 @@ package com.openclassrooms.mareu.ui.add;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.mareu.R;
@@ -57,23 +60,43 @@ public class AddMeetingFragment extends Fragment {
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
-        subject.setText(item.getSubject());
         start.setText(item.getStartAsText());
         end.setText(item.getEndAsText());
         room.setText(item.getRoomName());
 
-        subjectTil.setError(item.getSubjectError());
-        participantTil.setError(item.getParticipantError());
-        if (item.getGeneralError() != null)
-            Toast.makeText(requireContext(), item.getGeneralError(), Toast.LENGTH_LONG).show();
-
-        // todo use addTextChangedListener(), en overridant seulement afterTextChanged()
-        // todo setOnFocusChangeListener() is not triggered if I click a button bellow
         subject.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        subject.setOnEditorActionListener((v, actionId, event) -> {
-            mViewModel.setSubject(subject.getText());
-            return true;
+        subjectTil.setError(item.getSubjectError());
+        subject.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mViewModel.setSubject(s.toString().trim());
+            }
         });
+
+        participantsField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        participantsField.setOnEditorActionListener(
+                (v, actionId, event) -> {
+                    Editable ed = participantsField.getText();
+                    if (ed != null && mViewModel.addParticipant(ed.toString()))
+                        participantsField.setText(null);
+                    return true;
+                });
+        participantTil.setError(item.getParticipantError());
+
+        if (item.getGeneralError() != null)
+            Snackbar.make(view, item.getGeneralError(), Snackbar.LENGTH_LONG)
+                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.dark_blue))
+                    .show();
 
         participantsGroup.removeAllViews();
         for (String participant : item.getParticipants()) {
@@ -82,13 +105,6 @@ public class AddMeetingFragment extends Fragment {
             participantsGroup.addView(chip, participantsGroup.getChildCount());
             chip.setOnCloseIconClickListener(v -> mViewModel.removeParticipant(participant));
         }
-
-        participantsField.setText(item.getParticipant());
-        participantsField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        participantsField.setOnEditorActionListener((v, actionId, event) -> {
-            mViewModel.addParticipant(participantsField.getText());
-            return true;
-        });
 
         bindTimeButton(start, item.getStartHour(), item.getStartMinute(), true);
         bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);

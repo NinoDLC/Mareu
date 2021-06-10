@@ -82,7 +82,6 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     private MainFragmentViewState toViewState(@NonNull Meeting meeting) {
-        if (meeting.getRoom() == null) throw new NullPointerException("null MeetingRoom object");
         return new MainFragmentViewState(
                 meeting.getId(),
                 MessageFormat.format("{0} - {1}",
