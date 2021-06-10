@@ -41,7 +41,7 @@ public class AddMeetingFragment extends Fragment {
         return view;
     }
 
-    void bindAndInitView(View view, AddMeetingFragmentViewState item, LayoutInflater inflater) {
+    void bindAndInitView(@NonNull View view, @NonNull AddMeetingFragmentViewState item, @NonNull LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.add_meeting_owner);
         TextInputEditText subject = view.findViewById(R.id.add_meeting_subject_field);

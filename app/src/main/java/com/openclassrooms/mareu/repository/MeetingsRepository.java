@@ -18,9 +18,7 @@ import static com.openclassrooms.mareu.utils.initMeetings;
 public class MeetingsRepository {
 
     private int mNextMeetingId;
-
     private final List<Meeting> mMeetings = new ArrayList<>();
-
     private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>();
 
     public MeetingsRepository() {

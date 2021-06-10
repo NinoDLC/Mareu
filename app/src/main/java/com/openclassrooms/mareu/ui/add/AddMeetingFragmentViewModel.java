@@ -3,6 +3,7 @@ package com.openclassrooms.mareu.ui.add;
 import android.text.Editable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,6 +24,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private static final String SELECT_ROOM = "Select a room";
     private static final String EMAIL_ERROR = "Enter a valid email address";
     private static final String SUBJECT_ERROR = "Set a topic";
+    private static final String ALREADY_AN_ATTENDEE = "already an attendee";
+    private static final String STOP_BEFORE_START = "stop before start";
+    private static final String NO_MEETING_ROOM = "no meeting room";
+    private static final String ROOM_TOO_SMALL = "room too small";
+    private static final String ROOM_NOT_FREE = "room not free";
 
     private final MeetingsRepository mRepository;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
@@ -32,7 +38,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private LocalDateTime mStart;
     private LocalDateTime mStop;
     private Editable mParticipant;
-    private HashSet<String> mParticipants;
+    private final HashSet<String> mParticipants;
     private MeetingRoom mRoom;
     private List<MeetingRoom> mValidRooms;
     private String mParticipantError;
@@ -43,19 +49,34 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mRepository = meetingRepository;
 
         mId = mRepository.getNextMeetingId();
+        if (mRepository.getMeetingById(mId) != null)
+            throw new IllegalStateException("Attributed id already in use");
+
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
         mStop = mStart.plusMinutes(30);
         mParticipants = new HashSet<>(0);
         mValidRooms = getValidRooms(toMeeting());
-        if (mValidRooms.size() > 0) mRoom = mValidRooms.get(0);
+        if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
+        mGeneralError = null;
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
+    @Nullable
     private Meeting toMeeting() {
-        return new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mSubject, mStart, mStop, mRoom);
+        mGeneralError = null;
+        if (mStop.isBefore(mStart)) {
+            mGeneralError = STOP_BEFORE_START;
+            return null;
+        }
+        if (mRoom == null) mGeneralError = NO_MEETING_ROOM;
+        else if (mParticipants.size() > mRoom.getCapacity()) mGeneralError = ROOM_TOO_SMALL;
+        Meeting meeting = new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mSubject, mStart, mStop, mRoom);
+        if (!isRoomFree(meeting)) mGeneralError = ROOM_NOT_FREE;
+        return meeting;
     }
 
+    @NonNull
     private AddMeetingFragmentViewState toViewState() {
         return new AddMeetingFragmentViewState(
                 String.valueOf(mId),
@@ -76,13 +97,15 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 mGeneralError);
     }
 
-    CharSequence[] validRoomNames() {
+    @NonNull
+    private CharSequence[] validRoomNames() {
         CharSequence[] names = new CharSequence[mValidRooms.size()];
         for (MeetingRoom room : mValidRooms)
             names[mValidRooms.indexOf(room)] = room.getName();
         return names;
     }
 
+    @NonNull
     public LiveData<AddMeetingFragmentViewState> getAddMeetingFragmentItem() {
         return mAddMeetingFragmentItemMutableLiveData;
     }
@@ -99,49 +122,53 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    public void setSubject(Editable editable) {
-        if (editable == null) mSubjectError = SUBJECT_ERROR;
-        else {
-            mSubjectError = null;
-            mSubject = editable.toString();
-            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+    public void setSubject(@Nullable Editable editable) {
+        mSubjectError = null;
+        if (editable == null) {
+            mSubjectError = SUBJECT_ERROR;
+            return;
         }
+        mSubject = editable.toString();
+        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     public void addParticipant(@NonNull Editable editable) {
+        mParticipantError = null;
+        mParticipant = editable;
         String string = editable.toString().trim();
-        if (utils.isValidEmail(string)) {
-            mParticipants = new HashSet<>(mParticipants);
-            mParticipants.add(editable.toString());
+
+        if (string.isEmpty()) return;
+        if (!utils.isValidEmail(string)) mParticipantError = EMAIL_ERROR;
+        if (inParticipants(string)) mParticipantError = ALREADY_AN_ATTENDEE;
+        if (mParticipantError == null) {
+            mParticipants.add(string);
             mParticipant = null;
             mValidRooms = getValidRooms(toMeeting());
-            mParticipantError = null;
-        } else {
-            mParticipantError = string.isEmpty() ? null : EMAIL_ERROR;
-            mParticipant = editable;
         }
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    public void removeParticipant(String participant) {
-        mParticipants = new HashSet<>(mParticipants);
+    private boolean inParticipants(@NonNull String participant) {
+        return (participant.equals(PHONE_OWNER_EMAIL) || mParticipants.contains(participant));
+    }
+
+    public void removeParticipant(@NonNull String participant) {
         mParticipants.remove(participant);
         mValidRooms = getValidRooms(toMeeting());
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    // todo this could be a livedata
-    private boolean isRoomFree(Meeting meeting) {
+    private boolean isRoomFree(@NonNull Meeting meeting) {
         for (Meeting m : getRoomMeetings(meeting.getRoom())) {
-            if (m.getStart().isBefore(meeting.getStop())
-                    && m.getStop().isAfter(meeting.getStart())
-                    && meeting.getId() != m.getId()
+            if (m.getStart().isBefore(meeting.getStop()) &&
+                    m.getStop().isAfter(meeting.getStart())
             ) return false;
         }
         return true;
     }
 
-    private List<Meeting> getRoomMeetings(MeetingRoom room) {
+    @NonNull
+    private List<Meeting> getRoomMeetings(@NonNull MeetingRoom room) {
         List<Meeting> repoMeetings = mRepository.getMeetings().getValue();
         List<Meeting> roomMeetings = new ArrayList<>();
         if (repoMeetings == null) return roomMeetings;
@@ -152,10 +179,12 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return roomMeetings;
     }
 
-    private List<MeetingRoom> getValidRooms(@NonNull Meeting meeting) {
+    @NonNull
+    private List<MeetingRoom> getValidRooms(@Nullable Meeting meeting) {
+        List<MeetingRoom> list = new ArrayList<>();
+        if (meeting == null) return list;
         int seats = meeting.getParticipants().size() + 1;  // account for owner also
         int smallestFittingCapacity = Integer.MAX_VALUE;
-        List<MeetingRoom> list = new ArrayList<>();
 
         for (MeetingRoom room : MeetingRoom.values()) {
             if (isRoomFree(meeting) && room.getCapacity() >= seats)
@@ -168,32 +197,12 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     }
 
     public boolean validate() {
-        if (mRepository.getMeetingById(mId) != null) {
-            mGeneralError = "meeting id already in use";
+        Meeting meeting = toMeeting();
+        if (mGeneralError != null || mParticipantError != null || mSubjectError != null) {
+            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
             return false;
         }
-        if (mStop.isBefore(mStart)) {
-            mGeneralError = "can't stop before starting";
-            return false;
-        }
-        if (mRoom == null) {
-            mGeneralError = "no meeting room set";
-            return false;
-        }
-        if (!isRoomFree(toMeeting())) {
-            mGeneralError = "room is not free";
-            return false;
-        }
-        for (String email : mParticipants) {
-            if (email.equals(PHONE_OWNER_EMAIL)) {
-                mGeneralError = "meeting owner also in participants";
-                return false;
-            }
-        }
-        if (mParticipants.size() > mRoom.getCapacity()) {
-            mGeneralError = "meeting room is too small";
-            return false;
-        }
-        return mRepository.createMeeting(toMeeting());
+        if (meeting == null) return false;
+        return mRepository.createMeeting(meeting);
     }
 }
