@@ -34,10 +34,12 @@ public class MasterDetailRepository {
         }
     }
 
+    @NonNull
     public MutableLiveData<Fragment> getMasterFragment() {
         return masterFragmentMutableLiveData;
     }
 
+    @NonNull
     public MutableLiveData<Fragment> getDetailFragment() {
         return detailFragmentMutableLiveData;
     }

@@ -11,7 +11,7 @@ import com.openclassrooms.mareu.repository.MasterDetailRepository;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MasterDetailRepository mRepo;
+    private final MasterDetailRepository mRepo = ViewModelFactory.getInstance().getMasterDetailRepositoryInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
         boolean landscapeTabletLayout = findViewById(R.id.detail) != null;
         int viewMaster = R.id.master;
         int viewDetail = landscapeTabletLayout ? R.id.detail : viewMaster;
-
-        mRepo = ViewModelFactory.getInstance().getMasterDetailRepositoryInstance();
 
         if (savedInstanceState == null) mRepo.setCurrentId(-1);
 

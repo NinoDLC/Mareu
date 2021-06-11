@@ -40,6 +40,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
                 });
     }
 
+    @NonNull
     public LiveData<ShowMeetingFragmentViewState> getShowMeetingFragmentItem() {
         return mShowMeetingFragmentItemLiveData;
     }

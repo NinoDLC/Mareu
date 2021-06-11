@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu;
 
+import androidx.annotation.NonNull;
+
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -16,15 +18,16 @@ public final class utils {
     private static final String REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    public static String niceTimeFormat(LocalDateTime localDateTime) {
+    @NonNull
+    public static String niceTimeFormat(@NonNull LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("kk'h'mm"));
     }
 
-    public static boolean isValidEmail(String string) {
+    public static boolean isValidEmail(@NonNull String string) {
         return PATTERN.matcher(string).matches();
     }
 
-    public static void initMeetings(MeetingsRepository repo) {
+    public static void initMeetings(@NonNull MeetingsRepository repo) {
         repo.createMeeting(new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 9, 8, 30, 0), LocalDateTime.of(2021, 6, 9, 9, 35, 0), MeetingRoom.values()[3]));
         repo.createMeeting(new Meeting(2, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 9, 16, 15, 0), LocalDateTime.of(2021, 6, 9, 16, 40, 0), MeetingRoom.values()[1]));
         repo.createMeeting(new Meeting(3, "jack@lamzone.org", new HashSet<>(Arrays.asList("hans@buymore.fr", "fred@nerdzherdz.com")), "Project xXx", LocalDateTime.of(2021, 6, 9, 17, 15, 0), LocalDateTime.of(2021, 6, 9, 18, 5, 0), MeetingRoom.values()[6]));

@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.copyOf;
-
 public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
@@ -67,6 +65,9 @@ public class MainFragmentViewModel extends ViewModel {
         return mMutableMeetingsLiveData;
     }
 
+    //todo time filter doesn't seem to work anymore
+
+    @NonNull
     private List<MainFragmentViewState> filterMeetings(List<Meeting> meetings, LocalDateTime timeFilter, boolean[] roomFilter) {
         if (meetings == null || roomFilter == null)
             throw new IllegalStateException("uninitialized LiveData");
@@ -81,6 +82,7 @@ public class MainFragmentViewModel extends ViewModel {
         return itemsList;
     }
 
+    @NonNull
     private MainFragmentViewState toViewState(@NonNull Meeting meeting) {
         return new MainFragmentViewState(
                 meeting.getId(),
@@ -103,6 +105,7 @@ public class MainFragmentViewModel extends ViewModel {
         mMeetingsRepository.removeMeetingById(id);
     }
 
+    @NonNull
     public CharSequence[] getMeetingRoomNames() {
         CharSequence[] names = new CharSequence[MeetingRoom.values().length];
         for (MeetingRoom meetingRoom : MeetingRoom.values())
@@ -110,20 +113,21 @@ public class MainFragmentViewModel extends ViewModel {
         return names;
     }
 
+    @NonNull
     public LiveData<boolean[]> getRoomFilter() {
         return mSelectedRoomsMutableLivedata;
     }
 
     public void resetRoomFilter() {
-        boolean[] state = new boolean[MeetingRoom.values().length];
+        boolean[] state = mSelectedRoomsMutableLivedata.getValue();
+        if (state == null) throw new IllegalStateException("uninitialized room filter");
         Arrays.fill(state, true);
         mSelectedRoomsMutableLivedata.setValue(state);
     }
 
     public void setRoomFilter(int position, boolean checked) {
-        boolean[] temp = mSelectedRoomsMutableLivedata.getValue();
-        if (temp == null) throw new IllegalStateException("uninitialized room filter");
-        boolean[] state = copyOf(temp, MeetingRoom.values().length);
+        boolean[] state = mSelectedRoomsMutableLivedata.getValue();
+        if (state == null) throw new IllegalStateException("uninitialized room filter");
         state[position] = checked;
         mSelectedRoomsMutableLivedata.setValue(state);
     }

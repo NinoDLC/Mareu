@@ -26,6 +26,7 @@ public class MainFragment extends Fragment {
     private MainFragmentAdapter mAdapter;
     private boolean[] mSelectedRooms;
 
+    @NonNull
     public static MainFragment newInstance() {
         return new MainFragment();
     }

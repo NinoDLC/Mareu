@@ -31,6 +31,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     @NonNull
     private final MeetingsRepository meetingRepository;
+    @NonNull
     private final MasterDetailRepository mMasterDetailRepository;
 
     private ViewModelFactory(@NonNull MeetingsRepository meetingRepository,
@@ -53,6 +54,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
 
+    @NonNull
     public MasterDetailRepository getMasterDetailRepositoryInstance(){
         return mMasterDetailRepository;
     }

@@ -46,7 +46,7 @@ public class AddMeetingFragment extends Fragment {
         return view;
     }
 
-    void bindAndInitView(@NonNull View view, @NonNull AddMeetingFragmentViewState item, @NonNull LayoutInflater inflater) {
+    void bindAndInitView(View view, @NonNull AddMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.add_meeting_owner);
         TextInputEditText subject = view.findViewById(R.id.add_meeting_subject_field);
@@ -112,7 +112,7 @@ public class AddMeetingFragment extends Fragment {
         create.setOnClickListener(v -> mViewModel.validate());
     }
 
-    void bindRoomButton(Button room, CharSequence[] freeMeetingRooms) {
+    void bindRoomButton(@NonNull Button room, @NonNull CharSequence[] freeMeetingRooms) {
         room.setOnClickListener(
                 view -> new AlertDialog.Builder(requireActivity())
                         .setTitle(R.string.free_rooms_dialog_title)
@@ -123,7 +123,7 @@ public class AddMeetingFragment extends Fragment {
         );
     }
 
-    void bindTimeButton(Button button, int hour, int minute, boolean isStartButton) {
+    void bindTimeButton(@NonNull Button button, int hour, int minute, boolean isStartButton) {
         button.setOnClickListener(view -> new TimePickerDialog(
                 requireContext(),
                 (v, h, m) -> mViewModel.setTime(isStartButton, h, m),

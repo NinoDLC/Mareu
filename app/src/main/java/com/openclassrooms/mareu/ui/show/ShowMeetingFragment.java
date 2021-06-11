@@ -20,6 +20,7 @@ import com.openclassrooms.mareu.ViewModelFactory;
 public class ShowMeetingFragment extends Fragment {
     private ShowMeetingFragmentViewModel mViewModel;
 
+    @NonNull
     public static ShowMeetingFragment newInstance() {
         return new ShowMeetingFragment();
     }
@@ -27,7 +28,6 @@ public class ShowMeetingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ShowMeetingFragmentViewModel.class);
     }
 
@@ -40,7 +40,7 @@ public class ShowMeetingFragment extends Fragment {
         return view;
     }
 
-    void bindAndInitView(View view, ShowMeetingFragmentViewState item, LayoutInflater inflater) {
+    void bindAndInitView(View view, @NonNull ShowMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.show_meeting_owner);
         TextView subject = view.findViewById(R.id.show_meeting_subject);
