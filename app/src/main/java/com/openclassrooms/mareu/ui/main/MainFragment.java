@@ -78,13 +78,21 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-    // todo tint filter icons if a filter is active ?
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    /* todo tint filter icons if a filter is active. cumbersome.
+    tintIcon(R.drawable.ic_baseline_location_on_24, mViewModel.getRoomFilterColor());
+    public void tintIcon(int resId, int color) {
+        Context context = requireContext();
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), resId, context.getTheme());
+        assert drawable != null;
+        drawable.setTint(ContextCompat.getColor(context, color));
+    }
+    */
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
@@ -105,7 +113,6 @@ public class MainFragment extends Fragment {
                     return false;
                 }
         );
-
         menu.findItem(R.id.filter_room).setOnMenuItemClickListener(
                 item -> {
                     new AlertDialog.Builder(requireContext())

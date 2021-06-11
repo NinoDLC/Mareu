@@ -1,7 +1,5 @@
 package com.openclassrooms.mareu.ui.main;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
