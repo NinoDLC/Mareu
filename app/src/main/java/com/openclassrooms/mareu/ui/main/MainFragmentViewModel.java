@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu.ui.main;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -65,19 +67,25 @@ public class MainFragmentViewModel extends ViewModel {
         return mMutableMeetingsLiveData;
     }
 
-    //todo time filter doesn't seem to work anymore
-
     @NonNull
     private List<MainFragmentViewState> filterMeetings(List<Meeting> meetings, LocalDateTime timeFilter, boolean[] roomFilter) {
         if (meetings == null || roomFilter == null)
             throw new IllegalStateException("uninitialized LiveData");
 
         List<MainFragmentViewState> itemsList = new ArrayList<>();
-        for (Meeting meeting : meetings) {
-            if (roomFilter[meeting.getRoom().ordinal()] && (
-                    timeFilter == null ||
-                            (meeting.getStart().isBefore(timeFilter) && meeting.getStop().isAfter(timeFilter))))
-                itemsList.add(toViewState(meeting));
+
+        if (timeFilter == null) {
+            for (Meeting meeting : meetings) {
+                if (roomFilter[meeting.getRoom().ordinal()])
+                    itemsList.add(toViewState(meeting));
+            }
+        } else {
+            for (Meeting meeting : meetings) {
+                if (roomFilter[meeting.getRoom().ordinal()]
+                        && meeting.getStart().isBefore(timeFilter)
+                        && meeting.getStop().isAfter(timeFilter))
+                    itemsList.add(toViewState(meeting));
+            }
         }
         return itemsList;
     }
@@ -109,7 +117,7 @@ public class MainFragmentViewModel extends ViewModel {
     public CharSequence[] getMeetingRoomNames() {
         CharSequence[] names = new CharSequence[MeetingRoom.values().length];
         for (MeetingRoom meetingRoom : MeetingRoom.values())
-            names[meetingRoom.ordinal()]=meetingRoom.getName();
+            names[meetingRoom.ordinal()] = meetingRoom.getName();
         return names;
     }
 
@@ -119,8 +127,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public void resetRoomFilter() {
-        boolean[] state = mSelectedRoomsMutableLivedata.getValue();
-        if (state == null) throw new IllegalStateException("uninitialized room filter");
+        boolean[] state = new boolean[MeetingRoom.values().length];
         Arrays.fill(state, true);
         mSelectedRoomsMutableLivedata.setValue(state);
     }
