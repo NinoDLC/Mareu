@@ -48,7 +48,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(ShowMeetingFragmentViewModel.class)) {
             return (T) new ShowMeetingFragmentViewModel(meetingRepository, mMasterDetailRepository);
         } else if (modelClass.isAssignableFrom(AddMeetingFragmentViewModel.class)) {
-            return (T) new AddMeetingFragmentViewModel(meetingRepository);
+            return (T) new AddMeetingFragmentViewModel(meetingRepository, mMasterDetailRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

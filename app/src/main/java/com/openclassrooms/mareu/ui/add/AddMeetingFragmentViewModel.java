@@ -1,17 +1,14 @@
 package com.openclassrooms.mareu.ui.add;
 
-import android.app.Activity;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
+import com.openclassrooms.mareu.repository.MasterDetailRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -32,7 +29,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private static final String ROOM_TOO_SMALL = "room too small";
     private static final String ROOM_NOT_FREE = "room not free";
 
-    private final MeetingsRepository mRepository;
+    private final MeetingsRepository mMeetingRepo;
+    private final MasterDetailRepository mMasterDetailRepo;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     private final int mId;
@@ -46,11 +44,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mSubjectError;
     private String mGeneralError;
 
-    public AddMeetingFragmentViewModel(@NonNull MeetingsRepository meetingRepository) {
-        mRepository = meetingRepository;
+    public AddMeetingFragmentViewModel(
+            @NonNull MeetingsRepository meetingRepository,
+            @NonNull MasterDetailRepository masterDetailRepository) {
+        mMeetingRepo = meetingRepository;
+        mMasterDetailRepo = masterDetailRepository;
 
-        mId = mRepository.getNextMeetingId();
-        if (mRepository.getMeetingById(mId) != null)
+        mId = mMeetingRepo.getNextMeetingId();
+        if (mMeetingRepo.getMeetingById(mId) != null)
             throw new IllegalStateException(String.format("Attributed id already in use %d", mId));
 
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
@@ -165,7 +166,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     @NonNull
     private List<Meeting> getRoomMeetings(@NonNull MeetingRoom room) {
-        List<Meeting> repoMeetings = mRepository.getMeetings().getValue();
+        List<Meeting> repoMeetings = mMeetingRepo.getMeetings().getValue();
         List<Meeting> roomMeetings = new ArrayList<>();
         if (repoMeetings == null) return roomMeetings;
         for (Meeting meeting : repoMeetings) {
@@ -192,13 +193,13 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return list;
     }
 
-    public void validate(MainActivity activity) {
+    public void validate() {
         Meeting meeting = toMeeting();
         if (mGeneralError != null || mParticipantError != null || mSubjectError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
             return;
         }
         if (meeting == null) return;
-        if (mRepository.createMeeting(meeting)) activity.onBackPressed();
+        if (mMeetingRepo.createMeeting(meeting)) mMasterDetailRepo.setCurrentId(-1);
     }
 }

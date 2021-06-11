@@ -22,7 +22,6 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
@@ -110,7 +109,7 @@ public class AddMeetingFragment extends Fragment {
         bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);
         bindRoomButton(room, item.getFreeMeetingRoomNames());
 
-        create.setOnClickListener(v -> mViewModel.validate((MainActivity) requireActivity()));
+        create.setOnClickListener(v -> mViewModel.validate());
     }
 
     void bindRoomButton(Button room, CharSequence[] freeMeetingRooms) {
