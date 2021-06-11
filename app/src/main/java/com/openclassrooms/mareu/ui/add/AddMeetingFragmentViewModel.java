@@ -1,11 +1,15 @@
 package com.openclassrooms.mareu.ui.add;
 
+import android.app.Activity;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -188,13 +192,13 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return list;
     }
 
-    public boolean validate() {
+    public void validate(MainActivity activity) {
         Meeting meeting = toMeeting();
         if (mGeneralError != null || mParticipantError != null || mSubjectError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
-            return false;
+            return;
         }
-        if (meeting == null) return false;
-        return mRepository.createMeeting(meeting);
+        if (meeting == null) return;
+        if (mRepository.createMeeting(meeting)) activity.onBackPressed();
     }
 }

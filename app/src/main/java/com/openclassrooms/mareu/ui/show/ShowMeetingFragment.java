@@ -20,6 +20,10 @@ import com.openclassrooms.mareu.ViewModelFactory;
 public class ShowMeetingFragment extends Fragment {
     private ShowMeetingFragmentViewModel mViewModel;
 
+    public static ShowMeetingFragment newInstance() {
+        return new ShowMeetingFragment();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

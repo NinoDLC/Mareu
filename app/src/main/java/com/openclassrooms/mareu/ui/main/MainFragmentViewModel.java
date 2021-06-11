@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
+import com.openclassrooms.mareu.repository.MasterDetailRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -23,7 +23,7 @@ import static java.util.Arrays.copyOf;
 public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
-    private final CurrentMeetingIdRepository mCurrentMeetingIdRepository;
+    private final MasterDetailRepository mMasterDetailRepository;
 
     private final MediatorLiveData<List<MainFragmentViewState>> mMutableMeetingsLiveData = new MediatorLiveData<>();
 
@@ -33,9 +33,9 @@ public class MainFragmentViewModel extends ViewModel {
 
     public MainFragmentViewModel(
             @NonNull MeetingsRepository meetingsRepository,
-            @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
+            @NonNull MasterDetailRepository masterDetailRepository) {
         mMeetingsRepository = meetingsRepository;
-        mCurrentMeetingIdRepository = currentMeetingIdRepository;
+        mMasterDetailRepository = masterDetailRepository;
         mMeetingListMutableLivedata = mMeetingsRepository.getMeetings();
 
         resetRoomFilter();
@@ -96,7 +96,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public void setDetailId(int id) {
-        mCurrentMeetingIdRepository.setCurrentId(id);
+        mMasterDetailRepository.setCurrentId(id);
     }
 
     protected void deleteButtonClicked(int id) {

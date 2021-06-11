@@ -6,7 +6,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.model.Meeting;
-import com.openclassrooms.mareu.repository.CurrentMeetingIdRepository;
+import com.openclassrooms.mareu.repository.MasterDetailRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -18,11 +18,11 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
-            @NonNull CurrentMeetingIdRepository currentMeetingIdRepository) {
+            @NonNull MasterDetailRepository masterDetailRepository) {
         mRepository = meetingRepository;
 
         mShowMeetingFragmentItemLiveData.addSource(
-                currentMeetingIdRepository.getCurrentIdMutableLiveData(),
+                masterDetailRepository.getCurrentDetailIdMutableLiveData(),
                 id -> {
                     Meeting meeting = mRepository.getMeetingById(id);
                     if (meeting == null)

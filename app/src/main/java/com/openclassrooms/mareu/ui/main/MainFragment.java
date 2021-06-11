@@ -26,6 +26,11 @@ public class MainFragment extends Fragment {
     private MainFragmentAdapter mAdapter;
     private boolean[] mSelectedRooms;
 
+    public static MainFragment newInstance() {
+        return new MainFragment();
+    }
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +44,6 @@ public class MainFragment extends Fragment {
                     @Override
                     public void itemClicked(int id) {
                         mViewModel.setDetailId(id);
-                        mMainActivity.showInDetail();
                     }
 
                     @Override
@@ -65,7 +69,7 @@ public class MainFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        view.findViewById(R.id.fab).setOnClickListener(v -> mMainActivity.newInDetail());
+        view.findViewById(R.id.fab).setOnClickListener(v -> mViewModel.setDetailId(0));
 
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
         recyclerView.setAdapter(mAdapter);

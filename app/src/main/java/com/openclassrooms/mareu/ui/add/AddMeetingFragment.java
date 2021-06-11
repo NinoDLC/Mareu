@@ -14,21 +14,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
 public class AddMeetingFragment extends Fragment {
     private AddMeetingFragmentViewModel mViewModel;
+
+    public static AddMeetingFragment newInstance() {
+        return new AddMeetingFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,12 +60,14 @@ public class AddMeetingFragment extends Fragment {
         Button room = view.findViewById(R.id.add_meeting_room);
         TextInputLayout subjectTil = view.findViewById(R.id.add_meeting_subject_til);
         TextInputLayout participantTil = view.findViewById(R.id.add_meeting_participants_til);
+        TextView error = view.findViewById(R.id.general_error);
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
         start.setText(item.getStartAsText());
         end.setText(item.getEndAsText());
         room.setText(item.getRoomName());
+        error.setText(item.getGeneralError());
 
         subject.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         subjectTil.setError(item.getSubjectError());
@@ -93,11 +98,6 @@ public class AddMeetingFragment extends Fragment {
                 });
         participantTil.setError(item.getParticipantError());
 
-        if (item.getGeneralError() != null)
-            Snackbar.make(view, item.getGeneralError(), Snackbar.LENGTH_LONG)
-                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.dark_blue))
-                    .show();
-
         participantsGroup.removeAllViews();
         for (String participant : item.getParticipants()) {
             Chip chip = (Chip) inflater.inflate(R.layout.chip_participant_add, participantsGroup, false);
@@ -110,9 +110,7 @@ public class AddMeetingFragment extends Fragment {
         bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);
         bindRoomButton(room, item.getFreeMeetingRoomNames());
 
-        create.setOnClickListener(v -> {
-            if (mViewModel.validate()) requireActivity().onBackPressed();
-        });
+        create.setOnClickListener(v -> mViewModel.validate((MainActivity) requireActivity()));
     }
 
     void bindRoomButton(Button room, CharSequence[] freeMeetingRooms) {
