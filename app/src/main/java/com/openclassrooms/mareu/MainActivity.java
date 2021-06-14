@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.openclassrooms.mareu.repository.MasterDetailRepository;
 
+import static com.openclassrooms.mareu.utils.initMeetings;
+
 public class MainActivity extends AppCompatActivity {
 
     private final MasterDetailRepository mRepo = ViewModelFactory.getInstance().getMasterDetailRepositoryInstance();
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         boolean landscapeTabletLayout = findViewById(R.id.detail) != null;
         int viewMaster = R.id.master;
         int viewDetail = landscapeTabletLayout ? R.id.detail : viewMaster;
+
+        initMeetings(ViewModelFactory.getInstance().getMeetingRepository());  // Unsorted but valid Meetings list.
 
         if (savedInstanceState == null) mRepo.setCurrentId(-1);
 

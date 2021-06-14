@@ -32,12 +32,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     private final MeetingsRepository meetingRepository;
     @NonNull
-    private final MasterDetailRepository mMasterDetailRepository;
+    private final MasterDetailRepository masterDetailRepository;
 
     private ViewModelFactory(@NonNull MeetingsRepository meetingRepository,
                              @NonNull MasterDetailRepository masterDetailRepository) {
         this.meetingRepository = meetingRepository;
-        this.mMasterDetailRepository = masterDetailRepository;
+        this.masterDetailRepository = masterDetailRepository;
     }
 
     @SuppressWarnings("unchecked")
@@ -45,18 +45,23 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MainFragmentViewModel.class)) {
-            return (T) new MainFragmentViewModel(meetingRepository, mMasterDetailRepository);
+            return (T) new MainFragmentViewModel(meetingRepository, masterDetailRepository);
         } else if (modelClass.isAssignableFrom(ShowMeetingFragmentViewModel.class)) {
-            return (T) new ShowMeetingFragmentViewModel(meetingRepository, mMasterDetailRepository);
+            return (T) new ShowMeetingFragmentViewModel(meetingRepository, masterDetailRepository);
         } else if (modelClass.isAssignableFrom(AddMeetingFragmentViewModel.class)) {
-            return (T) new AddMeetingFragmentViewModel(meetingRepository, mMasterDetailRepository);
+            return (T) new AddMeetingFragmentViewModel(meetingRepository, masterDetailRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
 
+    // todo: Nino, t'as mieux?
     @NonNull
-    public MasterDetailRepository getMasterDetailRepositoryInstance(){
-        return mMasterDetailRepository;
+    public MasterDetailRepository getMasterDetailRepositoryInstance() {
+        return masterDetailRepository;
     }
 
+    @NonNull
+    public MeetingsRepository getMeetingRepository() {
+        return meetingRepository;
+    }
 }

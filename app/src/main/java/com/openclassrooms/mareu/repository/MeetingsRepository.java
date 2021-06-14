@@ -12,24 +12,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.openclassrooms.mareu.utils.initMeetings;
-
 
 public class MeetingsRepository {
 
     private int mNextMeetingId;
     private final List<Meeting> mMeetings = new ArrayList<>();
     private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>();
-
-    public MeetingsRepository() {
-        initMeetings(this);  // Unsorted but valid Meetings list.
-        mNextMeetingId = 21;
-        sortMeetings();
-    }
-
-    private void sortMeetings() {
-        Collections.sort(mMeetings, Meeting::compareTo);
-    }
 
     @NonNull
     public LiveData<List<Meeting>> getMeetings() {
@@ -51,7 +39,7 @@ public class MeetingsRepository {
 
     public boolean createMeeting(@NonNull Meeting meeting) {
         if (!mMeetings.add(meeting)) return false;
-        sortMeetings();
+        Collections.sort(mMeetings, Meeting::compareTo);
         mMeetingListMutableLiveData.setValue(mMeetings);
         return true;
     }
