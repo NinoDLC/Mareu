@@ -12,28 +12,25 @@ import com.openclassrooms.mareu.utils;
 
 public class ShowMeetingFragmentViewModel extends ViewModel {
 
-    private final MeetingsRepository mRepository;
-
     private final MediatorLiveData<ShowMeetingFragmentViewState> mShowMeetingFragmentItemLiveData = new MediatorLiveData<>();
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
             @NonNull MasterDetailRepository masterDetailRepository) {
-        mRepository = meetingRepository;
 
         mShowMeetingFragmentItemLiveData.addSource(
                 masterDetailRepository.getCurrentDetailIdMutableLiveData(),
                 id -> {
-                    Meeting meeting = mRepository.getMeetingById(id);
+                    Meeting meeting = meetingRepository.getMeetingById(id);
                     if (meeting == null)
                         throw new NullPointerException(String.format("Non-existent meeting, id %d", id));
 
                     mShowMeetingFragmentItemLiveData.setValue(new ShowMeetingFragmentViewState(
                             String.valueOf(meeting.getId()),
                             meeting.getOwner(),
-                            meeting.getSubject(),
+                            meeting.getTopic(),
                             utils.niceTimeFormat(meeting.getStart()),
-                            utils.niceTimeFormat(meeting.getStop()),
+                            utils.niceTimeFormat(meeting.getEnd()),
                             meeting.getRoom().getName(),
                             meeting.getParticipants().toArray(new String[0])
                     ));

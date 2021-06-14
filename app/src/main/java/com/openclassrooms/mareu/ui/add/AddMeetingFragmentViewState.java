@@ -15,7 +15,7 @@ public class AddMeetingFragmentViewState {
     private final int mEndMinute;
     private final CharSequence[] mFreeMeetingRoomNames;
     private final String mParticipantError;
-    private final String mSubjectError;
+    private final String mTopicError;
     private final String mGeneralError;
 
     public AddMeetingFragmentViewState(
@@ -31,7 +31,7 @@ public class AddMeetingFragmentViewState {
             int endMinute,
             CharSequence[] freeMeetingRoomNames,
             String participantError,
-            String subjectError,
+            String topicError,
             String generalError) {
         mId = id;
         mOwner = owner;
@@ -45,7 +45,7 @@ public class AddMeetingFragmentViewState {
         mEndMinute = endMinute;
         mFreeMeetingRoomNames = freeMeetingRoomNames;
         mParticipantError = participantError;
-        mSubjectError = subjectError;
+        mTopicError = topicError;
         mGeneralError = generalError;
     }
 
@@ -97,8 +97,8 @@ public class AddMeetingFragmentViewState {
         return mParticipantError;
     }
 
-    public String getSubjectError() {
-        return mSubjectError;
+    public String getTopicError() {
+        return mTopicError;
     }
 
     public String getGeneralError() {

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class ShowMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
-    private final String mSubject;
+    private final String mTopic;
     private final String mStartText;
     private final String mEndText;
     private final String mRoomName;
@@ -14,14 +14,14 @@ public class ShowMeetingFragmentViewState {
     public ShowMeetingFragmentViewState(
             @NonNull String id,
             @NonNull String owner,
-            @NonNull String subject,
+            @NonNull String topic,
             @NonNull String startText,
             @NonNull String endText,
             @NonNull String roomName,
             @NonNull String[] participants) {
         mId = id;
         mOwner = owner;
-        mSubject = subject;
+        mTopic = topic;
         mStartText = startText;
         mEndText = endText;
         mRoomName = roomName;
@@ -39,8 +39,8 @@ public class ShowMeetingFragmentViewState {
     }
 
     @NonNull
-    public String getSubject() {
-        return mSubject;
+    public String getTopic() {
+        return mTopic;
     }
 
     @NonNull

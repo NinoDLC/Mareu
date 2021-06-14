@@ -81,7 +81,7 @@ public class MainFragmentViewModel extends ViewModel {
             for (Meeting meeting : meetings) {
                 if (roomFilter[meeting.getRoom().ordinal()]
                         && meeting.getStart().isBefore(timeFilter)
-                        && meeting.getStop().isAfter(timeFilter))
+                        && meeting.getEnd().isAfter(timeFilter))
                     itemsList.add(toViewState(meeting));
             }
         }
@@ -94,7 +94,7 @@ public class MainFragmentViewModel extends ViewModel {
                 meeting.getId(),
                 MessageFormat.format("{0} - {1}",
                         utils.niceTimeFormat(meeting.getStart()),
-                        meeting.getSubject()
+                        meeting.getTopic()
                 ),
                 meeting.getOwner(),
                 MessageFormat.format("+{0}", meeting.getParticipants().size()),

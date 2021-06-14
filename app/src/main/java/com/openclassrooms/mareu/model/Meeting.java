@@ -13,19 +13,19 @@ public class Meeting implements Comparable<Meeting> {
     private final int mId;
     private final String mOwner;
     private final Set<String> mParticipants;
-    private final String mSubject;
+    private final String mTopic;
     private final LocalDateTime mStart;
-    private final LocalDateTime mStop;
+    private final LocalDateTime mEnd;
     private final MeetingRoom mRoom;
 
-    public Meeting(int id, @NonNull String owner, @NonNull HashSet<String> participants, @NonNull String subject,
-                   @NonNull LocalDateTime start, @NonNull LocalDateTime stop, @NonNull MeetingRoom room) {
+    public Meeting(int id, @NonNull String owner, @NonNull HashSet<String> participants, @NonNull String topic,
+                   @NonNull LocalDateTime start, @NonNull LocalDateTime end, @NonNull MeetingRoom room) {
         this.mId = id;
         this.mOwner = owner;
         this.mParticipants = Collections.unmodifiableSet(participants);
-        this.mSubject = subject;
+        this.mTopic = topic;
         this.mStart = start;
-        this.mStop = stop;
+        this.mEnd = end;
         this.mRoom = room;
     }
 
@@ -44,8 +44,8 @@ public class Meeting implements Comparable<Meeting> {
     }
 
     @NonNull
-    public String getSubject() {
-        return mSubject;
+    public String getTopic() {
+        return mTopic;
     }
 
     @NonNull
@@ -54,8 +54,8 @@ public class Meeting implements Comparable<Meeting> {
     }
 
     @NonNull
-    public LocalDateTime getStop() {
-        return mStop;
+    public LocalDateTime getEnd() {
+        return mEnd;
     }
 
     @NonNull
@@ -77,14 +77,14 @@ public class Meeting implements Comparable<Meeting> {
                 mRoom == meeting.mRoom &&
                 Objects.equals(mOwner, meeting.mOwner) &&
                 Objects.equals(mParticipants, meeting.mParticipants) &&
-                Objects.equals(mSubject, meeting.mSubject) &&
+                Objects.equals(mTopic, meeting.mTopic) &&
                 Objects.equals(mStart, meeting.mStart) &&
-                Objects.equals(mStop, meeting.mStop);
+                Objects.equals(mEnd, meeting.mEnd);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mId, mOwner, mParticipants, mSubject, mStart, mStop, mRoom);
+        return Objects.hash(mId, mOwner, mParticipants, mTopic, mStart, mEnd, mRoom);
     }
 
     @NonNull
@@ -94,9 +94,9 @@ public class Meeting implements Comparable<Meeting> {
                 "mId=" + mId +
                 ", mOwner='" + mOwner + '\'' +
                 ", mParticipants=" + mParticipants +
-                ", mSubject='" + mSubject + '\'' +
+                ", mTopic='" + mTopic + '\'' +
                 ", mStart=" + mStart +
-                ", mStop=" + mStop +
+                ", mEnd=" + mEnd +
                 ", mMeetingRoomId=" + mRoom +
                 '}';
     }

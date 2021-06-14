@@ -22,7 +22,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private static final String SELECT_ROOM = "Select a room";
     private static final String EMAIL_ERROR = "Enter a valid email address";
-    private static final String SUBJECT_ERROR = "Set a topic";
+    private static final String TOPIC_ERROR = "Set a topic";
     private static final String ALREADY_AN_ATTENDEE = "already an attendee";
     private static final String STOP_BEFORE_START = "stop before start";
     private static final String NO_MEETING_ROOM = "no meeting room";
@@ -34,14 +34,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     private final int mId;
-    private String mSubject;
+    private String mTopic;
     private LocalDateTime mStart;
-    private LocalDateTime mStop;
+    private LocalDateTime mEnd;
     private final HashSet<String> mParticipants;
     private MeetingRoom mRoom;
     private List<MeetingRoom> mValidRooms;
     private String mParticipantError;
-    private String mSubjectError;
+    private String mTopicError;
     private String mGeneralError;
 
     public AddMeetingFragmentViewModel(
@@ -56,27 +56,27 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
-        mStop = mStart.plusMinutes(30);
+        mEnd = mStart.plusMinutes(30);
         mParticipants = new HashSet<>(0);
         mValidRooms = getValidRooms(toMeeting());
         if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
         mGeneralError = null;
-        mSubjectError = null;
+        mTopicError = null;
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
     @Nullable
     private Meeting toMeeting() {
         mGeneralError = null;
-        if (mStop.isBefore(mStart)) {
+        if (mEnd.isBefore(mStart)) {
             mGeneralError = STOP_BEFORE_START;
             return null;
         }
         if (mRoom == null) mGeneralError = NO_MEETING_ROOM;
         else if (mParticipants.size() > mRoom.getCapacity()) mGeneralError = ROOM_TOO_SMALL;
-        Meeting meeting = new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mSubject, mStart, mStop, mRoom);
+        Meeting meeting = new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mTopic, mStart, mEnd, mRoom);
         if (!isRoomFree(meeting)) mGeneralError = ROOM_NOT_FREE;
-        if (mSubject == null || mSubject.isEmpty()) mSubjectError = SUBJECT_ERROR;
+        if (mTopic == null || mTopic.isEmpty()) mTopicError = TOPIC_ERROR;
         return meeting;
     }
 
@@ -86,16 +86,16 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 String.valueOf(mId),
                 PHONE_OWNER_EMAIL,
                 utils.niceTimeFormat(mStart),
-                utils.niceTimeFormat(mStop),
+                utils.niceTimeFormat(mEnd),
                 mRoom != null ? mRoom.getName() : SELECT_ROOM,
                 mParticipants.toArray(new String[0]),
                 mStart.getHour(),
                 mStart.getMinute(),
-                mStop.getHour(),
-                mStop.getMinute(),
+                mEnd.getHour(),
+                mEnd.getMinute(),
                 validRoomNames(),
                 mParticipantError,
-                mSubjectError,
+                mTopicError,
                 mGeneralError);
     }
 
@@ -119,14 +119,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     public void setTime(boolean startButton, int hour, int minute) {
         if (startButton) mStart = LocalDateTime.now().withHour(hour).withMinute(minute);
-        else mStop = LocalDateTime.now().withHour(hour).withMinute(minute);
+        else mEnd = LocalDateTime.now().withHour(hour).withMinute(minute);
         mValidRooms = getValidRooms(toMeeting());
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
-    public void setSubject(@NonNull String string) {
-        mSubject = string;
-        if (!string.isEmpty()) mSubjectError = null;
+    public void setTopic(@NonNull String string) {
+        mTopic = string;
+        if (!string.isEmpty()) mTopicError = null;
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
     }
 
@@ -157,8 +157,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     private boolean isRoomFree(@NonNull Meeting meeting) {
         for (Meeting m : getRoomMeetings(meeting.getRoom())) {
-            if (m.getStart().isBefore(meeting.getStop()) &&
-                    m.getStop().isAfter(meeting.getStart())
+            if (m.getStart().isBefore(meeting.getEnd()) &&
+                    m.getEnd().isAfter(meeting.getStart())
             ) return false;
         }
         return true;
@@ -195,7 +195,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     public void validate() {
         Meeting meeting = toMeeting();
-        if (mGeneralError != null || mParticipantError != null || mSubjectError != null) {
+        if (mGeneralError != null || mParticipantError != null || mTopicError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
             return;
         }

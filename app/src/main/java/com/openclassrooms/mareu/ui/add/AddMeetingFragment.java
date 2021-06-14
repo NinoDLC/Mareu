@@ -49,7 +49,7 @@ public class AddMeetingFragment extends Fragment {
     void bindAndInitView(View view, @NonNull AddMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.add_meeting_owner);
-        TextInputEditText subject = view.findViewById(R.id.add_meeting_subject_field);
+        TextInputEditText topic = view.findViewById(R.id.add_meeting_topic_field);
         ChipGroup participantsGroup = view.findViewById(R.id.add_meeting_participants_group);
         TextInputEditText participantsField = view.findViewById(R.id.add_meeting_participants_field);
         Button start = view.findViewById(R.id.add_meeting_start);
@@ -57,7 +57,7 @@ public class AddMeetingFragment extends Fragment {
         TextView id = view.findViewById(R.id.add_meeting_id);
         FloatingActionButton create = view.findViewById(R.id.add_meeting_create);
         Button room = view.findViewById(R.id.add_meeting_room);
-        TextInputLayout subjectTil = view.findViewById(R.id.add_meeting_subject_til);
+        TextInputLayout topicTil = view.findViewById(R.id.add_meeting_topic_til);
         TextInputLayout participantTil = view.findViewById(R.id.add_meeting_participants_til);
         TextView error = view.findViewById(R.id.general_error);
 
@@ -68,9 +68,9 @@ public class AddMeetingFragment extends Fragment {
         room.setText(item.getRoomName());
         error.setText(item.getGeneralError());
 
-        subject.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        subjectTil.setError(item.getSubjectError());
-        subject.addTextChangedListener(new TextWatcher() {
+        topic.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        topicTil.setError(item.getTopicError());
+        topic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -83,7 +83,7 @@ public class AddMeetingFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                mViewModel.setSubject(s.toString().trim());
+                mViewModel.setTopic(s.toString().trim());
             }
         });
 

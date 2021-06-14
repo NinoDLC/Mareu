@@ -27,19 +27,19 @@
                 android:hint="@string/hint_owner"
                 android:paddingHorizontal="12dp"
                 app:drawableTint="@color/blue"
-                app:layout_constraintBottom_toTopOf="@id/add_meeting_subject_til"
+                app:layout_constraintBottom_toTopOf="@id/add_meeting_topic_til"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/first_names" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/add_meeting_subject_til"
+                android:id="@+id/add_meeting_topic_til"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/fields_horizontal_spacing"
                 android:layout_marginVertical="@dimen/add_fields_spacing"
-                android:hint="@string/hint_subject"
+                android:hint="@string/hint_topic"
                 app:errorEnabled="true"
                 app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_group"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +50,7 @@
                 tools:text="@tools:sample/lorem">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_meeting_subject_field"
+                    android:id="@+id/add_meeting_topic_field"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:singleLine="true" />
@@ -66,7 +66,7 @@
                 app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_til"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_meeting_subject_til" />
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_topic_til" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_meeting_participants_til"

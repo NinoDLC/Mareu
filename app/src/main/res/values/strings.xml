@@ -3,7 +3,7 @@
     <string name="floating_button">Create meeting</string>
     <string name="delete_meeting">Delete Meeting</string>
     <string name="hint_owner">Meeting owner email</string>
-    <string name="hint_subject">Meeting Subject</string>
+    <string name="hint_topic">Meeting topic</string>
     <string name="hint_participant">Add a participant email</string>
     <string name="nothing_to_show_here">Nothing to show here</string>
     <string name="filter_by_room">Displayed meeting rooms</string>

@@ -43,7 +43,7 @@ public class ShowMeetingFragment extends Fragment {
     void bindAndInitView(View view, @NonNull ShowMeetingFragmentViewState item, LayoutInflater inflater) {
 
         TextView owner = view.findViewById(R.id.show_meeting_owner);
-        TextView subject = view.findViewById(R.id.show_meeting_subject);
+        TextView topic = view.findViewById(R.id.show_meeting_topic);
         ChipGroup participantsGroup = view.findViewById(R.id.show_meeting_participants_group);
         TextView start = view.findViewById(R.id.show_meeting_start);
         TextView end = view.findViewById(R.id.show_meeting_end);
@@ -53,7 +53,7 @@ public class ShowMeetingFragment extends Fragment {
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
-        subject.setText(item.getSubject());
+        topic.setText(item.getTopic());
         start.setText(item.getStartText());
         end.setText(item.getEndText());
         room.setText(item.getRoomName());
