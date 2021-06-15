@@ -109,17 +109,31 @@ public class MeetingsRepositoryUnitTests {
     @Test
     public void RemoveMeeting() throws InterruptedException {
         // given
-        Meeting meeting1 = new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]);
-        Meeting meeting2 = new Meeting(2, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1]);
-        repo.createMeeting(meeting1);
+        int meetingId = 2;
+        Meeting meeting2 = new Meeting(meetingId, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1]);
         repo.createMeeting(meeting2);
         List<Meeting> list = LiveDataTestUtils.getOrAwaitValue(repo.getMeetings());
 
         // when
-        repo.removeMeetingById(1);
+        repo.removeMeetingById(meetingId);
 
         // then
-        assertNull(repo.getMeetingById(1));
+        assertNull(repo.getMeetingById(meetingId));
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void DoNotRemoveNonExistentMeeting() throws InterruptedException {
+        // given
+        int meetingId = 2;
+        Meeting meeting2 = new Meeting(meetingId, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1]);
+        repo.createMeeting(meeting2);
+        List<Meeting> list = LiveDataTestUtils.getOrAwaitValue(repo.getMeetings());
+
+        // when
+        repo.removeMeetingById(44);
+
+        // then
         assertEquals(1, list.size());
     }
 }

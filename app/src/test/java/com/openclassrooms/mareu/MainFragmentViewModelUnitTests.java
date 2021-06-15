@@ -6,7 +6,6 @@ import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.repository.MasterDetailRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
-import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,10 +31,14 @@ public class MainFragmentViewModelUnitTests {
         viewModel = new MainFragmentViewModel(meetingsRepository, masterDetailRepository);
     }
 
+
+
+
+
     @Test
-    public void filterMeetingExceptiononNullMeetings(){
+    public void filterMeetingExceptionOnNullMeetings() {
         // given
-        LocalDateTime localDateTimeFilter = LocalDateTime.of(2021,6,15,8,10,0);
+        LocalDateTime localDateTimeFilter = LocalDateTime.of(2021, 6, 15, 8, 10, 0);
         List<Meeting> list = new ArrayList<>();
 
         // when

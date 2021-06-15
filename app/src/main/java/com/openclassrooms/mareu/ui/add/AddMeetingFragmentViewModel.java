@@ -200,6 +200,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
             return;
         }
         if (meeting == null) return;
-        if (mMeetingRepo.createMeeting(meeting)) mMasterDetailRepo.setCurrentId(-1);
+        mMeetingRepo.createMeeting(meeting);
+        mMasterDetailRepo.setCurrentId(-1);
     }
 }

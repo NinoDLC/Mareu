@@ -13,7 +13,6 @@ import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewState;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -70,7 +69,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
     }
 
     @Test
-    public void initialMeetingNotFound() throws InterruptedException {
+    public void initialMeetingNotFound() {
         // given
         int id = 44;
 

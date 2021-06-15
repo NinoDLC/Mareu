@@ -37,11 +37,10 @@ public class MeetingsRepository {
         return null;
     }
 
-    public boolean createMeeting(@NonNull Meeting meeting) {
-        if (!mMeetings.add(meeting)) return false;
+    public void createMeeting(@NonNull Meeting meeting) {
+        mMeetings.add(meeting);
         Collections.sort(mMeetings, Meeting::compareTo);
         mMeetingListMutableLiveData.setValue(mMeetings);
-        return true;
     }
 
     // not using getMeetingById() to be gentler on resource and use that iterator for loop.
