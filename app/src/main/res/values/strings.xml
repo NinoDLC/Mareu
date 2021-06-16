@@ -10,4 +10,5 @@
     <string name="free_rooms_dialog_title">Free rooms list to pick from</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
+    <string name="select_room">Please select room</string>
 </resources>

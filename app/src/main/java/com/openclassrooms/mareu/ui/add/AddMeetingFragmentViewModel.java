@@ -1,11 +1,15 @@
 package com.openclassrooms.mareu.ui.add;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.mareu.MainApplication;
+import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MasterDetailRepository;
@@ -20,6 +24,7 @@ import java.util.List;
 public class AddMeetingFragmentViewModel extends ViewModel {
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
+    // TODO resources
     private static final String SELECT_ROOM = "Select a room";
     private static final String EMAIL_ERROR = "Enter a valid email address";
     private static final String TOPIC_ERROR = "Set a topic";
@@ -29,7 +34,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private static final String ROOM_TOO_SMALL = "room too small";
     private static final String ROOM_NOT_FREE = "room not free";
 
+    @NonNull
+    private final Application application;
+    @NonNull
     private final MeetingsRepository mMeetingRepo;
+    @NonNull
     private final MasterDetailRepository mMasterDetailRepo;
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
@@ -45,8 +54,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mGeneralError;
 
     public AddMeetingFragmentViewModel(
+        @NonNull Application application,
             @NonNull MeetingsRepository meetingRepository,
-            @NonNull MasterDetailRepository masterDetailRepository) {
+            @NonNull MasterDetailRepository masterDetailRepository
+    ) {
+        this.application = application;
         mMeetingRepo = meetingRepository;
         mMasterDetailRepo = masterDetailRepository;
 
@@ -87,7 +99,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 PHONE_OWNER_EMAIL,
                 utils.niceTimeFormat(mStart),
                 utils.niceTimeFormat(mEnd),
-                mRoom != null ? mRoom.getName() : SELECT_ROOM,
+                mRoom != null ? mRoom.getName() : application.getString(R.string.select_room),
                 mParticipants.toArray(new String[0]),
                 mStart.getHour(),
                 mStart.getMinute(),
@@ -184,11 +196,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         int smallestFittingCapacity = Integer.MAX_VALUE;
 
         for (MeetingRoom room : MeetingRoom.values()) {
-            if (isRoomFree(meeting) && room.getCapacity() >= seats)
+            if (isRoomFree(meeting) && room.getCapacity() >= seats) {
                 if (room.getCapacity() < smallestFittingCapacity) {
                     smallestFittingCapacity = room.getCapacity();
                     list.add(0, room);
-                } else list.add(room);
+                } else {
+                    list.add(room);
+                }
+            }
         }
         return list;
     }

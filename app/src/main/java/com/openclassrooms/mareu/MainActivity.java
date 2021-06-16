@@ -13,7 +13,6 @@ import static com.openclassrooms.mareu.utils.initMeetings;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final MasterDetailRepository mRepo = ViewModelFactory.getInstance().getMasterDetailRepositoryInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,23 +25,23 @@ public class MainActivity extends AppCompatActivity {
         boolean landscapeTabletLayout = findViewById(R.id.detail) != null;
         int viewMaster = R.id.master;
         int viewDetail = landscapeTabletLayout ? R.id.detail : viewMaster;
-
-        initMeetings(ViewModelFactory.getInstance().getMeetingRepository());  // Unsorted but valid Meetings list.
-
-        if (savedInstanceState == null) mRepo.setCurrentId(-1);
-
-        mRepo.getMasterFragment().observe(this, fragment -> {
-            fragmentManager.beginTransaction().replace(viewMaster, fragment, null).commit();
-            if (landscapeTabletLayout)
-                fragmentManager.beginTransaction().replace(viewDetail, new Fragment(R.layout.fragment_empty), null).commit();
-        });
-
-        mRepo.getDetailFragment().observe(this, fragment -> fragmentManager.beginTransaction().replace(viewDetail, fragment, null).commit());
+// TODO rework : use a ViewModel (and don't reference fragment in repo)
+//        initMeetings(ViewModelFactory.getInstance().getMeetingRepository());  // Unsorted but valid Meetings list.
+//
+//        if (savedInstanceState == null) mRepo.setCurrentId(-1);
+//
+//        mRepo.getMasterFragment().observe(this, fragment -> {
+//            fragmentManager.beginTransaction().replace(viewMaster, fragment, null).commit();
+//            if (landscapeTabletLayout)
+//                fragmentManager.beginTransaction().replace(viewDetail, new Fragment(R.layout.fragment_empty), null).commit();
+//        });
+//
+//        mRepo.getDetailFragment().observe(this, fragment -> fragmentManager.beginTransaction().replace(viewDetail, fragment, null).commit());
     }
 
     @Override
     public void onBackPressed() {
-        mRepo.setCurrentId(-1);
+        // TODO tkt tu peux faire ça dans al vue
     }
 
     // todo: actually not so great design on big tablets in portrait mode
