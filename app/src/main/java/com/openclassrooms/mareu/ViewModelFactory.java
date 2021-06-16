@@ -1,5 +1,7 @@
 package com.openclassrooms.mareu;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,6 +21,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             synchronized (ViewModelFactory.class) {
                 if (factory == null) {
                     factory = new ViewModelFactory(
+                        MainApplication.getApplication(),
                             new MeetingsRepository(),
                             new MasterDetailRepository()
                     );
@@ -30,12 +33,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     @NonNull
+    private final Application application;
+    @NonNull
     private final MeetingsRepository meetingRepository;
     @NonNull
     private final MasterDetailRepository masterDetailRepository;
 
-    private ViewModelFactory(@NonNull MeetingsRepository meetingRepository,
+    private ViewModelFactory(@NonNull Application application,
+                             @NonNull MeetingsRepository meetingRepository,
                              @NonNull MasterDetailRepository masterDetailRepository) {
+        this.application = application;
         this.meetingRepository = meetingRepository;
         this.masterDetailRepository = masterDetailRepository;
     }
@@ -49,19 +56,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(ShowMeetingFragmentViewModel.class)) {
             return (T) new ShowMeetingFragmentViewModel(meetingRepository, masterDetailRepository);
         } else if (modelClass.isAssignableFrom(AddMeetingFragmentViewModel.class)) {
-            return (T) new AddMeetingFragmentViewModel(meetingRepository, masterDetailRepository);
+            return (T) new AddMeetingFragmentViewModel(application, meetingRepository, masterDetailRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
-    }
-
-    // todo: Nino, t'as mieux?
-    @NonNull
-    public MasterDetailRepository getMasterDetailRepositoryInstance() {
-        return masterDetailRepository;
-    }
-
-    @NonNull
-    public MeetingsRepository getMeetingRepository() {
-        return meetingRepository;
     }
 }

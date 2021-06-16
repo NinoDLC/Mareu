@@ -42,7 +42,7 @@ public class AddMeetingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_meeting, container, false);
-        mViewModel.getAddMeetingFragmentItem().observe(requireActivity(), item -> bindAndInitView(view, item, inflater));
+        mViewModel.getAddMeetingFragmentItem().observe(getViewLifecycleOwner(), item -> bindAndInitView(view, item, inflater));
         return view;
     }
 

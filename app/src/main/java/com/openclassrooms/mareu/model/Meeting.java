@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Meeting implements Comparable<Meeting> {
+public class Meeting {
 
     private final int mId;
     private final String mOwner;
@@ -61,11 +61,6 @@ public class Meeting implements Comparable<Meeting> {
     @NonNull
     public MeetingRoom getRoom() {
         return mRoom;
-    }
-
-    @Override
-    public int compareTo(Meeting o) {
-        return mStart.compareTo(o.mStart);
     }
 
     @Override

@@ -21,7 +21,6 @@ import com.openclassrooms.mareu.ViewModelFactory;
 
 public class MainFragment extends Fragment {
 
-    private MainActivity mMainActivity;
     private MainFragmentViewModel mViewModel;
     private MainFragmentAdapter mAdapter;
     private boolean[] mSelectedRooms;
@@ -29,38 +28,6 @@ public class MainFragment extends Fragment {
     @NonNull
     public static MainFragment newInstance() {
         return new MainFragment();
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // can't use getViewLifecycleOwner() from onCreate()
-        mMainActivity = (MainActivity) requireActivity();
-
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
-        mAdapter = new MainFragmentAdapter(
-                new MainFragmentAdapter.Listener() {
-                    @Override
-                    public void itemClicked(int id) {
-                        mViewModel.setDetailId(id);
-                    }
-
-                    @Override
-                    public void deleteButtonClicked(int id) {
-                        mViewModel.deleteButtonClicked(id);
-                    }
-                }
-        );
-
-        mViewModel.getViewStateListLiveData().observe(mMainActivity, items -> mAdapter.submitList(items));
-        mViewModel.getRoomFilter().observe(
-                mMainActivity, booleans -> {
-                    mSelectedRooms = booleans;
-                    mMainActivity.supportInvalidateOptionsMenu();
-                }
-        );
     }
 
     @Nullable
@@ -75,13 +42,35 @@ public class MainFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
         recyclerView.setAdapter(mAdapter);
 
+        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
+        mAdapter = new MainFragmentAdapter(
+            new MainFragmentAdapter.Listener() {
+                @Override
+                public void itemClicked(int id) {
+                    mViewModel.setDetailId(id);
+                }
+
+                @Override
+                public void deleteButtonClicked(int id) {
+                    mViewModel.deleteButtonClicked(id);
+                }
+            }
+        );
+
+        mViewModel.getViewStateListLiveData().observe(getViewLifecycleOwner(), items -> mAdapter.submitList(items));
+        mViewModel.getRoomFilter().observe(getViewLifecycleOwner(), booleans -> {
+                mSelectedRooms = booleans;
+                requireActivity().invalidateOptionsMenu();
+            }
+        );
+
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     /* todo tint filter icons if a filter is active. cumbersome.

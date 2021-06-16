@@ -92,6 +92,7 @@ public class MainFragmentViewModel extends ViewModel {
     private MainFragmentViewState toViewState(@NonNull Meeting meeting) {
         return new MainFragmentViewState(
                 meeting.getId(),
+                // TODO : Gaffe android
                 MessageFormat.format("{0} - {1}",
                         utils.niceTimeFormat(meeting.getStart()),
                         meeting.getTopic()

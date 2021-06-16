@@ -9,6 +9,7 @@ import com.openclassrooms.mareu.model.Meeting;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class MeetingsRepository {
         return ++mNextMeetingId;
     }
 
+    // Todo à retirer
     @Nullable
     public Meeting getMeetingById(int id) {
         for (Meeting meeting : mMeetings) {
@@ -37,9 +39,20 @@ public class MeetingsRepository {
         return null;
     }
 
+    // Todo à retirer
+    @Nullable
+    public LiveData<Meeting> getMeetingLiveDataById(int id) {
+        for (Meeting meeting : mMeetings) {
+            if (meeting.getId() == id)
+                return meeting;
+        }
+        return null;
+    }
+
     public void createMeeting(@NonNull Meeting meeting) {
         mMeetings.add(meeting);
-        Collections.sort(mMeetings, Meeting::compareTo);
+        // TODO arnaud à bouger dans le VM
+        Collections.sort(mMeetings, (o1, o2) -> o1.getStart().compareTo(o2.getStart()));
         mMeetingListMutableLiveData.setValue(mMeetings);
     }
 
