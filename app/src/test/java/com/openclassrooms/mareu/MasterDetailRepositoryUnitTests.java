@@ -58,7 +58,7 @@ public class MasterDetailRepositoryUnitTests {
         repo.setCurrentId(myId);
 
         //then
-        assertEquals((Integer)myId, LiveDataTestUtils.getOrAwaitValue(repo.getCurrentDetailIdMutableLiveData()));
+        assertEquals((Integer)myId, LiveDataTestUtils.getOrAwaitValue(repo.getCurrentDetailIdLiveData()));
         assertTrue(LiveDataTestUtils.getOrAwaitValue(repo.getDetailFragment()) instanceof ShowMeetingFragment);
     }
 }

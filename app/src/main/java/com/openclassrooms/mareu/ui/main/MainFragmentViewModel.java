@@ -23,7 +23,7 @@ public class MainFragmentViewModel extends ViewModel {
     private final MeetingsRepository mMeetingsRepository;
     private final MasterDetailRepository mMasterDetailRepository;
 
-    private final MediatorLiveData<List<MainFragmentViewState>> mMutableMeetingsLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<List<MainFragmentViewState>> mMutableViewStateLiveData = new MediatorLiveData<>();
 
     private final LiveData<List<Meeting>> mMeetingListMutableLivedata;
     private final MutableLiveData<boolean[]> mSelectedRoomsMutableLivedata = new MutableLiveData<>();
@@ -38,23 +38,23 @@ public class MainFragmentViewModel extends ViewModel {
 
         resetRoomFilter();
 
-        mMutableMeetingsLiveData.addSource(
+        mMutableViewStateLiveData.addSource(
                 mMeetingListMutableLivedata,
-                meetings -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                meetings -> mMutableViewStateLiveData.setValue(filterMeetings(
                         meetings,
                         mSelectedTimeMutableLiveData.getValue(),
                         mSelectedRoomsMutableLivedata.getValue()
                 )));
-        mMutableMeetingsLiveData.addSource(
+        mMutableViewStateLiveData.addSource(
                 mSelectedTimeMutableLiveData,
-                localDateTime -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                localDateTime -> mMutableViewStateLiveData.setValue(filterMeetings(
                         mMeetingListMutableLivedata.getValue(),
                         localDateTime,
                         mSelectedRoomsMutableLivedata.getValue()
                 )));
-        mMutableMeetingsLiveData.addSource(
+        mMutableViewStateLiveData.addSource(
                 mSelectedRoomsMutableLivedata,
-                booleans -> mMutableMeetingsLiveData.setValue(filterMeetings(
+                booleans -> mMutableViewStateLiveData.setValue(filterMeetings(
                         mMeetingListMutableLivedata.getValue(),
                         mSelectedTimeMutableLiveData.getValue(),
                         booleans
@@ -62,7 +62,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public LiveData<List<MainFragmentViewState>> getViewStateListLiveData() {
-        return mMutableMeetingsLiveData;
+        return mMutableViewStateLiveData;
     }
 
     @NonNull

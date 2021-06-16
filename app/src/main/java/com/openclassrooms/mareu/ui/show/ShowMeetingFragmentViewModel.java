@@ -19,7 +19,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             @NonNull MasterDetailRepository masterDetailRepository) {
 
         mShowMeetingFragmentItemLiveData.addSource(
-                masterDetailRepository.getCurrentDetailIdMutableLiveData(),
+                masterDetailRepository.getCurrentDetailIdLiveData(),
                 id -> {
                     Meeting meeting = meetingRepository.getMeetingById(id);
                     if (meeting == null)

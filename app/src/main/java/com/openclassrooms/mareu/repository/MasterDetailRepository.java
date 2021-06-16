@@ -18,7 +18,7 @@ public class MasterDetailRepository {
     private final Fragment mMainFragment = MainFragment.newInstance();
 
     @NonNull
-    public LiveData<Integer> getCurrentDetailIdMutableLiveData() {
+    public LiveData<Integer> getCurrentDetailIdLiveData() {
         return currentDetailIdMutableLiveData;
     }
 
@@ -28,19 +28,19 @@ public class MasterDetailRepository {
     public void setCurrentId(int id) {
         if (id < 0) masterFragmentMutableLiveData.setValue(mMainFragment);
         else if (id == 0) detailFragmentMutableLiveData.setValue(AddMeetingFragment.newInstance());
-        else{
+        else {
             currentDetailIdMutableLiveData.setValue(id);
             detailFragmentMutableLiveData.setValue(ShowMeetingFragment.newInstance());
         }
     }
 
     @NonNull
-    public MutableLiveData<Fragment> getMasterFragment() {
+    public LiveData<Fragment> getMasterFragment() {
         return masterFragmentMutableLiveData;
     }
 
     @NonNull
-    public MutableLiveData<Fragment> getDetailFragment() {
+    public LiveData<Fragment> getDetailFragment() {
         return detailFragmentMutableLiveData;
     }
 
