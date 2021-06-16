@@ -107,7 +107,7 @@ public class MainFragmentViewModel extends ViewModel {
         mMasterDetailRepository.setCurrentId(id);
     }
 
-    protected void deleteButtonClicked(int id) {
+    public void deleteButtonClicked(int id) {
         mMeetingsRepository.removeMeetingById(id);
     }
 

@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 public class ShowMeetingFragmentViewModelUnitTests {
 
@@ -61,7 +61,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
         // then
         assertEquals("1", viewState.getId());
         assertEquals(owner, viewState.getOwner());
-        assertTrue(Arrays.deepEquals(viewStateParticipants, viewState.getParticipants()));
+        assertArrayEquals(viewStateParticipants, viewState.getParticipants());
         assertEquals(topic, viewState.getTopic());
         assertEquals("08h30", viewState.getStartText());
         assertEquals("09h35", viewState.getEndText());

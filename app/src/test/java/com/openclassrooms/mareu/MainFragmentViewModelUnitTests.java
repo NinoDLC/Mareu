@@ -2,13 +2,14 @@ package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MasterDetailRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
+import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
+import com.openclassrooms.mareu.ui.main.MainFragmentViewState;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,6 +24,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -33,6 +37,9 @@ public class MainFragmentViewModelUnitTests {
 
     private MainFragmentViewModel viewModel;
     private static final int EXPECTED_ID = 44;
+    private static final int EXPECTED_HOUR = 8;
+    private static final int EXPECTED_MINUTE = 41;
+    // private static final int ROOMS_NUMBER = 10;
 
     private static final LiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new LiveData<List<Meeting>>(Arrays.asList(
             new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]),
@@ -52,32 +59,47 @@ public class MainFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         // todo: should not use (non Mutable) LiveData here, right?
-        given(masterDetailRepository.getMasterFragment()).willReturn(new MutableLiveData<>());
-        given(masterDetailRepository.getDetailFragment()).willReturn(new MutableLiveData<>());
-        given(masterDetailRepository.getCurrentDetailIdLiveData()).willReturn(new MutableLiveData<>());
+        // given(masterDetailRepository.getMasterFragment()).willReturn(new MutableLiveData<>());
+        // given(masterDetailRepository.getDetailFragment()).willReturn(new MutableLiveData<>());
+        // given(masterDetailRepository.getCurrentDetailIdLiveData()).willReturn(new MutableLiveData<>());
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
         viewModel = new MainFragmentViewModel(meetingsRepository, masterDetailRepository);
     }
 
     @Test
-    public void nominalCase() {
+    public void nominalCase() throws InterruptedException {
         // when
-        viewModel.getViewStateListLiveData();
+        Object result = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
 
         // then
+        assertTrue(result instanceof MainFragmentViewState);
         verify(meetingsRepository).getMeetings();
-//        verify()
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(masterDetailRepository);
     }
 
-
     @Test
-    public void clickOnItemOpensItemInDetailFragment() {
-        // given
+    public void callSetCurrentIdOnSetDetailId() {
         // when
         viewModel.setDetailId(EXPECTED_ID);
 
         // then
-        verify(masterDetailRepository).getDetailFragment();
+        verify(masterDetailRepository).setCurrentId(EXPECTED_ID);
+        verify(meetingsRepository).getMeetings();
+        //todo les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(masterDetailRepository);
+    }
+
+    @Test
+    public void callRemoveMeetingByIdOnDeleteButtonClicked() {
+        // when
+        viewModel.deleteButtonClicked(EXPECTED_ID);
+
+        // then
+        verify(meetingsRepository).removeMeetingById(EXPECTED_ID);
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(masterDetailRepository);
     }
 
@@ -93,7 +115,63 @@ public class MainFragmentViewModelUnitTests {
         CharSequence[] receivedNames = viewModel.getMeetingRoomNames();
 
         // then
-        assertTrue(Arrays.deepEquals(expectedNames, receivedNames));
+        assertArrayEquals(expectedNames, receivedNames);
+    }
+
+    @Test
+    public void nonNullResultOnGetRoomFilter() throws InterruptedException {
+        // then
+        assertNotNull(LiveDataTestUtils.getOrAwaitValue(viewModel.getRoomFilter()));
+    }
+
+    @Test
+    public void setRoomFilter() throws InterruptedException {
+        // given
+        int position = 3;
+        boolean[] expected = {
+                true, true, true,
+                false,
+                true, true, true, true, true, true};
+        // when
+        viewModel.setRoomFilter(position, false);
+
+        // then
+        assertArrayEquals(expected, LiveDataTestUtils.getOrAwaitValue(viewModel.getRoomFilter()));
+    }
+
+    @Test
+    public void setRoomFilterWithNonInitializedRoomFilter(){
+        // todo: how to test it ?
+
+    }
+
+    @Test
+    public void nonNullResultOnResetRoomFilter() throws InterruptedException {
+        // when
+        viewModel.resetRoomFilter();
+
+        // then
+        assertNotNull(LiveDataTestUtils.getOrAwaitValue(viewModel.getRoomFilter()));
+    }
+
+    @Test
+    public void returnTimeFilterIfSet() {
+        // when
+        viewModel.setTimeFilter(EXPECTED_HOUR, EXPECTED_MINUTE);
+
+        // then
+        assertEquals(EXPECTED_HOUR, viewModel.getTimeFilterHour());
+        assertEquals(EXPECTED_MINUTE, viewModel.getTimeFilterMinute());
+    }
+
+    @Test
+    public void returnNowIfNoTimFilterSet() {
+        // when
+        viewModel.resetTimeFilter();
+
+        // then
+        assertEquals(LocalDateTime.now().getHour(), viewModel.getTimeFilterHour());
+        assertEquals(LocalDateTime.now().getMinute(), viewModel.getTimeFilterMinute());
     }
 
     // List<Meeting> list = new ArrayList<>();
