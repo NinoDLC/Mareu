@@ -18,7 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class MeetingsRepositoryUnitTests {
 
@@ -52,7 +54,7 @@ public class MeetingsRepositoryUnitTests {
     }
 
     @Test
-    public void createAMeeting() {
+    public void createAMeeting() throws InterruptedException {
         // given
         Meeting meeting1 = new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]);
 
@@ -60,36 +62,7 @@ public class MeetingsRepositoryUnitTests {
         repo.createMeeting(meeting1);
 
         // then
-        assertEquals(meeting1, repo.getMeetingById(1));
-    }
-
-    @Test
-    public void sortedList() throws InterruptedException {
-        // given
-        Meeting meeting1 = new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]);
-        Meeting meeting2 = new Meeting(2, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1]);
-
-        // when
-        repo.createMeeting(meeting2);
-        repo.createMeeting(meeting1); // added after, though occuring before
-        List<Meeting> list = LiveDataTestUtils.getOrAwaitValue(repo.getMeetings());
-
-        // then
-        assertEquals(meeting1, list.get(0));
-        assertEquals(meeting2, list.get(1));
-    }
-
-    @Test
-    public void returnNullOnNonExistentMeetingId() {
-        // given
-        Meeting meeting1 = new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]);
-        int nonExistentMeetingId = 44;
-
-        // when
-        repo.createMeeting(meeting1);
-
-        // then
-        assertNull(repo.getMeetingById(nonExistentMeetingId));
+        assertTrue(LiveDataTestUtils.getOrAwaitValue(repo.getMeetings()).contains(meeting1));
     }
 
     @Test
@@ -118,7 +91,7 @@ public class MeetingsRepositoryUnitTests {
         repo.removeMeetingById(meetingId);
 
         // then
-        assertNull(repo.getMeetingById(meetingId));
+        assertFalse(LiveDataTestUtils.getOrAwaitValue(repo.getMeetings()).contains(meeting2));
         assertEquals(0, list.size());
     }
 
