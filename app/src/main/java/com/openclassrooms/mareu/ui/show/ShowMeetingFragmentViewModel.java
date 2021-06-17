@@ -2,7 +2,6 @@ package com.openclassrooms.mareu.ui.show;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
@@ -24,10 +23,9 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
         mMeetingsRepository = meetingRepository;
         mShowMeetingFragmentItemLiveData = Transformations.map(
-                Transformations.switchMap(
-                        currentIdRepository.getCurrentDetailIdLiveData(),
-                        this::idToMeetingLiveData
-                ), this::meetingToViewState);
+                currentIdRepository.getCurrentDetailIdLiveData(),
+                id -> meetingToViewState(idToMeetingLiveData(id))
+        );
     }
 
     @NonNull
@@ -37,21 +35,20 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     // master detail would be complex here, as we can suppress the Meeting we see in detail !
     @NonNull
-    private LiveData<Meeting> idToMeetingLiveData(int id) {
+    private Meeting idToMeetingLiveData(int id) {
         List<Meeting> meetingList = mMeetingsRepository.getMeetings().getValue();
         if (meetingList == null)
             throw new IllegalStateException("null livedata");
 
-        MutableLiveData<Meeting> liveData = new MutableLiveData<>();
         for (Meeting meeting : meetingList) {
             if (meeting != null && meeting.getId() == id)
-                liveData.setValue(meeting);
+                return meeting;
         }
-        return liveData;
+        throw new IllegalStateException("no such meeting");
     }
 
     @NonNull
-    private ShowMeetingFragmentViewState meetingToViewState(@NonNull Meeting meeting){
+    private ShowMeetingFragmentViewState meetingToViewState(@NonNull Meeting meeting) {
         return new ShowMeetingFragmentViewState(
                 String.valueOf(meeting.getId()),
                 meeting.getOwner(),

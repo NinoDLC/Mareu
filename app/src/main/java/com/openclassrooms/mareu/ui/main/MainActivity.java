@@ -1,8 +1,10 @@
 package com.openclassrooms.mareu.ui.main;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +15,8 @@ import com.openclassrooms.mareu.ui.show.ShowMeetingActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int mOrientation;
+    private static final String ORIENTATION = "ORIENTATION";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,13 +35,19 @@ public class MainActivity extends AppCompatActivity {
         MainActivityViewModel viewModel = ViewModelFactory.getInstance().create(MainActivityViewModel.class);
 
         viewModel.getShowMeeting().observe(this, bool -> {
-            Intent intent = new Intent(MainActivity.this, bool ? ShowMeetingActivity.class : AddMeetingActivity.class);
-            startActivity(intent);
+            if (savedInstanceState == null || savedInstanceState.getInt(ORIENTATION) != getResources().getConfiguration().orientation) {
+                Intent intent = new Intent(MainActivity.this, bool ? ShowMeetingActivity.class : AddMeetingActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
-    // todo: actually not so great design on big tablets in portrait mode
-    // todo: play with addToBackstack in transactions.
-    //  (when coming back from detailFragment, filters are discarded... meh.)
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ORIENTATION, getResources().getConfiguration().orientation);
+    }
+
+    // todo: when I rotate screen, this reopens last opened Fragment
 }
 

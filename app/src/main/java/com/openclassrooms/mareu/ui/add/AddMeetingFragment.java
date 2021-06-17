@@ -109,7 +109,7 @@ public class AddMeetingFragment extends Fragment {
         bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);
         bindRoomButton(room, item.getFreeMeetingRoomNames());
 
-        create.setOnClickListener(v -> mViewModel.validate());
+        create.setOnClickListener(v -> {if (mViewModel.validate()) requireActivity().onBackPressed();});
     }
 
     void bindRoomButton(@NonNull Button room, @NonNull CharSequence[] freeMeetingRooms) {

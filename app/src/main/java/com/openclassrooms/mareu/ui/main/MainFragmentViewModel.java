@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.ViewModelFactory;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentIdRepository;
@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.openclassrooms.mareu.utils.initMeetings;
@@ -38,10 +39,15 @@ public class MainFragmentViewModel extends ViewModel {
         mMeetingsRepository = meetingsRepository;
         mCurrentIdRepository = currentIdRepository;
 
-        // todo : squash that?
+        // todo : squash initMeetings()?
         initMeetings(meetingsRepository);  // Unsorted but valid Meetings list.
 
-        mMeetingListMutableLivedata = mMeetingsRepository.getMeetings();
+        mMeetingListMutableLivedata = Transformations.map(
+                mMeetingsRepository.getMeetings(),
+                input -> {
+                    Collections.sort(input, (o1, o2) -> o1.getStart().compareTo(o2.getStart()));
+                    return input;
+                });
 
         resetRoomFilter();
 

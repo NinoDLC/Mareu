@@ -7,74 +7,84 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing">
 
-    <TextView
-        android:id="@+id/meeting_room_name"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/ic_font_awesome_5_solid_dog"
-        android:gravity="center"
-        android:lineSpacingMultiplier="0.8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/full_names" />
-
-    <TextView
-        android:id="@+id/meeting_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/meeting_participants"
-        app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
-        app:layout_constraintStart_toEndOf="@id/meeting_room_name"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/date/day_of_week" />
-
-    <TextView
-        android:id="@+id/meeting_participants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/meeting_room_name"
-        app:layout_constraintTop_toBottomOf="@id/meeting_text"
-        tools:text="@tools:sample/first_names" />
-
-    <TextView
-        android:id="@+id/meeting_participants_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="@color/blue"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/meeting_participants"
-        tools:text="+3" />
-
-    <ImageButton
-        android:id="@+id/meeting_delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:contentDescription="@string/delete_meeting"
-        android:foregroundGravity="center"
+        app:layout_constraintWidth_max="@dimen/max_width"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/delete" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/meeting_room_name"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_font_awesome_5_solid_dog"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.8"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/meeting_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/meeting_participants"
+            app:layout_constraintEnd_toStartOf="@id/meeting_delete_button"
+            app:layout_constraintStart_toEndOf="@id/meeting_room_name"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/date/day_of_week" />
+
+        <TextView
+            android:id="@+id/meeting_participants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/meeting_room_name"
+            app:layout_constraintTop_toBottomOf="@id/meeting_text"
+            tools:text="@tools:sample/first_names" />
+
+        <TextView
+            android:id="@+id/meeting_participants_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/blue"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/meeting_participants"
+            tools:text="+3" />
+
+        <ImageButton
+            android:id="@+id/meeting_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="@string/delete_meeting"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/delete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

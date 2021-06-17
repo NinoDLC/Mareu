@@ -31,6 +31,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 tools:text="@tools:sample/first_names" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -45,6 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_meeting_owner"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 app:startIconDrawable="@drawable/ic_baseline_contact_support_24"
                 app:startIconTint="@color/blue"
                 tools:text="@tools:sample/lorem">
@@ -66,7 +68,8 @@
                 app:layout_constraintBottom_toTopOf="@id/add_meeting_participants_til"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_meeting_topic_til" />
+                app:layout_constraintTop_toBottomOf="@id/add_meeting_topic_til"
+                app:layout_constraintWidth_max="@dimen/max_width" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_meeting_participants_til"
@@ -80,6 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_group"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 app:startIconDrawable="@drawable/ic_baseline_person_add_24"
                 app:startIconTint="@color/blue"
                 tools:text="@tools:sample/full_names">
@@ -101,8 +105,8 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/add_meeting_start"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:text="@tools:sample/lorem" />
 
             <Button
@@ -115,6 +119,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_meeting_participants_til"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 tools:text="@tools:sample/date/hhmm" />
 
             <Button
@@ -127,6 +132,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_meeting_start"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 tools:text="@tools:sample/date/hhmm" />
 
             <Button
@@ -140,6 +146,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_meeting_end"
+                app:layout_constraintWidth_max="@dimen/max_width"
                 tools:text="@tools:sample/cities" />
 
             <androidx.appcompat.widget.AppCompatTextView

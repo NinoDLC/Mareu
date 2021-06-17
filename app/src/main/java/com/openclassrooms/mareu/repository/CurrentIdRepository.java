@@ -9,10 +9,10 @@ import com.openclassrooms.mareu.ui.main.MainFragment;
 
 public class CurrentIdRepository {
 
-    // todo au final, ce repo sert a
+    // todo: Nino au final, ce repo sert a
     //  - s'épargner des arguments dans newInstance() et navigate()
     //  - l'injection de dépendance dans les tests, autant coté set() que coté get()
-    //  mais on se tape quand meme les interfaces pour remonter l'info click
+    //  - éviter les interfaces pour remonter l'info click si on a le droit d'appeler tout repo depuis tout VM
 
     private final MutableLiveData<Integer> currentDetailIdMutableLiveData = new MutableLiveData<>();
 

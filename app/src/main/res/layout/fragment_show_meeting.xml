@@ -18,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/first_names" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -30,6 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_owner"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/lorem" />
 
     <com.google.android.material.chip.ChipGroup
@@ -41,7 +43,8 @@
         app:layout_constraintBottom_toTopOf="@id/show_meeting_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/show_meeting_topic" />
+        app:layout_constraintTop_toBottomOf="@id/show_meeting_topic"
+        app:layout_constraintWidth_max="@dimen/max_width" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/show_meeting_start"
@@ -53,6 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_participants_group"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/date/hhmm" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -65,6 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_start"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/date/hhmm" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -78,6 +83,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_meeting_end"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/cities" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -88,6 +94,7 @@
         android:textColor="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_max="@dimen/max_width"
         tools:text="@tools:sample/us_zipcodes" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

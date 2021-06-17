@@ -86,7 +86,7 @@ public class MainFragmentViewModelUnitTests {
         // then
         verify(mCurrentIdRepository).setCurrentId(EXPECTED_ID);
         verify(meetingsRepository).getMeetings();
-        //todo les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
+        //todo Nino : les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
         verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(mCurrentIdRepository);
     }

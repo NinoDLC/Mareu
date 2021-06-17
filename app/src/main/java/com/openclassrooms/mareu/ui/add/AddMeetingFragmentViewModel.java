@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -26,10 +25,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private final Application application;
     @NonNull
     private final MeetingsRepository mMeetingRepo;
-    @NonNull
-    private final CurrentIdRepository mMasterDetailRepo;
 
-// todo Nino : on marque rarement une livedata @NonNull, non ?
+    // todo Nino : on marque rarement une livedata @NonNull, non ?
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     private final int mId;
@@ -43,16 +40,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mTopicError;
     private String mGeneralError;
 
-    public AddMeetingFragmentViewModel(
-            @NonNull Application application,
-            @NonNull MeetingsRepository meetingRepository,
-            @NonNull CurrentIdRepository currentIdRepository
-    ) {
+    public AddMeetingFragmentViewModel(@NonNull Application application, @NonNull MeetingsRepository meetingRepository) {
         this.application = application;
         mMeetingRepo = meetingRepository;
-        mMasterDetailRepo = currentIdRepository;
 
-        mId = mMeetingRepo.getNextMeetingId();  // todo test for duplicate id?
+        mId = mMeetingRepo.getNextMeetingId();  // not testing duplicate ids...
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
         mEnd = mStart.plusMinutes(30);
@@ -74,9 +66,17 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (mRoom == null) mGeneralError = application.getString(R.string.no_meeting_room);
         else if (mParticipants.size() > mRoom.getCapacity())
             mGeneralError = application.getString(R.string.room_too_small);
-        Meeting meeting = new Meeting(mId, application.getString(R.string.phone_owner_email), new HashSet<>(mParticipants), mTopic, mStart, mEnd, mRoom);
+        Meeting meeting = new Meeting(
+                mId,
+                application.getString(R.string.phone_owner_email),
+                new HashSet<>(mParticipants),
+                mTopic,
+                mStart,
+                mEnd,
+                mRoom);
         if (!isRoomFree(meeting)) mGeneralError = application.getString(R.string.room_not_free);
-        if (mTopic == null || mTopic.isEmpty()) mTopicError = application.getString(R.string.topic_error);
+        if (mTopic == null || mTopic.isEmpty())
+            mTopicError = application.getString(R.string.topic_error);
         return meeting;
     }
 
@@ -133,8 +133,10 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     public boolean addParticipant(@NonNull String string) {
         mParticipantError = null;
         if (string.isEmpty()) return true;
-        if (!utils.isValidEmail(string)) mParticipantError = application.getString(R.string.email_error);
-        if (inParticipants(string)) mParticipantError = application.getString(R.string.already_an_attendee);
+        if (!utils.isValidEmail(string))
+            mParticipantError = application.getString(R.string.email_error);
+        if (inParticipants(string))
+            mParticipantError = application.getString(R.string.already_an_attendee);
         if (mParticipantError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
             return false;
@@ -196,14 +198,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         return list;
     }
 
-    public void validate() {
+    public boolean validate() {
         Meeting meeting = toMeeting();
         if (mGeneralError != null || mParticipantError != null || mTopicError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
-            return;
+            return false;
         }
-        if (meeting == null) return;
+        if (meeting == null) return false;
         mMeetingRepo.createMeeting(meeting);
-        mMasterDetailRepo.setCurrentId(-1);
+        return true;
     }
 }

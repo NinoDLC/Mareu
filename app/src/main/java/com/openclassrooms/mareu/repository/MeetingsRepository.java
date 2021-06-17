@@ -33,7 +33,6 @@ public class MeetingsRepository {
         mMeetingListMutableLiveData.setValue(mMeetings);
     }
 
-    // not using getMeetingById() to be gentler on resource and use that iterator for loop.
     public void removeMeetingById(int meetingId) {
         for (Iterator<Meeting> iterator = mMeetings.iterator(); iterator.hasNext(); ) {
             Meeting meeting = iterator.next();
