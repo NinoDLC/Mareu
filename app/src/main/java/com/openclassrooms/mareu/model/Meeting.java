@@ -11,11 +11,23 @@ import java.util.Set;
 public class Meeting {
 
     private final int mId;
+
+    @NonNull
     private final String mOwner;
+
+    @NonNull
     private final Set<String> mParticipants;
+
+    @NonNull
     private final String mTopic;
+
+    @NonNull
     private final LocalDateTime mStart;
+
+    @NonNull
     private final LocalDateTime mEnd;
+
+    @NonNull
     private final MeetingRoom mRoom;
 
     public Meeting(int id, @NonNull String owner, @NonNull HashSet<String> participants, @NonNull String topic,

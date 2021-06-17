@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu.model;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 
 import com.openclassrooms.mareu.R;
@@ -18,14 +19,18 @@ public enum MeetingRoom {
     ROOM_8("Cocker", "3rd floor, 1st door on the left", 2, R.color.dog_9),
     ROOM_9("Epagnol", "3rd floor, 2nd door on the left", 6, R.color.dog_10);
 
+    @NonNull
     private final String mName;
+
+    @NonNull
     private final String mLocation;
+
     private final int mCapacity;
 
-    @ColorInt
+    @ColorRes
     private final int mTextColor;
 
-    MeetingRoom(@NonNull String name, @NonNull String location, int capacity, int textColor) {
+    MeetingRoom(@NonNull String name, @NonNull String location, int capacity, @ColorRes int textColor) {
         this.mName = name;
         this.mLocation = location;
         this.mCapacity = capacity;
@@ -46,6 +51,7 @@ public enum MeetingRoom {
         return mCapacity;
     }
 
+    @ColorRes
     public int getTextColor() {
         return mTextColor;
     }

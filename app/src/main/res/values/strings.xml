@@ -10,5 +10,13 @@
     <string name="free_rooms_dialog_title">Free rooms list to pick from</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
-    <string name="select_room">Please select room</string>
+    <string name="phone_owner_email">chuck@buymore.com</string>
+    <string name="select_room">Select a room</string>
+    <string name="email_error">Enter a valid email address</string>
+    <string name="topic_error">Set a topic</string>
+    <string name="already_an_attendee">already an attendee</string>
+    <string name="stop_before_start">stop before start</string>
+    <string name="no_meeting_room">no meeting room</string>
+    <string name="room_too_small">room too small</string>
+    <string name="room_not_free">room not free</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.mareu.MainApplication;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
@@ -23,23 +22,14 @@ import java.util.List;
 
 public class AddMeetingFragmentViewModel extends ViewModel {
 
-    private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
-    // TODO resources
-    private static final String SELECT_ROOM = "Select a room";
-    private static final String EMAIL_ERROR = "Enter a valid email address";
-    private static final String TOPIC_ERROR = "Set a topic";
-    private static final String ALREADY_AN_ATTENDEE = "already an attendee";
-    private static final String STOP_BEFORE_START = "stop before start";
-    private static final String NO_MEETING_ROOM = "no meeting room";
-    private static final String ROOM_TOO_SMALL = "room too small";
-    private static final String ROOM_NOT_FREE = "room not free";
-
     @NonNull
     private final Application application;
     @NonNull
     private final MeetingsRepository mMeetingRepo;
     @NonNull
     private final MasterDetailRepository mMasterDetailRepo;
+
+// todo Nino : on marque rarement une livedata @NonNull, non ?
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     private final int mId;
@@ -54,7 +44,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mGeneralError;
 
     public AddMeetingFragmentViewModel(
-        @NonNull Application application,
+            @NonNull Application application,
             @NonNull MeetingsRepository meetingRepository,
             @NonNull MasterDetailRepository masterDetailRepository
     ) {
@@ -62,10 +52,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mMeetingRepo = meetingRepository;
         mMasterDetailRepo = masterDetailRepository;
 
-        mId = mMeetingRepo.getNextMeetingId();
-        if (mMeetingRepo.getMeetingById(mId) != null)
-            throw new IllegalStateException(String.format("Attributed id already in use %d", mId));
-
+        mId = mMeetingRepo.getNextMeetingId();  // todo test for duplicate id?
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);
         mStart = roundedNow.withMinute(roundedNow.getMinute() / 15 * 15).plusMinutes(15);
         mEnd = mStart.plusMinutes(30);
@@ -81,14 +68,15 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private Meeting toMeeting() {
         mGeneralError = null;
         if (mEnd.isBefore(mStart)) {
-            mGeneralError = STOP_BEFORE_START;
+            mGeneralError = application.getString(R.string.stop_before_start);
             return null;
         }
-        if (mRoom == null) mGeneralError = NO_MEETING_ROOM;
-        else if (mParticipants.size() > mRoom.getCapacity()) mGeneralError = ROOM_TOO_SMALL;
-        Meeting meeting = new Meeting(mId, PHONE_OWNER_EMAIL, new HashSet<>(mParticipants), mTopic, mStart, mEnd, mRoom);
-        if (!isRoomFree(meeting)) mGeneralError = ROOM_NOT_FREE;
-        if (mTopic == null || mTopic.isEmpty()) mTopicError = TOPIC_ERROR;
+        if (mRoom == null) mGeneralError = application.getString(R.string.no_meeting_room);
+        else if (mParticipants.size() > mRoom.getCapacity())
+            mGeneralError = application.getString(R.string.room_too_small);
+        Meeting meeting = new Meeting(mId, application.getString(R.string.phone_owner_email), new HashSet<>(mParticipants), mTopic, mStart, mEnd, mRoom);
+        if (!isRoomFree(meeting)) mGeneralError = application.getString(R.string.room_not_free);
+        if (mTopic == null || mTopic.isEmpty()) mTopicError = application.getString(R.string.topic_error);
         return meeting;
     }
 
@@ -96,7 +84,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private AddMeetingFragmentViewState toViewState() {
         return new AddMeetingFragmentViewState(
                 String.valueOf(mId),
-                PHONE_OWNER_EMAIL,
+                application.getString(R.string.phone_owner_email),
                 utils.niceTimeFormat(mStart),
                 utils.niceTimeFormat(mEnd),
                 mRoom != null ? mRoom.getName() : application.getString(R.string.select_room),
@@ -145,8 +133,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     public boolean addParticipant(@NonNull String string) {
         mParticipantError = null;
         if (string.isEmpty()) return true;
-        if (!utils.isValidEmail(string)) mParticipantError = EMAIL_ERROR;
-        if (inParticipants(string)) mParticipantError = ALREADY_AN_ATTENDEE;
+        if (!utils.isValidEmail(string)) mParticipantError = application.getString(R.string.email_error);
+        if (inParticipants(string)) mParticipantError = application.getString(R.string.already_an_attendee);
         if (mParticipantError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
             return false;
@@ -158,7 +146,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     }
 
     private boolean inParticipants(@NonNull String participant) {
-        return (participant.equals(PHONE_OWNER_EMAIL) || mParticipants.contains(participant));
+        return (participant.equals(application.getString(R.string.phone_owner_email)) || mParticipants.contains(participant));
     }
 
     public void removeParticipant(@NonNull String participant) {

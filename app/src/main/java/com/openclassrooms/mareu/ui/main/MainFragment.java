@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.openclassrooms.mareu.MainActivity;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
@@ -44,24 +43,24 @@ public class MainFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
         mAdapter = new MainFragmentAdapter(
-            new MainFragmentAdapter.Listener() {
-                @Override
-                public void itemClicked(int id) {
-                    mViewModel.setDetailId(id);
-                }
+                new MainFragmentAdapter.Listener() {
+                    @Override
+                    public void itemClicked(int id) {
+                        mViewModel.setDetailId(id);
+                    }
 
-                @Override
-                public void deleteButtonClicked(int id) {
-                    mViewModel.deleteButtonClicked(id);
+                    @Override
+                    public void deleteButtonClicked(int id) {
+                        mViewModel.deleteButtonClicked(id);
+                    }
                 }
-            }
         );
 
         mViewModel.getViewStateListLiveData().observe(getViewLifecycleOwner(), items -> mAdapter.submitList(items));
         mViewModel.getRoomFilter().observe(getViewLifecycleOwner(), booleans -> {
-                mSelectedRooms = booleans;
-                requireActivity().invalidateOptionsMenu();
-            }
+                    mSelectedRooms = booleans;
+                    requireActivity().invalidateOptionsMenu();
+                }
         );
 
         return view;
