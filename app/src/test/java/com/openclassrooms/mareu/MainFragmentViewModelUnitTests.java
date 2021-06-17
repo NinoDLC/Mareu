@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
@@ -51,7 +51,7 @@ public class MainFragmentViewModelUnitTests {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Mock
-    private MasterDetailRepository masterDetailRepository;
+    private CurrentIdRepository mCurrentIdRepository;
 
     @Mock
     private MeetingsRepository meetingsRepository;
@@ -63,7 +63,7 @@ public class MainFragmentViewModelUnitTests {
         // given(masterDetailRepository.getDetailFragment()).willReturn(new MutableLiveData<>());
         // given(masterDetailRepository.getCurrentDetailIdLiveData()).willReturn(new MutableLiveData<>());
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
-        viewModel = new MainFragmentViewModel(meetingsRepository, masterDetailRepository);
+        viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class MainFragmentViewModelUnitTests {
         assertTrue(result instanceof MainFragmentViewState);
         verify(meetingsRepository).getMeetings();
         verifyNoMoreInteractions(meetingsRepository);
-        verifyNoMoreInteractions(masterDetailRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
     }
 
     @Test
@@ -84,11 +84,11 @@ public class MainFragmentViewModelUnitTests {
         viewModel.setDetailId(EXPECTED_ID);
 
         // then
-        verify(masterDetailRepository).setCurrentId(EXPECTED_ID);
+        verify(mCurrentIdRepository).setCurrentId(EXPECTED_ID);
         verify(meetingsRepository).getMeetings();
         //todo les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
         verifyNoMoreInteractions(meetingsRepository);
-        verifyNoMoreInteractions(masterDetailRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class MainFragmentViewModelUnitTests {
         verify(meetingsRepository).removeMeetingById(EXPECTED_ID);
         verify(meetingsRepository).getMeetings();
         verifyNoMoreInteractions(meetingsRepository);
-        verifyNoMoreInteractions(masterDetailRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
     }
 
     @Test

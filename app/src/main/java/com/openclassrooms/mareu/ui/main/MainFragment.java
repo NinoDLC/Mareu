@@ -36,11 +36,6 @@ public class MainFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        view.findViewById(R.id.fab).setOnClickListener(v -> mViewModel.setDetailId(0));
-
-        RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
-        recyclerView.setAdapter(mAdapter);
-
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainFragmentViewModel.class);
         mAdapter = new MainFragmentAdapter(
                 new MainFragmentAdapter.Listener() {
@@ -55,6 +50,11 @@ public class MainFragment extends Fragment {
                     }
                 }
         );
+
+        view.findViewById(R.id.fab).setOnClickListener(v -> mViewModel.setDetailId(0));
+
+        RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
+        recyclerView.setAdapter(mAdapter);
 
         mViewModel.getViewStateListLiveData().observe(getViewLifecycleOwner(), items -> mAdapter.submitList(items));
         mViewModel.getRoomFilter().observe(getViewLifecycleOwner(), booleans -> {

@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -27,7 +27,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     @NonNull
     private final MeetingsRepository mMeetingRepo;
     @NonNull
-    private final MasterDetailRepository mMasterDetailRepo;
+    private final CurrentIdRepository mMasterDetailRepo;
 
 // todo Nino : on marque rarement une livedata @NonNull, non ?
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
@@ -46,11 +46,11 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     public AddMeetingFragmentViewModel(
             @NonNull Application application,
             @NonNull MeetingsRepository meetingRepository,
-            @NonNull MasterDetailRepository masterDetailRepository
+            @NonNull CurrentIdRepository currentIdRepository
     ) {
         this.application = application;
         mMeetingRepo = meetingRepository;
-        mMasterDetailRepo = masterDetailRepository;
+        mMasterDetailRepo = currentIdRepository;
 
         mId = mMeetingRepo.getNextMeetingId();  // todo test for duplicate id?
         LocalDateTime roundedNow = LocalDateTime.now().withSecond(0);

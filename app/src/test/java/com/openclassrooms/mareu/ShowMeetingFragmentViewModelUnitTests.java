@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewModel;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThrows;
 public class ShowMeetingFragmentViewModelUnitTests {
 
     private MeetingsRepository meetingsRepository;
-    private MasterDetailRepository masterDetailRepository;
+    private CurrentIdRepository mCurrentIdRepository;
     private ShowMeetingFragmentViewModel viewModel;
 
     @Rule
@@ -34,8 +34,8 @@ public class ShowMeetingFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         meetingsRepository = new MeetingsRepository();
-        masterDetailRepository = new MasterDetailRepository();
-        viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, masterDetailRepository);
+        mCurrentIdRepository = new CurrentIdRepository();
+        viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, mCurrentIdRepository);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
         meetingsRepository.createMeeting(meeting1);
 
         // when
-        masterDetailRepository.setCurrentId(1);
+        mCurrentIdRepository.setCurrentId(1);
         ShowMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem());
 
         // then
@@ -74,7 +74,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
         int id = 44;
 
         // when
-        masterDetailRepository.setCurrentId(id);
+        mCurrentIdRepository.setCurrentId(id);
 
         // then
         // todo: super weird to use a lambda

@@ -6,9 +6,10 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.mareu.ViewModelFactory;
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.openclassrooms.mareu.utils.initMeetings;
+
 public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
-    private final MasterDetailRepository mMasterDetailRepository;
+    private final CurrentIdRepository mCurrentIdRepository;
 
     private final MediatorLiveData<List<MainFragmentViewState>> mMutableViewStateLiveData = new MediatorLiveData<>();
 
@@ -31,9 +34,13 @@ public class MainFragmentViewModel extends ViewModel {
 
     public MainFragmentViewModel(
             @NonNull MeetingsRepository meetingsRepository,
-            @NonNull MasterDetailRepository masterDetailRepository) {
+            @NonNull CurrentIdRepository currentIdRepository) {
         mMeetingsRepository = meetingsRepository;
-        mMasterDetailRepository = masterDetailRepository;
+        mCurrentIdRepository = currentIdRepository;
+
+        // todo : squash that?
+        initMeetings(meetingsRepository);  // Unsorted but valid Meetings list.
+
         mMeetingListMutableLivedata = mMeetingsRepository.getMeetings();
 
         resetRoomFilter();
@@ -104,7 +111,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public void setDetailId(int id) {
-        mMasterDetailRepository.setCurrentId(id);
+        mCurrentIdRepository.setCurrentId(id);
     }
 
     public void deleteButtonClicked(int id) {

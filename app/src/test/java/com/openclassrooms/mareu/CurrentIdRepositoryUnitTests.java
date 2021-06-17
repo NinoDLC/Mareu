@@ -2,7 +2,7 @@ package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.ui.add.AddMeetingFragment;
 import com.openclassrooms.mareu.ui.main.MainFragment;
@@ -15,15 +15,15 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MasterDetailRepositoryUnitTests {
+public class CurrentIdRepositoryUnitTests {
 
-    private MasterDetailRepository repo;
+    private CurrentIdRepository repo;
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void setUp(){repo = new MasterDetailRepository();}
+    public void setUp(){repo = new CurrentIdRepository();}
 
     @Test
     public void checkNegativeValue() throws InterruptedException {

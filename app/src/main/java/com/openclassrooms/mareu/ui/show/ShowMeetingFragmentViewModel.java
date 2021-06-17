@@ -7,7 +7,7 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.model.Meeting;
-import com.openclassrooms.mareu.repository.MasterDetailRepository;
+import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
@@ -20,12 +20,12 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
     public ShowMeetingFragmentViewModel(
             @NonNull MeetingsRepository meetingRepository,
-            @NonNull MasterDetailRepository masterDetailRepository) {
+            @NonNull CurrentIdRepository currentIdRepository) {
 
         mMeetingsRepository = meetingRepository;
         mShowMeetingFragmentItemLiveData = Transformations.map(
                 Transformations.switchMap(
-                        masterDetailRepository.getCurrentDetailIdLiveData(),
+                        currentIdRepository.getCurrentDetailIdLiveData(),
                         this::idToMeetingLiveData
                 ), this::meetingToViewState);
     }
