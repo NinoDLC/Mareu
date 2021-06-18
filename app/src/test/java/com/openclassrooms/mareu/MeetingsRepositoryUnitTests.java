@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class MeetingsRepositoryUnitTests {
@@ -38,19 +37,22 @@ public class MeetingsRepositoryUnitTests {
     @Test
     public void nonZeroFirstId() {
         //given
-        //when
+        int firstItemId = 1;
+
         //then
-        assertEquals(1, repo.getNextMeetingId());
+        assertEquals(firstItemId, repo.getNextMeetingId());
     }
 
     @Test
     public void incrementNextId() {
         //given
+        int expectedSecondId = 2;
+
         //when
         repo.getNextMeetingId();
 
         //then
-        assertEquals(2, repo.getNextMeetingId());
+        assertEquals(expectedSecondId, repo.getNextMeetingId());
     }
 
     @Test

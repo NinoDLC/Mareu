@@ -12,7 +12,7 @@ public class MainActivityViewModel extends ViewModel {
 
     public MainActivityViewModel(CurrentIdRepository currentIdRepository) {
         showMeeting = Transformations.map(
-                currentIdRepository.getCurrentDetailIdLiveData(),
+                currentIdRepository.getCurrentIdLiveData(),
                 input -> input != 0
         );
     }

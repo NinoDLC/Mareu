@@ -76,7 +76,6 @@ public class MainFragmentViewModelUnitTests {
             verifyNoMoreInteractions(meetingsRepository);
             verifyNoMoreInteractions(mCurrentIdRepository);
         }
-    */
 
     @Test
     public void callSetCurrentIdOnSetDetailId() {
@@ -102,7 +101,7 @@ public class MainFragmentViewModelUnitTests {
         verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(mCurrentIdRepository);
     }
-
+*/
     @Test
     public void getMeetingRoomNames() {
         // given

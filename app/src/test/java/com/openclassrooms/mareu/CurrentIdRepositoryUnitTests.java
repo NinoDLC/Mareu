@@ -32,6 +32,6 @@ public class CurrentIdRepositoryUnitTests {
         repo.setCurrentId(myId);
 
         //then
-        assertEquals((Integer) myId, LiveDataTestUtils.getOrAwaitValue(repo.getCurrentDetailIdLiveData()));
+        assertEquals((Integer) myId, LiveDataTestUtils.getOrAwaitValue(repo.getCurrentIdLiveData()));
     }
 }

@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
@@ -13,35 +14,46 @@ import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewState;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.BDDMockito.given;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ShowMeetingFragmentViewModelUnitTests {
 
-    private MeetingsRepository meetingsRepository;
-    private CurrentIdRepository mCurrentIdRepository;
+    private static final int REQUESTED_MEETING_ID = 44;
     private ShowMeetingFragmentViewModel viewModel;
+
+    @Mock
+    private CurrentIdRepository currentIdRepository;
+
+    @Mock
+    private MeetingsRepository meetingsRepository;
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void setUp() {
-        meetingsRepository = new MeetingsRepository();
-        mCurrentIdRepository = new CurrentIdRepository();
-        viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, mCurrentIdRepository);
+        given(currentIdRepository.getCurrentIdLiveData()).willReturn(new MutableLiveData<>(REQUESTED_MEETING_ID));
+        // todo seems given() calls can happen after meetingsRepository is passed to VM?
+        viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, currentIdRepository);
     }
 
     @Test
     public void initialMeetingFound() throws InterruptedException {
         // given
-        int id = 1;
         String owner = "marc@lamzone.fr";
         HashSet<String> participants = new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net"));
         String topic = "Daily meetup";
@@ -51,15 +63,14 @@ public class ShowMeetingFragmentViewModelUnitTests {
 
         String[] viewStateParticipants = {"claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net"};
 
-        Meeting meeting1 = new Meeting(id, owner, participants, topic, start, end, room);
-        meetingsRepository.createMeeting(meeting1);
+        Meeting meeting1 = new Meeting(REQUESTED_MEETING_ID, owner, participants, topic, start, end, room);
+        given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(new ArrayList<>(Collections.singleton(meeting1))));
 
         // when
-        mCurrentIdRepository.setCurrentId(1);
         ShowMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem());
 
         // then
-        assertEquals("1", viewState.getId());
+        assertEquals("44", viewState.getId());
         assertEquals(owner, viewState.getOwner());
         assertArrayEquals(viewStateParticipants, viewState.getParticipants());
         assertEquals(topic, viewState.getTopic());
@@ -71,13 +82,27 @@ public class ShowMeetingFragmentViewModelUnitTests {
     @Test
     public void initialMeetingNotFound() {
         // given
-        int id = 44;
+        String dumbString = "xXx";
+        HashSet<String> participants = new HashSet<>();
+        LocalDateTime start = LocalDateTime.of(2021, 6, 14, 8, 30, 0);
+        MeetingRoom room = MeetingRoom.ROOM_2;
+        int nonExistentMeetingId = 55;
 
-        // when
-        mCurrentIdRepository.setCurrentId(id);
+        Meeting meeting1 = new Meeting(nonExistentMeetingId, dumbString, participants, dumbString, start, start, room);
+        given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(new ArrayList<>(Collections.singleton(meeting1))));
 
         // then
         // todo: super weird to use a lambda
-        assertThrows("Non-existent meeting, id 44", NullPointerException.class, () -> LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem()));
+        assertThrows("no such meeting", IllegalStateException.class, () -> LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem()));
+    }
+
+    @Test
+    public void nullLiveData() {
+        // given
+        given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>());
+
+        // then
+        // todo: super weird to use a lambda
+        assertThrows("null livedata", IllegalStateException.class, () -> LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem()));
     }
 }

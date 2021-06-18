@@ -23,7 +23,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
 
         mMeetingsRepository = meetingRepository;
         mShowMeetingFragmentItemLiveData = Transformations.map(
-                currentIdRepository.getCurrentDetailIdLiveData(),
+                currentIdRepository.getCurrentIdLiveData(),
                 id -> meetingToViewState(idToMeetingLiveData(id))
         );
     }
@@ -41,7 +41,7 @@ public class ShowMeetingFragmentViewModel extends ViewModel {
             throw new IllegalStateException("null livedata");
 
         for (Meeting meeting : meetingList) {
-            if (meeting != null && meeting.getId() == id)
+            if (meeting.getId() == id)
                 return meeting;
         }
         throw new IllegalStateException("no such meeting");
