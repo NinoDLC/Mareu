@@ -1,7 +1,6 @@
 package com.openclassrooms.mareu.ui.main;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         MainActivityViewModel viewModel = ViewModelFactory.getInstance().create(MainActivityViewModel.class);
 
-        viewModel.getShowMeeting().observe(this, bool -> {
+        viewModel.eventIsShowMeeting().observe(this, bool -> {
             if (savedInstanceState == null || savedInstanceState.getInt(ORIENTATION) != getResources().getConfiguration().orientation) {
                 Intent intent = new Intent(MainActivity.this, bool ? ShowMeetingActivity.class : AddMeetingActivity.class);
                 startActivity(intent);

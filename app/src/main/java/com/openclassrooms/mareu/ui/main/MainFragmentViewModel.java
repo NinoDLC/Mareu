@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.openclassrooms.mareu.utils.initMeetings;
-
 public class MainFragmentViewModel extends ViewModel {
 
     private final MeetingsRepository mMeetingsRepository;
@@ -38,9 +36,6 @@ public class MainFragmentViewModel extends ViewModel {
             @NonNull CurrentIdRepository currentIdRepository) {
         mMeetingsRepository = meetingsRepository;
         mCurrentIdRepository = currentIdRepository;
-
-        // todo : squash initMeetings()?
-        initMeetings(meetingsRepository);  // Unsorted but valid Meetings list.
 
         mMeetingListMutableLivedata = Transformations.map(
                 mMeetingsRepository.getMeetings(),
@@ -80,6 +75,7 @@ public class MainFragmentViewModel extends ViewModel {
 
     @NonNull
     private List<MainFragmentViewState> filterMeetings(List<Meeting> meetings, LocalDateTime timeFilter, boolean[] roomFilter) {
+        // todo Nino : RequireableMutableLiveData?
         if (meetings == null || roomFilter == null)
             throw new IllegalStateException("uninitialized LiveData");
 

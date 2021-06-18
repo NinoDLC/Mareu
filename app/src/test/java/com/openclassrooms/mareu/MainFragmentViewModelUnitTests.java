@@ -2,6 +2,7 @@ package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
@@ -9,6 +10,7 @@ import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
+import com.openclassrooms.mareu.ui.main.MainFragmentViewState;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,16 +36,34 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 public class MainFragmentViewModelUnitTests {
 
     private MainFragmentViewModel viewModel;
-    private static final int EXPECTED_ID = 44;
     private static final int EXPECTED_HOUR = 8;
     private static final int EXPECTED_MINUTE = 41;
-    // private static final int ROOMS_NUMBER = 10;
 
-    private static final LiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new LiveData<List<Meeting>>(Arrays.asList(
-            new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]),
-            new Meeting(2, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1])
-    )) {
-    };
+    private static final int SOONER_MEETING_ID = 10;
+    private static final int LATER_MEETING_ID = 3;
+
+    private static final int MEETING_1_ROOM_ORDINAL = 7;
+    private static final int MEETING_2_ROOM_ORDINAL = 3;
+
+    private static final LiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>(Arrays.asList(
+            new Meeting(
+                    LATER_MEETING_ID,
+                    "tedy@buymore.fr",
+                    new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")),
+                    "Project xXx",
+                    LocalDateTime.of(2021, 6, 14, 16, 15, 0),
+                    LocalDateTime.of(2021, 6, 14, 16, 40, 0),
+                    MeetingRoom.values()[MEETING_1_ROOM_ORDINAL]
+            ),
+            new Meeting(
+                    SOONER_MEETING_ID,
+                    "marc@lamzone.fr",
+                    new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")),
+                    "Daily meetup",
+                    LocalDateTime.of(2021, 6, 14, 8, 30, 0),
+                    LocalDateTime.of(2021, 6, 14, 9, 35, 0),
+                    MeetingRoom.values()[MEETING_2_ROOM_ORDINAL])
+    ));
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -64,26 +84,12 @@ public class MainFragmentViewModelUnitTests {
         viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository);
     }
 
-    /*
-        @Test
-        public void nominalCase() throws InterruptedException {
-            // when
-            Object result = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
-
-            // then
-            assertTrue(result instanceof MainFragmentViewState);
-            verify(meetingsRepository).getMeetings();
-            verifyNoMoreInteractions(meetingsRepository);
-            verifyNoMoreInteractions(mCurrentIdRepository);
-        }
-
     @Test
-    public void callSetCurrentIdOnSetDetailId() {
+    public void nominalCase() throws InterruptedException {
         // when
-        viewModel.setDetailId(EXPECTED_ID);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
 
         // then
-        verify(mCurrentIdRepository).setCurrentId(EXPECTED_ID);
         verify(meetingsRepository).getMeetings();
         //todo Nino : les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
         verifyNoMoreInteractions(meetingsRepository);
@@ -91,17 +97,93 @@ public class MainFragmentViewModelUnitTests {
     }
 
     @Test
-    public void callRemoveMeetingByIdOnDeleteButtonClicked() {
+    public void withTimeFilterSet() throws InterruptedException {
         // when
-        viewModel.deleteButtonClicked(EXPECTED_ID);
+        viewModel.setTimeFilter(EXPECTED_HOUR, EXPECTED_MINUTE);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
 
         // then
-        verify(meetingsRepository).removeMeetingById(EXPECTED_ID);
         verify(meetingsRepository).getMeetings();
         verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(mCurrentIdRepository);
     }
-*/
+
+    @Test
+    public void withARoomUnselected() throws InterruptedException {
+        // when
+        viewModel.setRoomFilter(MEETING_2_ROOM_ORDINAL, false);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
+
+        // then
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
+    @Test
+    public void withTimeFilterSetAndARoomUnselected() throws InterruptedException {
+        // when
+        viewModel.setTimeFilter(EXPECTED_HOUR, EXPECTED_MINUTE);
+        viewModel.setRoomFilter(MEETING_2_ROOM_ORDINAL, false);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
+
+        // then
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
+
+    @Test
+    public void withTimeFilterSetLateAndARoomUnselected() throws InterruptedException {
+        // when
+        viewModel.setTimeFilter(19, EXPECTED_MINUTE);
+        viewModel.setRoomFilter(MEETING_2_ROOM_ORDINAL, false);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
+
+        // then
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
+    @Test
+    public void withTimeFilterSetEarlyAndARoomUnselected() throws InterruptedException {
+        // when
+        viewModel.setTimeFilter(6, EXPECTED_MINUTE);
+        viewModel.setRoomFilter(MEETING_2_ROOM_ORDINAL, false);
+        LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
+
+        // then
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
+    @Test
+    public void callSetCurrentIdWhenSetDetailId() {
+        // when
+        viewModel.setDetailId(SOONER_MEETING_ID);
+
+        // then
+        verify(mCurrentIdRepository).setCurrentId(SOONER_MEETING_ID);
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
+    @Test
+    public void callRemoveMeetingByIdOnDeleteButtonClicked() {
+        // when
+        viewModel.deleteButtonClicked(SOONER_MEETING_ID);
+
+        // then
+        verify(meetingsRepository).removeMeetingById(SOONER_MEETING_ID);
+        verify(meetingsRepository).getMeetings();
+        verifyNoMoreInteractions(meetingsRepository);
+        verifyNoMoreInteractions(mCurrentIdRepository);
+    }
+
     @Test
     public void getMeetingRoomNames() {
         // given
@@ -126,22 +208,22 @@ public class MainFragmentViewModelUnitTests {
     @Test
     public void setRoomFilter() throws InterruptedException {
         // given
-        int position = 3;
         boolean[] expected = {
                 true, true, true,
                 false,
                 true, true, true, true, true, true};
+
         // when
-        viewModel.setRoomFilter(position, false);
+        viewModel.setRoomFilter(MEETING_2_ROOM_ORDINAL, false);
+        boolean[] result = LiveDataTestUtils.getOrAwaitValue(viewModel.getRoomFilter());
 
         // then
-        assertArrayEquals(expected, LiveDataTestUtils.getOrAwaitValue(viewModel.getRoomFilter()));
+        assertArrayEquals(expected, result);
     }
 
     @Test
     public void setRoomFilterWithNonInitializedRoomFilter() {
-        // todo: how to test it ?
-
+        // todo: Nino how to test it ?
     }
 
     @Test
@@ -176,23 +258,13 @@ public class MainFragmentViewModelUnitTests {
     // List<Meeting> list = new ArrayList<>();
     // LocalDateTime localDateTimeFilter = LocalDateTime.of(2021, 6, 15, 8, 10, 0);
 
-    /*
-       @Test
+    @Test
     public void sortedList() throws InterruptedException {
-        // given
-        Meeting meeting1 = new Meeting(1, "marc@lamzone.fr", new HashSet<>(Collections.singletonList("claire@nerdzherdz.org")), "Daily meetup", LocalDateTime.of(2021, 6, 14, 8, 30, 0), LocalDateTime.of(2021, 6, 14, 9, 35, 0), MeetingRoom.values()[3]);
-        Meeting meeting2 = new Meeting(2, "tedy@buymore.fr", new HashSet<>(Arrays.asList("claire@nerdzherdz.com", "jack@lamzone.fr", "jack@lamzone.net")), "Project xXx", LocalDateTime.of(2021, 6, 14, 16, 15, 0), LocalDateTime.of(2021, 6, 14, 16, 40, 0), MeetingRoom.values()[1]);
-
         // when
-        repo.createMeeting(meeting2);
-        repo.createMeeting(meeting1); // added after, though occuring before
-        List<Meeting> list = LiveDataTestUtils.getOrAwaitValue(repo.getMeetings());
+        List<MainFragmentViewState> result = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
 
         // then
-        assertEquals(meeting1, list.get(0));
-        assertEquals(meeting2, list.get(1));
+        assertEquals(SOONER_MEETING_ID, result.get(0).getId());
+        assertEquals(LATER_MEETING_ID, result.get(1).getId());
     }
-     */
-
-
 }

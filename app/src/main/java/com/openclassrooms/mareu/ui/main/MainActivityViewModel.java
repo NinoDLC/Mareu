@@ -17,7 +17,7 @@ public class MainActivityViewModel extends ViewModel {
         );
     }
 
-    public LiveData<Boolean> getShowMeeting() {
+    public LiveData<Boolean> eventIsShowMeeting() {
         return showMeeting;
     }
 }
