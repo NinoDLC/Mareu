@@ -26,7 +26,6 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     @NonNull
     private final MeetingsRepository mMeetingRepo;
 
-    // todo Nino : on marque rarement une livedata @NonNull, non ?
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
     private final int mId;

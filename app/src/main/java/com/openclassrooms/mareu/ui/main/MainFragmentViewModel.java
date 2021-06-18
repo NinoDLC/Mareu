@@ -22,13 +22,22 @@ import java.util.List;
 
 public class MainFragmentViewModel extends ViewModel {
 
+    @NonNull
     private final MeetingsRepository mMeetingsRepository;
+
+    @NonNull
     private final CurrentIdRepository mCurrentIdRepository;
 
+    @NonNull
     private final MediatorLiveData<List<MainFragmentViewState>> mMutableViewStateLiveData = new MediatorLiveData<>();
 
+    @NonNull
     private final LiveData<List<Meeting>> mMeetingListMutableLivedata;
+
+    @NonNull
     private final MutableLiveData<boolean[]> mSelectedRoomsMutableLivedata = new MutableLiveData<>();
+
+    @NonNull
     private final MutableLiveData<LocalDateTime> mSelectedTimeMutableLiveData = new MutableLiveData<>();
 
     public MainFragmentViewModel(
@@ -74,11 +83,12 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     @NonNull
-    private List<MainFragmentViewState> filterMeetings(List<Meeting> meetings, LocalDateTime timeFilter, boolean[] roomFilter) {
-        // todo Nino : RequireableMutableLiveData?
-        if (meetings == null || roomFilter == null)
-            throw new IllegalStateException("uninitialized LiveData");
-
+    private List<MainFragmentViewState> filterMeetings(
+            List<Meeting> meetings,
+            LocalDateTime timeFilter,
+            boolean[] roomFilter) {
+        // todo Nino : RequirableMutableLiveData?
+        // todo Nino : sinon on marque rarement une livedata @NonNull, non ?
         List<MainFragmentViewState> itemsList = new ArrayList<>();
 
         if (timeFilter == null) {

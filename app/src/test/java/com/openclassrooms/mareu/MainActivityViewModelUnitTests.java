@@ -11,9 +11,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
@@ -25,7 +23,7 @@ public class MainActivityViewModelUnitTests {
 
     private MainActivityViewModel viewModel;
 
-    private MutableLiveData<Integer> myMutableLiveData;
+    private final MutableLiveData<Integer> myMutableLiveData = new MutableLiveData<>();
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -41,19 +39,6 @@ public class MainActivityViewModelUnitTests {
 
     @Test
     public void nominalCase() throws InterruptedException {
-        /*
-        todo this is about accounting for verifyNoMoreInterractions()...
-        BDDMockito.ignoreStubs(currentIdRepository.getCurrentIdLiveData());
-
-        todo unrelated and frowned upon
-        BDDMockito.clearInvocations(currentIdRepository);
-        // BDDMockito.mockConstruction()
-
-        todo relevant, but code smell
-        BDDMockito.reset(currentIdRepository);
-        BDDMockito.BDDMyOngoingStubbing.class.getClasses()[0].
-         */
-
         // when
         myMutableLiveData.setValue(1);
 

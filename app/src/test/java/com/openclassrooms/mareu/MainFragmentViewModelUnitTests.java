@@ -1,7 +1,6 @@
 package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.mareu.model.Meeting;
@@ -45,7 +44,9 @@ public class MainFragmentViewModelUnitTests {
     private static final int MEETING_1_ROOM_ORDINAL = 7;
     private static final int MEETING_2_ROOM_ORDINAL = 3;
 
-    private static final LiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>(Arrays.asList(
+    private static final MutableLiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>();
+
+    private static final List<Meeting> MEETING_LIST = Arrays.asList(
             new Meeting(
                     LATER_MEETING_ID,
                     "tedy@buymore.fr",
@@ -62,8 +63,33 @@ public class MainFragmentViewModelUnitTests {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 8, 30, 0),
                     LocalDateTime.of(2021, 6, 14, 9, 35, 0),
-                    MeetingRoom.values()[MEETING_2_ROOM_ORDINAL])
-    ));
+                    MeetingRoom.values()[MEETING_2_ROOM_ORDINAL]
+            )
+
+    // todo vérifier les résultats du filtrage...
+
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "jack@lamzone.org", new HashSet<>(Arrays.asList("hans@buymore.fr", "fred@nerdzherdz.com")), "Project xXx", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 17, 15, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 18, 5, 0), MeetingRoom.values()[6]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "fred@lamzone.net", new HashSet<>(Arrays.asList("morgan@buymore.com", "fred@buymore.fr")), "Project xXx", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 11, 10, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 11, 10, 0), MeetingRoom.values()[1]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "jack@buymore.net", new HashSet<>(Arrays.asList("tedy@nerdzherdz.com", "marc@buymore.com")), "Daily meetup", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 40, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 40, 0), MeetingRoom.values()[3]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "morgan@lamzone.fr", new HashSet<>(Collections.singletonList("franck@buymore.net")), "Daily meetup", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 11, 50, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 12, 10, 0), MeetingRoom.values()[8]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "fred@nerdzherdz.org", new HashSet<>(Collections.singletonList("joe@buymore.fr")), "Agile sprint", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 10, 0, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 11, 25, 0), MeetingRoom.values()[2]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "morgan@nerdzherdz.com", new HashSet<>(Arrays.asList("fred@nerdzherdz.fr", "chuck@nerdzherdz.fr")), "Global warming", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 10, 10, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 10, 25, 0), MeetingRoom.values()[6]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "marc@nerdzherdz.org", new HashSet<>(), "Global warming", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 8, 40, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 8, 45, 0), MeetingRoom.values()[7]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "jack@lamzone.net", new HashSet<>(Collections.singletonList("henry@lamzone.com")), "Agile sprint", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 13, 15, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 13, 30, 0), MeetingRoom.values()[2]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "chuck@lamzone.fr", new HashSet<>(Collections.singletonList("joe@lamzone.org")), "Agile sprint", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 13, 25, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 14, 40, 0), MeetingRoom.values()[1]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "fred@lamzone.com", new HashSet<>(Arrays.asList("marc@buymore.net", "henry@buymore.com")), "Code red", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 8, 50, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 45, 0), MeetingRoom.values()[8]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "tedy@lamzone.com", new HashSet<>(), "Code red", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 14, 40, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 15, 25, 0), MeetingRoom.values()[7]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "claire@nerdzherdz.fr", new HashSet<>(Collections.singletonList("jasmine@nerdzherdz.fr")), "Coffee break", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 10, 10, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 10, 45, 0), MeetingRoom.values()[9]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "marc@buymore.com", new HashSet<>(Collections.singletonList("hans@buymore.org")), "Coffee break", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 17, 45, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 17, 55, 0), MeetingRoom.values()[5]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "jasmine@buymore.org", new HashSet<>(), "Coffee break", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 17, 50, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 18, 30, 0), MeetingRoom.values()[9]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "henry@lamzone.net", new HashSet<>(Collections.singletonList("fred@lamzone.net")), "Code red", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 12, 20, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 12, 40, 0), MeetingRoom.values()[9]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "joe@nerdzherdz.fr", new HashSet<>(), "Daily meetup", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 16, 5, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 16, 45, 0), MeetingRoom.values()[8]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "fred@lamzone.fr", new HashSet<>(), "Daily meetup", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 16, 10, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 17, 15, 0), MeetingRoom.values()[0]));
+        repo.createMeeting(new Meeting(repo.getNextMeetingId(), "marc@lamzone.fr", new HashSet<>(Arrays.asList("hans@nerdzherdz.com", "marc@lamzone.com", "henry@lamzone.com")), "Daily meetup", LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 20, 0), LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 20, 0), MeetingRoom.values()[5]));
+
+
+
+    );
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -76,11 +102,8 @@ public class MainFragmentViewModelUnitTests {
 
     @Before
     public void setUp() {
-        // todo: should not use (non Mutable) LiveData here, right?
-        // given(masterDetailRepository.getMasterFragment()).willReturn(new MutableLiveData<>());
-        // given(masterDetailRepository.getDetailFragment()).willReturn(new MutableLiveData<>());
-        // given(masterDetailRepository.getCurrentDetailIdLiveData()).willReturn(new MutableLiveData<>());
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
+        EXPECTED_MEETINGS_LIVEDATA.setValue(MEETING_LIST);
         viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository);
     }
 
@@ -91,7 +114,8 @@ public class MainFragmentViewModelUnitTests {
 
         // then
         verify(meetingsRepository).getMeetings();
-        //todo Nino : les verifyNoMoreInterraction sont de l'hygiène : on pourrait les mettre en @After ?
+        //todo Nino : les verifyNoMoreInterraction sont de l'hygiène :
+        // on pourrait les mettre en @After ? Mais ça obligerait des verify() avant...?
         verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(mCurrentIdRepository);
     }
@@ -206,6 +230,7 @@ public class MainFragmentViewModelUnitTests {
     }
 
     @Test
+
     public void setRoomFilter() throws InterruptedException {
         // given
         boolean[] expected = {
