@@ -19,4 +19,5 @@
     <string name="no_meeting_room">no meeting room</string>
     <string name="room_too_small">room too small</string>
     <string name="room_not_free">room not free</string>
+    <string name="do_not_add_yourself">do not add yourself</string>
 </resources>

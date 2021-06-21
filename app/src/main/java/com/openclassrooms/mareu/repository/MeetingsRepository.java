@@ -15,7 +15,7 @@ public class MeetingsRepository {
 
     private int mNextMeetingId;
     private final List<Meeting> mMeetings = new ArrayList<>();
-    private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Meeting>> mMeetingListMutableLiveData = new MutableLiveData<>(mMeetings);
 
     @NonNull
     public LiveData<List<Meeting>> getMeetings() {

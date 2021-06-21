@@ -28,12 +28,14 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
 
+    // data to populate new meeting
     private final int mId;
     private String mTopic;
     private LocalDateTime mStart;
     private LocalDateTime mEnd;
     private final HashSet<String> mParticipants;
     private MeetingRoom mRoom;
+
     private List<MeetingRoom> mValidRooms;
     private String mParticipantError;
     private String mTopicError;
@@ -134,7 +136,9 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (string.isEmpty()) return true;
         if (!utils.isValidEmail(string))
             mParticipantError = application.getString(R.string.email_error);
-        if (inParticipants(string))
+        if (string.equals(application.getString(R.string.phone_owner_email)))
+            mParticipantError = application.getString(R.string.do_not_add_yourself);
+        if (mParticipants.contains(string))
             mParticipantError = application.getString(R.string.already_an_attendee);
         if (mParticipantError != null) {
             mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
@@ -144,10 +148,6 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         mValidRooms = getValidRooms(toMeeting());
         mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
         return true;
-    }
-
-    private boolean inParticipants(@NonNull String participant) {
-        return (participant.equals(application.getString(R.string.phone_owner_email)) || mParticipants.contains(participant));
     }
 
     public void removeParticipant(@NonNull String participant) {
