@@ -23,6 +23,10 @@ import java.util.List;
 public class MainFragmentViewModel extends ViewModel {
 
     @NonNull
+    private static final LocalDateTime ARBITRARY_DAY = LocalDateTime.of(2021, 6, 14, 8, 50);
+    // to use LocalDateTime.now(), one must inject a clock, so tests pass, or in my case, not use a DateTime to store only hours.
+
+    @NonNull
     private final MeetingsRepository mMeetingsRepository;
 
     @NonNull
@@ -157,7 +161,7 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     public void setTimeFilter(int hourOfDay, int minute) {
-        mSelectedTimeMutableLiveData.setValue(LocalDateTime.now().withHour(hourOfDay).withMinute(minute).withSecond(1));
+        mSelectedTimeMutableLiveData.setValue(ARBITRARY_DAY.withHour(hourOfDay).withMinute(minute).withSecond(1));
     }
 
     public void resetTimeFilter() {
