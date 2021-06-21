@@ -14,7 +14,6 @@ import com.openclassrooms.mareu.ui.show.ShowMeetingActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int mOrientation;
     private static final String ORIENTATION = "ORIENTATION";
 
     @Override
@@ -34,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         MainActivityViewModel viewModel = ViewModelFactory.getInstance().create(MainActivityViewModel.class);
 
         viewModel.eventIsShowMeeting().observe(this, bool -> {
-            if (savedInstanceState == null || savedInstanceState.getInt(ORIENTATION) != getResources().getConfiguration().orientation) {
+            if (savedInstanceState != null && savedInstanceState.getInt(ORIENTATION) != getResources().getConfiguration().orientation) {
+                savedInstanceState.putInt(ORIENTATION, getResources().getConfiguration().orientation);
+            }
+            else {
                 Intent intent = new Intent(MainActivity.this, bool ? ShowMeetingActivity.class : AddMeetingActivity.class);
                 startActivity(intent);
             }
@@ -46,7 +48,5 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(ORIENTATION, getResources().getConfiguration().orientation);
     }
-
-    // todo: when I rotate screen, this reopens last opened Fragment
 }
 
