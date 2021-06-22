@@ -29,7 +29,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     @NonNull
     private final MeetingsRepository mMeetingRepo;
 
-    private final MutableLiveData<AddMeetingFragmentViewState> mAddMeetingFragmentItemMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<AddMeetingFragmentViewState> viewState = new MutableLiveData<>();
 
     // data to populate new meeting
     private final int mId;
@@ -53,7 +53,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
         mGeneralError = null;  // cancel errors from toMeeting()
         mTopicError = null;    // cancel errors from toMeeting()
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
     }
 
     @Nullable
@@ -73,8 +73,9 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 mTopic,
                 mStart,
                 mEnd,
-                mRoom);
-        if (!getValidRooms(meeting).contains(meeting.getRoom()))
+                mRoom
+        );
+        if (!mValidRooms.contains(meeting.getRoom()))
             mGeneralError = application.getString(R.string.room_not_free);
         if (mTopic == null || mTopic.isEmpty())
             mTopicError = application.getString(R.string.topic_error);
@@ -97,7 +98,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 validRoomNames(),
                 mParticipantError,
                 mTopicError,
-                mGeneralError);
+                mGeneralError
+        );
     }
 
     @NonNull
@@ -110,25 +112,25 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     @NonNull
     public LiveData<AddMeetingFragmentViewState> getAddMeetingFragmentItem() {
-        return mAddMeetingFragmentItemMutableLiveData;
+        return viewState;
     }
 
     public void setRoom(int which) {
         mRoom = mValidRooms.get(which);
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
     }
 
     public void setTime(boolean startButton, int hour, int minute) {
         if (startButton) mStart = utils.ARBITRARY_DAY.withHour(hour).withMinute(minute);
         else mEnd = utils.ARBITRARY_DAY.withHour(hour).withMinute(minute);
         mValidRooms = getValidRooms(toMeeting());
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
     }
 
     public void setTopic(@NonNull String string) {
         mTopic = string;
         if (!string.isEmpty()) mTopicError = null;
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
     }
 
     public boolean addParticipant(@NonNull String string) {
@@ -141,19 +143,19 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         if (mParticipants.contains(string))
             mParticipantError = application.getString(R.string.already_an_attendee);
         if (mParticipantError != null) {
-            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+            viewState.setValue(toViewState());
             return false;
         }
         mParticipants.add(string);
         mValidRooms = getValidRooms(toMeeting());
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
         return true;
     }
 
     public void removeParticipant(@NonNull String participant) {
         mParticipants.remove(participant);
         mValidRooms = getValidRooms(toMeeting());
-        mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+        viewState.setValue(toViewState());
     }
 
     @NonNull
@@ -178,7 +180,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     public boolean validate() {
         Meeting meeting = toMeeting();
         if (mGeneralError != null || mParticipantError != null || mTopicError != null) {
-            mAddMeetingFragmentItemMutableLiveData.setValue(toViewState());
+            viewState.setValue(toViewState());
             return false;
         }
         if (meeting == null) return false;
