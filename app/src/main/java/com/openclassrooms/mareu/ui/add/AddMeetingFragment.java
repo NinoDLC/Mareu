@@ -4,7 +4,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,16 +90,12 @@ public class AddMeetingFragment extends Fragment {
         });
 
         participantsField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        participantsField.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        Editable ed = participantsField.getText();
-                        if (ed != null && mViewModel.addParticipant(ed.toString()))
-                            participantsField.getText().clear();
-                        return true;
-                    }
-                });
+        participantsField.setOnEditorActionListener((v, actionId, event) -> {
+            Editable ed = participantsField.getText();
+            if (ed != null && mViewModel.addParticipant(ed.toString()))
+                participantsField.getText().clear();
+            return true;
+        });
         participantTil.setError(item.getParticipantError());
 
         participantsGroup.removeAllViews();
@@ -115,7 +110,9 @@ public class AddMeetingFragment extends Fragment {
         bindTimeButton(end, item.getEndHour(), item.getEndMinute(), false);
         bindRoomButton(room, item.getFreeMeetingRoomNames());
 
-        create.setOnClickListener(v -> {if (mViewModel.validate()) requireActivity().onBackPressed();});
+        create.setOnClickListener(v -> {
+            if (mViewModel.validate()) requireActivity().onBackPressed();
+        });
     }
 
     void bindRoomButton(@NonNull Button room, @NonNull CharSequence[] freeMeetingRooms) {

@@ -8,7 +8,7 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
-import com.openclassrooms.mareu.testUtils.MeetingsListFiltering;
+import com.openclassrooms.mareu.testUtils.TestsMeetingsList;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewState;
 
@@ -49,7 +49,7 @@ public class MainFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
-        EXPECTED_MEETINGS_LIVEDATA.setValue(MeetingsListFiltering.MEETING_LIST);
+        EXPECTED_MEETINGS_LIVEDATA.setValue(TestsMeetingsList.MEETING_LIST);
         viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository);
     }
 

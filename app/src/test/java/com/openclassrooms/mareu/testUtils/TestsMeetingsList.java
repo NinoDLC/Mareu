@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class MeetingsListFiltering {
+public class TestsMeetingsList {
 
     public static final List<Meeting> MEETING_LIST = Arrays.asList(
             new Meeting(
