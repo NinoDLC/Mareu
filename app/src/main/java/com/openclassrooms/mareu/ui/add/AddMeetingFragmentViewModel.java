@@ -3,7 +3,6 @@ package com.openclassrooms.mareu.ui.add;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -26,6 +25,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     @NonNull
     private final Application application;
+
     @NonNull
     private final MeetingsRepository mMeetingRepo;
 
@@ -37,49 +37,23 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private LocalDateTime mStart = utils.getNextRoundTime();
     private LocalDateTime mEnd = mStart.plusMinutes(30);
     private final HashSet<String> mParticipants = new HashSet<>(0);
-    private MeetingRoom mRoom = MeetingRoom.ROOM_0;
+    private MeetingRoom mRoom;
 
     private List<MeetingRoom> mValidRooms;
     private String mParticipantError;
     private String mTopicError;
-    private String mGeneralError;
+    private String mTimeError;
+    private String mRoomError;
 
     public AddMeetingFragmentViewModel(@NonNull Application application, @NonNull MeetingsRepository meetingRepository) {
         this.application = application;
         mMeetingRepo = meetingRepository;
 
         mId = mMeetingRepo.getNextMeetingId();  // not testing duplicate ids...
-        mValidRooms = getValidRooms(toMeeting());
-        if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
-        mGeneralError = null;  // cancel errors from toMeeting()
-        mTopicError = null;    // cancel errors from toMeeting()
-        viewState.setValue(toViewState());
-    }
 
-    @Nullable
-    private Meeting toMeeting() {
-        mGeneralError = null;
-        if (mEnd.isBefore(mStart)) {
-            mGeneralError = application.getString(R.string.stop_before_start);
-            return null;
-        }
-        if (mRoom == null) mGeneralError = application.getString(R.string.no_meeting_room);
-        else if (mParticipants.size() > mRoom.getCapacity())
-            mGeneralError = application.getString(R.string.room_too_small);
-        Meeting meeting = new Meeting(
-                mId,
-                application.getString(R.string.phone_owner_email),
-                new HashSet<>(mParticipants),
-                mTopic,
-                mStart,
-                mEnd,
-                mRoom
-        );
-        if (!mValidRooms.contains(meeting.getRoom()))
-            mGeneralError = application.getString(R.string.room_not_free);
-        if (mTopic == null || mTopic.isEmpty())
-            mTopicError = application.getString(R.string.topic_error);
-        return meeting;
+        mValidRooms = getValidRooms();  // depends on meetingRepository
+        if (!mValidRooms.isEmpty()) mRoom = mValidRooms.get(0);
+        viewState.setValue(toViewState());
     }
 
     @NonNull
@@ -98,7 +72,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
                 validRoomNames(),
                 mParticipantError,
                 mTopicError,
-                mGeneralError
+                mTimeError,
+                mRoomError
         );
     }
 
@@ -111,19 +86,26 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<AddMeetingFragmentViewState> getAddMeetingFragmentItem() {
+    public LiveData<AddMeetingFragmentViewState> getViewState() {
         return viewState;
     }
 
     public void setRoom(int which) {
+        mRoomError = null;
         mRoom = mValidRooms.get(which);
         viewState.setValue(toViewState());
     }
 
     public void setTime(boolean startButton, int hour, int minute) {
+        mRoomError = null;
+
         if (startButton) mStart = utils.ARBITRARY_DAY.withHour(hour).withMinute(minute);
         else mEnd = utils.ARBITRARY_DAY.withHour(hour).withMinute(minute);
-        mValidRooms = getValidRooms(toMeeting());
+
+        if (mStart.isBefore(mEnd)) mTimeError = null;
+        else mTimeError = application.getString(R.string.stop_before_start);
+
+        mValidRooms = getValidRooms();
         viewState.setValue(toViewState());
     }
 
@@ -147,44 +129,59 @@ public class AddMeetingFragmentViewModel extends ViewModel {
             return false;
         }
         mParticipants.add(string);
-        mValidRooms = getValidRooms(toMeeting());
+        mValidRooms = getValidRooms();
         viewState.setValue(toViewState());
         return true;
     }
 
     public void removeParticipant(@NonNull String participant) {
         mParticipants.remove(participant);
-        mValidRooms = getValidRooms(toMeeting());
+        mValidRooms = getValidRooms();
         viewState.setValue(toViewState());
     }
 
     @NonNull
-    private List<MeetingRoom> getValidRooms(@Nullable Meeting meeting) {
+    private List<MeetingRoom> getValidRooms() {
+        if (mTimeError != null) return new ArrayList<>();  // end before start
         List<MeetingRoom> validRooms = new ArrayList<>(Arrays.asList(MeetingRoom.values()));
-        if (meeting == null) return validRooms;  // null if mStart after mEnd
         List<Meeting> plannedMeetings = mMeetingRepo.getMeetings().getValue();
         if (plannedMeetings == null)
             throw new IllegalStateException("got null instead of meetings list");
         for (Meeting plannedMeeting : plannedMeetings)
-            if (!plannedMeeting.getStart().isAfter(meeting.getEnd()) && !plannedMeeting.getEnd().isBefore(meeting.getStart()))
+            if (!plannedMeeting.getStart().isAfter(mEnd) && !plannedMeeting.getEnd().isBefore(mStart))
                 validRooms.remove(plannedMeeting.getRoom());
         for (Iterator<MeetingRoom> iterator = validRooms.iterator(); iterator.hasNext(); ) {
             MeetingRoom meetingRoom = iterator.next();
-            if (meetingRoom.getCapacity() < meeting.getParticipants().size() + 1) // account for owner also
-                validRooms.remove(meetingRoom);
+            if (meetingRoom.getCapacity() < mParticipants.size() + 1) // account for owner also
+                iterator.remove();
         }
         Collections.sort(validRooms, (o1, o2) -> Integer.compare(o1.getCapacity(), o2.getCapacity()));
         return validRooms;
     }
 
     public boolean validate() {
-        Meeting meeting = toMeeting();
-        if (mGeneralError != null || mParticipantError != null || mTopicError != null) {
+        if (mTopic == null || mTopic.isEmpty())
+            mTopicError = application.getString(R.string.topic_error);
+        if (mRoom == null)
+            mRoomError = application.getString(R.string.no_meeting_room);
+        else if (mParticipants.size() > mRoom.getCapacity())
+            mRoomError = application.getString(R.string.room_too_small);
+        if (!mValidRooms.contains(mRoom))
+            mRoomError = application.getString(R.string.room_not_free);
+
+        if (mRoomError != null || mParticipantError != null || mTopicError != null || mTimeError != null) {
             viewState.setValue(toViewState());
             return false;
         }
-        if (meeting == null) return false;
-        mMeetingRepo.createMeeting(meeting);
+        mMeetingRepo.createMeeting(new Meeting(
+                mId,
+                application.getString(R.string.phone_owner_email),
+                new HashSet<>(mParticipants),
+                mTopic,
+                mStart,
+                mEnd,
+                mRoom
+        ));
         return true;
     }
 }

@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class AddMeetingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_meeting, container, false);
-        mViewModel.getAddMeetingFragmentItem().observe(getViewLifecycleOwner(), item -> bindAndInitView(view, item, inflater));
+        mViewModel.getViewState().observe(getViewLifecycleOwner(), item -> bindAndInitView(view, item, inflater));
         return view;
     }
 
@@ -59,14 +60,16 @@ public class AddMeetingFragment extends Fragment {
         Button room = view.findViewById(R.id.add_meeting_room);
         TextInputLayout topicTil = view.findViewById(R.id.add_meeting_topic_til);
         TextInputLayout participantTil = view.findViewById(R.id.add_meeting_participants_til);
-        TextView error = view.findViewById(R.id.general_error);
+        TextView timeError = view.findViewById(R.id.time_error);
+        TextView roomError = view.findViewById(R.id.room_error);
 
         id.setText(item.getId());
         owner.setText(item.getOwner());
         start.setText(item.getStartAsText());
         end.setText(item.getEndAsText());
         room.setText(item.getRoomName());
-        error.setText(item.getGeneralError());
+        timeError.setText(item.getTimeError());
+        roomError.setText(item.getRoomError());
 
         topic.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         topicTil.setError(item.getTopicError());
@@ -87,13 +90,16 @@ public class AddMeetingFragment extends Fragment {
             }
         });
 
-        participantsField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        participantsField.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         participantsField.setOnEditorActionListener(
-                (v, actionId, event) -> {
-                    Editable ed = participantsField.getText();
-                    if (ed != null && mViewModel.addParticipant(ed.toString()))
-                        participantsField.setText(null);
-                    return true;
+                new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        Editable ed = participantsField.getText();
+                        if (ed != null && mViewModel.addParticipant(ed.toString()))
+                            participantsField.getText().clear();
+                        return true;
+                    }
                 });
         participantTil.setError(item.getParticipantError());
 
