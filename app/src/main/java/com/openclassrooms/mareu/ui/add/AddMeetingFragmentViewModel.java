@@ -34,7 +34,9 @@ public class AddMeetingFragmentViewModel extends ViewModel {
 
     // data to populate new meeting
     private final int mId;
-    private String mTopic;
+
+    @NonNull
+    private String mTopic = "";
     private LocalDateTime mStart;
     private LocalDateTime mEnd;
     private final HashSet<String> mParticipants = new HashSet<>(0);
@@ -151,7 +153,10 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private List<MeetingRoom> getValidRooms() {
         if (mTimeError != null) return new ArrayList<>();  // end before start
         List<MeetingRoom> validRooms = new ArrayList<>(Arrays.asList(MeetingRoom.values()));
-        List<Meeting> plannedMeetings = mMeetingRepo.getMeetings().getValue(); // TODO won't work if meetings are on the internet
+
+        // Ok for this project, but won't work when meetings are on the internet
+        List<Meeting> plannedMeetings = mMeetingRepo.getMeetings().getValue();
+
         if (plannedMeetings == null)
             throw new IllegalStateException("got null instead of meetings list");
         for (Meeting plannedMeeting : plannedMeetings)
@@ -167,7 +172,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     }
 
     public boolean validate() {
-        if (mTopic == null || mTopic.isEmpty())
+        if (mTopic.isEmpty())
             mTopicError = application.getString(R.string.topic_error);
         if (mRoom == null)
             mRoomError = application.getString(R.string.no_meeting_room);

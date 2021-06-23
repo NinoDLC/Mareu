@@ -3,7 +3,6 @@ package com.openclassrooms.mareu;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.openclassrooms.mareu.model.Meeting;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
@@ -38,8 +37,6 @@ public class MainFragmentViewModelUnitTests {
     private Clock clock;
     private static final int MAGIC_MEETING_ID = 44;
 
-    private MutableLiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA;
-
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
@@ -52,10 +49,7 @@ public class MainFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         clock = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
-        EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>();
-
-        given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
-        EXPECTED_MEETINGS_LIVEDATA.setValue(TestsMeetingsList.MEETING_LIST);
+        given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(TestsMeetingsList.MEETING_LIST));
         viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository, clock);
 
         verify(meetingsRepository).getMeetings();

@@ -72,7 +72,8 @@ public class MainFragment extends Fragment {
         inflater.inflate(R.menu.menu_main, menu);
     }
 
-    /* todo tint filter icons if a filter is active. cumbersome.
+    /*
+    // code to tint tint filter icons if a filter is active. cumbersome.
     tintIcon(R.drawable.ic_baseline_location_on_24, mViewModel.getRoomFilterColor());
     public void tintIcon(int resId, int color) {
         Context context = requireContext();

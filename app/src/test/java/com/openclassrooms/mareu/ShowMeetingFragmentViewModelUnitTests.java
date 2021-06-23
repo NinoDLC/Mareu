@@ -47,7 +47,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         given(currentIdRepository.getCurrentIdLiveData()).willReturn(new MutableLiveData<>(REQUESTED_MEETING_ID));
-        // todo seems given() calls can happen after meetingsRepository is passed to VM?
+        // todo Nino seems given() calls can happen after meetingsRepository is passed to VM?
         viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, currentIdRepository);
     }
 
@@ -92,7 +92,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
         given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(new ArrayList<>(Collections.singleton(meeting1))));
 
         // then
-        // todo: super weird to use a lambda
+        // todo: Nino super weird to use a lambda
         assertThrows("no such meeting", IllegalStateException.class, () -> LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem()));
     }
 
@@ -102,7 +102,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
         given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>());
 
         // then
-        // todo: super weird to use a lambda
+        // todo: Nino super weird to use a lambda
         assertThrows("null livedata", IllegalStateException.class, () -> LiveDataTestUtils.getOrAwaitValue(viewModel.getShowMeetingFragmentItem()));
     }
 }
