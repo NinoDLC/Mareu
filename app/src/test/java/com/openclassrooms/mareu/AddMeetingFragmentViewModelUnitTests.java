@@ -1,6 +1,8 @@
 package com.openclassrooms.mareu;
 
 
+import android.util.Log;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,7 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
+import java.time.Clock;
+import java.time.ZoneOffset;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -30,6 +34,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 public class AddMeetingFragmentViewModelUnitTests {
 
     private AddMeetingFragmentViewModel viewModel;
+
+    private Clock clock;
 
     private static final int NEXT_MEETING_ID = 44;
 
@@ -56,14 +62,15 @@ public class AddMeetingFragmentViewModelUnitTests {
 
     @Before
     public void setUp() {
+        clock = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
+
         given(application.getString(R.string.phone_owner_email)).willReturn(PHONE_OWNER_EMAIL);
-        given(utils.getNextRoundTime()).willReturn(LocalDateTime.of(2021,6,14,10,12));
-        /*given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
+        given(application.getString(R.string.topic_error)).willReturn(TOPIC_ERROR);
+        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.stop_before_start)).willReturn(STOP_BEFORE_START);
         given(application.getString(R.string.email_error)).willReturn(EMAIL_ERROR);
         given(application.getString(R.string.do_not_add_yourself)).willReturn(DO_NOT_ADD_YOURSELF);
         given(application.getString(R.string.already_an_attendee)).willReturn(ALREADY_AN_ATTENDEE);
-        given(application.getString(R.string.topic_error)).willReturn(TOPIC_ERROR);
         given(application.getString(R.string.no_meeting_room)).willReturn(NO_MEETING_ROOM);
         given(application.getString(R.string.room_too_small)).willReturn(ROOM_TOO_SMALL);
         given(application.getString(R.string.room_not_free)).willReturn(ROOM_NOT_FREE);*/
@@ -71,11 +78,14 @@ public class AddMeetingFragmentViewModelUnitTests {
         given(meetingsRepository.getNextMeetingId()).willReturn(NEXT_MEETING_ID);
         given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(TestsMeetingsList.MEETING_LIST));
 
-        viewModel = new AddMeetingFragmentViewModel(application, meetingsRepository);
+        viewModel = new AddMeetingFragmentViewModel(application, meetingsRepository, clock);
     }
 
     @Test
     public void nominalCase() throws InterruptedException {
+        // given
+        String freeRoomsList = "[Labrador, Braque-de-Weimar, Doberman, Jack-Russel, Basset, Dogue-Allemand, Epagnol]";
+
         // when
         AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
 
@@ -86,11 +96,49 @@ public class AddMeetingFragmentViewModelUnitTests {
 
         assertEquals("44", viewState.getId());
         assertEquals(PHONE_OWNER_EMAIL, viewState.getOwner());
-        // todo all other fields to be tested here.
+        assertEquals(9, viewState.getStartHour());
+        assertEquals(0, viewState.getStartMinute());
+        assertEquals(9, viewState.getEndHour());
+        assertEquals(30, viewState.getEndMinute());
+        assertEquals("09h00", viewState.getStartAsText());
+        assertEquals("09h30", viewState.getEndAsText());
+        assertEquals("Labrador", viewState.getRoomName());
+        assertEquals(0, viewState.getParticipants().length);
+        assertEquals(freeRoomsList, Arrays.toString(viewState.getFreeMeetingRoomNames()));
         assertNull(viewState.getParticipantError());
         assertNull(viewState.getRoomError());
         assertNull(viewState.getTimeError());
-        assertNull(viewState.getRoomError());
+        assertNull(viewState.getTopicError());
     }
+
+    @Test
+    public void errorOnEmptyTopic() throws InterruptedException {
+        // when
+        viewModel.setTopic("");
+        viewModel.validate();
+
+        //then
+        assertEquals(TOPIC_ERROR, LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState()).getTopicError());
+    }
+
+    @Test
+    public void newTopicRemovesError() throws InterruptedException {
+        // given
+        String topic = "TOPIC";
+
+        // when
+        viewModel.setTopic("");
+        viewModel.validate();
+        viewModel.setTopic(topic);
+
+        //then
+        assertNull(LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState()).getTopicError());
+    }
+
+    @Test
+    public void test() {
+        assertTrue(true);
+    }
+
 
 }

@@ -13,6 +13,7 @@ import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,8 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     // data to populate new meeting
     private final int mId;
     private String mTopic;
-    private LocalDateTime mStart = utils.getNextRoundTime();
-    private LocalDateTime mEnd = mStart.plusMinutes(30);
+    private LocalDateTime mStart;
+    private LocalDateTime mEnd;
     private final HashSet<String> mParticipants = new HashSet<>(0);
     private MeetingRoom mRoom;
 
@@ -45,10 +46,16 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private String mTimeError;
     private String mRoomError;
 
-    public AddMeetingFragmentViewModel(@NonNull Application application, @NonNull MeetingsRepository meetingRepository) {
+    public AddMeetingFragmentViewModel(
+            @NonNull Application application,
+            @NonNull MeetingsRepository meetingRepository,
+            @NonNull Clock clock) {
         this.application = application;
         mMeetingRepo = meetingRepository;
 
+        LocalDateTime now = LocalDateTime.now(clock);
+        mStart = utils.ARBITRARY_DAY.withHour(now.getHour()).withMinute(now.getMinute() / 15 * 15).plusMinutes(15).withSecond(0);
+        mEnd = mStart.plusMinutes(30);
         mId = mMeetingRepo.getNextMeetingId();  // not testing duplicate ids...
 
         mValidRooms = getValidRooms();  // depends on meetingRepository

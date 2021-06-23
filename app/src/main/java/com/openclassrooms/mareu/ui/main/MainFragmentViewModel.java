@@ -14,6 +14,7 @@ import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.utils;
 
 import java.text.MessageFormat;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainFragmentViewModel extends ViewModel {
+
+    private final Clock mClock;
 
     @NonNull
     private final MeetingsRepository mMeetingsRepository;
@@ -42,9 +45,11 @@ public class MainFragmentViewModel extends ViewModel {
 
     public MainFragmentViewModel(
             @NonNull MeetingsRepository meetingsRepository,
-            @NonNull CurrentIdRepository currentIdRepository) {
+            @NonNull CurrentIdRepository currentIdRepository,
+            @NonNull Clock clock) {
         mMeetingsRepository = meetingsRepository;
         mCurrentIdRepository = currentIdRepository;
+        mClock = clock;
 
         mMeetingListMutableLivedata = Transformations.map(
                 mMeetingsRepository.getMeetings(),
@@ -166,11 +171,11 @@ public class MainFragmentViewModel extends ViewModel {
 
     public int getTimeFilterHour() {
         LocalDateTime dateTime = mSelectedTimeMutableLiveData.getValue();
-        return dateTime == null ? LocalDateTime.now().getHour() : dateTime.getHour();
+        return dateTime == null ? LocalDateTime.now(mClock).getHour() : dateTime.getHour();
     }
 
     public int getTimeFilterMinute() {
         LocalDateTime dateTime = mSelectedTimeMutableLiveData.getValue();
-        return dateTime == null ? LocalDateTime.now().getMinute() : dateTime.getMinute();
+        return dateTime == null ? LocalDateTime.now(mClock).getMinute() : dateTime.getMinute();
     }
 }

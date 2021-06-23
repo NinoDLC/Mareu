@@ -19,7 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -33,6 +35,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 public class MainFragmentViewModelUnitTests {
 
     private MainFragmentViewModel viewModel;
+    private Clock clock;
     private static final int MAGIC_MEETING_ID = 44;
 
     private static final MutableLiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>();
@@ -48,9 +51,10 @@ public class MainFragmentViewModelUnitTests {
 
     @Before
     public void setUp() {
+        clock = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
         EXPECTED_MEETINGS_LIVEDATA.setValue(TestsMeetingsList.MEETING_LIST);
-        viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository);
+        viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository, clock);
     }
 
     @Test
@@ -219,8 +223,8 @@ public class MainFragmentViewModelUnitTests {
         viewModel.resetTimeFilter();
 
         // then
-        assertEquals(LocalDateTime.now().getHour(), viewModel.getTimeFilterHour());
-        assertEquals(LocalDateTime.now().getMinute(), viewModel.getTimeFilterMinute());
+        assertEquals(LocalDateTime.now(clock).getHour(), viewModel.getTimeFilterHour());
+        assertEquals(LocalDateTime.now(clock).getMinute(), viewModel.getTimeFilterMinute());
     }
 
     // List<Meeting> list = new ArrayList<>();

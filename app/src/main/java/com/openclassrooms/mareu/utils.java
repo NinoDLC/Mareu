@@ -13,12 +13,6 @@ public final class utils {
 
     @NonNull
     public static final LocalDateTime ARBITRARY_DAY = LocalDateTime.of(2021, 6, 14, 8, 50);
-    // to use LocalDateTime.now(), one must inject a clock, so tests pass, or in my case, not use a DateTime to store only hours.
-
-    public static LocalDateTime getNextRoundTime() {
-        LocalDateTime now = LocalDateTime.now();
-        return ARBITRARY_DAY.withHour(now.getHour()).withMinute(now.getMinute() / 15 * 15).plusMinutes(15).withSecond(0);
-    }
 
     @NonNull
     public static String niceTimeFormat(@NonNull LocalDateTime localDateTime) {

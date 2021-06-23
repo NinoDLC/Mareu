@@ -13,6 +13,8 @@ import com.openclassrooms.mareu.ui.main.MainActivityViewModel;
 import com.openclassrooms.mareu.ui.main.MainFragmentViewModel;
 import com.openclassrooms.mareu.ui.show.ShowMeetingFragmentViewModel;
 
+import java.time.Clock;
+
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private static ViewModelFactory factory;
@@ -55,11 +57,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(MainActivityViewModel.class)) {
             return (T) new MainActivityViewModel(mCurrentIdRepository);
         } else if (modelClass.isAssignableFrom(MainFragmentViewModel.class)) {
-            return (T) new MainFragmentViewModel(meetingRepository, mCurrentIdRepository);
+            return (T) new MainFragmentViewModel(meetingRepository, mCurrentIdRepository, Clock.systemDefaultZone());
         } else if (modelClass.isAssignableFrom(ShowMeetingFragmentViewModel.class)) {
             return (T) new ShowMeetingFragmentViewModel(meetingRepository, mCurrentIdRepository);
         } else if (modelClass.isAssignableFrom(AddMeetingFragmentViewModel.class)) {
-            return (T) new AddMeetingFragmentViewModel(application, meetingRepository);
+            return (T) new AddMeetingFragmentViewModel(application, meetingRepository, Clock.systemDefaultZone());
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
