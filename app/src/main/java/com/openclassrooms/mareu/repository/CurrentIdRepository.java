@@ -1,15 +1,15 @@
 package com.openclassrooms.mareu.repository;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+
+import com.openclassrooms.mareu.SingleLiveEvent;
 
 public class CurrentIdRepository {
 
-    private final MutableLiveData<Integer> currentIdMutableLiveData = new MutableLiveData<>();
+    private final SingleLiveEvent<Integer> currentIdMutableLiveData = new SingleLiveEvent<>();
 
     @NonNull
-    public LiveData<Integer> getCurrentIdLiveData() {
+    public SingleLiveEvent<Integer> getCurrentIdLiveData() {
         return currentIdMutableLiveData;
     }
 

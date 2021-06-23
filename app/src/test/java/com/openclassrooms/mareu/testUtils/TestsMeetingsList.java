@@ -19,7 +19,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 8, 30, 0),
                     LocalDateTime.of(2021, 6, 14, 9, 35, 0),
-                    MeetingRoom.values()[3]
+                    MeetingRoom.ROOM_3
             ),
             new Meeting(
                     2,
@@ -28,7 +28,7 @@ public class TestsMeetingsList {
                     "Project xXx",
                     LocalDateTime.of(2021, 6, 14, 16, 15, 0),
                     LocalDateTime.of(2021, 6, 14, 16, 40, 0),
-                    MeetingRoom.values()[1]
+                    MeetingRoom.ROOM_1
             ),
             new Meeting(
                     3,
@@ -37,7 +37,7 @@ public class TestsMeetingsList {
                     "Project xXx",
                     LocalDateTime.of(2021, 6, 14, 17, 15, 0),
                     LocalDateTime.of(2021, 6, 14, 18, 5, 0),
-                    MeetingRoom.values()[6]
+                    MeetingRoom.ROOM_6
             ),
             new Meeting(
                     4,
@@ -46,7 +46,7 @@ public class TestsMeetingsList {
                     "Project xXx",
                     LocalDateTime.of(2021, 6, 14, 11, 10, 0),
                     LocalDateTime.of(2021, 6, 14, 11, 10, 0),
-                    MeetingRoom.values()[1]
+                    MeetingRoom.ROOM_1
             ),
             new Meeting(
                     5,
@@ -55,7 +55,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 9, 40, 0),
                     LocalDateTime.of(2021, 6, 14, 9, 40, 0),
-                    MeetingRoom.values()[3]
+                    MeetingRoom.ROOM_3
             ),
             new Meeting(
                     6,
@@ -64,7 +64,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 11, 50, 0),
                     LocalDateTime.of(2021, 6, 14, 12, 10, 0),
-                    MeetingRoom.values()[8]
+                    MeetingRoom.ROOM_8
             ),
             new Meeting(
                     7,
@@ -73,7 +73,7 @@ public class TestsMeetingsList {
                     "Agile sprint",
                     LocalDateTime.of(2021, 6, 14, 10, 0, 0),
                     LocalDateTime.of(2021, 6, 14, 11, 25, 0),
-                    MeetingRoom.values()[2]
+                    MeetingRoom.ROOM_2
             ),
             new Meeting(
                     8,
@@ -82,7 +82,7 @@ public class TestsMeetingsList {
                     "Global warming",
                     LocalDateTime.of(2021, 6, 14, 10, 10, 0),
                     LocalDateTime.of(2021, 6, 14, 10, 25, 0),
-                    MeetingRoom.values()[6]
+                    MeetingRoom.ROOM_6
             ),
             new Meeting(
                     9,
@@ -91,7 +91,7 @@ public class TestsMeetingsList {
                     "Global warming",
                     LocalDateTime.of(2021, 6, 14, 8, 40, 0),
                     LocalDateTime.of(2021, 6, 14, 8, 45, 0),
-                    MeetingRoom.ROOM_7 // TODO simpler
+                    MeetingRoom.ROOM_7
             ),
             new Meeting(
                     10,
@@ -100,7 +100,7 @@ public class TestsMeetingsList {
                     "Agile sprint",
                     LocalDateTime.of(2021, 6, 14, 13, 15, 0),
                     LocalDateTime.of(2021, 6, 14, 13, 30, 0),
-                    MeetingRoom.values()[2]
+                    MeetingRoom.ROOM_2
             ),
             new Meeting(
                     11,
@@ -109,7 +109,7 @@ public class TestsMeetingsList {
                     "Agile sprint",
                     LocalDateTime.of(2021, 6, 14, 13, 25, 0),
                     LocalDateTime.of(2021, 6, 14, 14, 40, 0),
-                    MeetingRoom.values()[1]
+                    MeetingRoom.ROOM_1
             ),
             new Meeting(
                     12,
@@ -118,7 +118,7 @@ public class TestsMeetingsList {
                     "Code red",
                     LocalDateTime.of(2021, 6, 14, 8, 50, 0),
                     LocalDateTime.of(2021, 6, 14, 9, 45, 0),
-                    MeetingRoom.values()[8]
+                    MeetingRoom.ROOM_8
             ),
             new Meeting(
                     13,
@@ -127,7 +127,7 @@ public class TestsMeetingsList {
                     "Code red",
                     LocalDateTime.of(2021, 6, 14, 14, 40, 0),
                     LocalDateTime.of(2021, 6, 14, 15, 25, 0),
-                    MeetingRoom.values()[7]
+                    MeetingRoom.ROOM_7
             ),
             new Meeting(
                     14,
@@ -136,7 +136,7 @@ public class TestsMeetingsList {
                     "Coffee break",
                     LocalDateTime.of(2021, 6, 14, 10, 10, 0),
                     LocalDateTime.of(2021, 6, 14, 10, 45, 0),
-                    MeetingRoom.values()[9]
+                    MeetingRoom.ROOM_9
             ),
             new Meeting(
                     15,
@@ -145,7 +145,7 @@ public class TestsMeetingsList {
                     "Coffee break",
                     LocalDateTime.of(2021, 6, 14, 17, 45, 0),
                     LocalDateTime.of(2021, 6, 14, 17, 55, 0),
-                    MeetingRoom.values()[5]
+                    MeetingRoom.ROOM_5
             ),
             new Meeting(
                     16,
@@ -154,7 +154,7 @@ public class TestsMeetingsList {
                     "Coffee break",
                     LocalDateTime.of(2021, 6, 14, 17, 50, 0),
                     LocalDateTime.of(2021, 6, 14, 18, 30, 0),
-                    MeetingRoom.values()[9]
+                    MeetingRoom.ROOM_9
             ),
             new Meeting(
                     17,
@@ -163,7 +163,7 @@ public class TestsMeetingsList {
                     "Code red",
                     LocalDateTime.of(2021, 6, 14, 12, 20, 0),
                     LocalDateTime.of(2021, 6, 14, 12, 40, 0),
-                    MeetingRoom.values()[9]
+                    MeetingRoom.ROOM_9
             ),
             new Meeting(
                     18,
@@ -172,7 +172,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 16, 5, 0),
                     LocalDateTime.of(2021, 6, 14, 16, 45, 0),
-                    MeetingRoom.values()[8]
+                    MeetingRoom.ROOM_8
             ),
             new Meeting(
                     19,
@@ -181,7 +181,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 16, 10, 0),
                     LocalDateTime.of(2021, 6, 14, 17, 15, 0),
-                    MeetingRoom.values()[0]
+                    MeetingRoom.ROOM_0
             ),
             new Meeting(
                     20,
@@ -190,7 +190,7 @@ public class TestsMeetingsList {
                     "Daily meetup",
                     LocalDateTime.of(2021, 6, 14, 9, 20, 0),
                     LocalDateTime.of(2021, 6, 14, 9, 20, 0),
-                    MeetingRoom.values()[5]
+                    MeetingRoom.ROOM_5
             )
     );
 

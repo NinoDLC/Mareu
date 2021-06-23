@@ -29,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
         MainActivityViewModel viewModel = ViewModelFactory.getInstance().create(MainActivityViewModel.class);
 
+        //todo : problème, là, c'est que mon observer (viewModel)
+        // change avec le lifecycle android. Le nouveau récupère donc la valeur.
+        // @Override onInactive()
+
         viewModel.eventIsShowMeeting().observe(this, bool -> {
             Intent intent = new Intent(MainActivity.this, bool ? ShowMeetingActivity.class : AddMeetingActivity.class);
             startActivity(intent);

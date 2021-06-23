@@ -69,26 +69,12 @@ public class MainFragmentViewModelUnitTests {
 
         // and should be sorted
         // TODO export that as a "EXPECTED MainFragmentViewState list"
-        assertEquals(1, result.get(0).getId());
-        assertEquals(9, result.get(1).getId());
-        assertEquals(12, result.get(2).getId());
-        assertEquals(20, result.get(3).getId());
-        assertEquals(5, result.get(4).getId());
-        assertEquals(7, result.get(5).getId());
-        assertEquals(8, result.get(6).getId());
-        assertEquals(14, result.get(7).getId());
-        assertEquals(4, result.get(8).getId());
-        assertEquals(6, result.get(9).getId());
-        assertEquals(17, result.get(10).getId());
-        assertEquals(10, result.get(11).getId());
-        assertEquals(11, result.get(12).getId());
-        assertEquals(13, result.get(13).getId());
-        assertEquals(18, result.get(14).getId());
-        assertEquals(19, result.get(15).getId());
-        assertEquals(2, result.get(16).getId());
-        assertEquals(3, result.get(17).getId());
-        assertEquals(15, result.get(18).getId());
-        assertEquals(16, result.get(19).getId());
+        int[] order = {1,9,12,20,5,7,8,14,4,6,17,10,11,13,18,19,2,3,15,16};
+
+
+
+
+
     }
 
     @Test

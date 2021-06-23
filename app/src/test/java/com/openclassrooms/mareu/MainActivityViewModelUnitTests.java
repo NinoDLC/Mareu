@@ -23,7 +23,7 @@ public class MainActivityViewModelUnitTests {
 
     private MainActivityViewModel viewModel;
 
-    private final MutableLiveData<Integer> myMutableLiveData = new MutableLiveData<>();
+    private final SingleLiveEvent<Integer> myMutableLiveData = new SingleLiveEvent<>();
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();

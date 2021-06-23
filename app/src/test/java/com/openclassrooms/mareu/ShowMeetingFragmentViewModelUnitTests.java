@@ -46,7 +46,7 @@ public class ShowMeetingFragmentViewModelUnitTests {
 
     @Before
     public void setUp() {
-        given(currentIdRepository.getCurrentIdLiveData()).willReturn(new MutableLiveData<>(REQUESTED_MEETING_ID));
+        given(currentIdRepository.getCurrentIdLiveData()).willReturn(new SingleLiveEvent<>(REQUESTED_MEETING_ID));
         // todo Nino seems given() calls can happen after meetingsRepository is passed to VM?
         viewModel = new ShowMeetingFragmentViewModel(meetingsRepository, currentIdRepository);
     }
