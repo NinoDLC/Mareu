@@ -41,7 +41,7 @@ public class AddMeetingFragmentViewModelUnitTests {
     private static final int NEXT_MEETING_ID = 44;
     private static final String ADD_EMAIL = "foo@bar.baz";
 
-    private static final String PHONE_OWNER_EMAIL = "PHONE_OWNER_EMAIL";
+    private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private static final String SELECT_ROOM = "SELECT_ROOM";
     private static final String STOP_BEFORE_START = "STOP_BEFORE_START";
     private static final String EMAIL_ERROR = "EMAIL_ERROR";
@@ -69,10 +69,10 @@ public class AddMeetingFragmentViewModelUnitTests {
         given(application.getString(R.string.phone_owner_email)).willReturn(PHONE_OWNER_EMAIL);
         given(application.getString(R.string.topic_error)).willReturn(TOPIC_ERROR);
         given(application.getString(R.string.stop_before_start)).willReturn(STOP_BEFORE_START);
-        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.email_error)).willReturn(EMAIL_ERROR);
         given(application.getString(R.string.do_not_add_yourself)).willReturn(DO_NOT_ADD_YOURSELF);
         given(application.getString(R.string.already_an_attendee)).willReturn(ALREADY_AN_ATTENDEE);
+        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.no_meeting_room)).willReturn(NO_MEETING_ROOM);
         given(application.getString(R.string.room_too_small)).willReturn(ROOM_TOO_SMALL);
         given(application.getString(R.string.room_not_free)).willReturn(ROOM_NOT_FREE);*/
@@ -180,6 +180,54 @@ public class AddMeetingFragmentViewModelUnitTests {
 
         // Then
         assertArrayEquals(expectedParticipants, viewState.getParticipants());
+    }
+
+    @Test
+    public void addParticipantTwice() throws InterruptedException {
+        // given
+        String[] expectedParticipants = {ADD_EMAIL};
+
+        // when
+        viewModel.addParticipant(ADD_EMAIL);
+        viewModel.addParticipant(ADD_EMAIL);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // Then
+        assertArrayEquals(expectedParticipants, viewState.getParticipants());
+        assertEquals(ALREADY_AN_ATTENDEE, viewState.getParticipantError());
+    }
+
+    @Test
+    public void addEmptyParticipant() throws InterruptedException {
+        // when
+        viewModel.addParticipant("");
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // Then
+        assertEquals(0, viewState.getParticipants().length);
+        assertNull(viewState.getParticipantError());
+    }
+
+    @Test
+    public void addInvalidParticipant() throws InterruptedException {
+        // when
+        viewModel.addParticipant("foo");
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // Then
+        assertEquals(0, viewState.getParticipants().length);
+        assertEquals(EMAIL_ERROR, viewState.getParticipantError());
+    }
+
+    @Test
+    public void addSelfAsParticipant() throws InterruptedException {
+        // when
+        viewModel.addParticipant(PHONE_OWNER_EMAIL);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // Then
+        assertEquals(0, viewState.getParticipants().length);
+        assertEquals(DO_NOT_ADD_YOURSELF, viewState.getParticipantError());
     }
 
     @Test
