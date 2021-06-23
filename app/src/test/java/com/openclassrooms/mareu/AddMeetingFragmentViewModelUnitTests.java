@@ -23,6 +23,7 @@ import java.time.Clock;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +39,7 @@ public class AddMeetingFragmentViewModelUnitTests {
     private Clock clock;
 
     private static final int NEXT_MEETING_ID = 44;
+    private static final String ADD_EMAIL = "foo@bar.baz";
 
     private static final String PHONE_OWNER_EMAIL = "PHONE_OWNER_EMAIL";
     private static final String SELECT_ROOM = "SELECT_ROOM";
@@ -66,8 +68,8 @@ public class AddMeetingFragmentViewModelUnitTests {
 
         given(application.getString(R.string.phone_owner_email)).willReturn(PHONE_OWNER_EMAIL);
         given(application.getString(R.string.topic_error)).willReturn(TOPIC_ERROR);
-        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.stop_before_start)).willReturn(STOP_BEFORE_START);
+        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.email_error)).willReturn(EMAIL_ERROR);
         given(application.getString(R.string.do_not_add_yourself)).willReturn(DO_NOT_ADD_YOURSELF);
         given(application.getString(R.string.already_an_attendee)).willReturn(ALREADY_AN_ATTENDEE);
@@ -136,9 +138,53 @@ public class AddMeetingFragmentViewModelUnitTests {
     }
 
     @Test
+    public void setRoom() throws InterruptedException {
+        // when
+        viewModel.setRoom(2);
+
+        // then
+        assertEquals("Doberman", LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState()).getRoomName());
+    }
+
+    @Test
+    public void setStartTimeEarlier() throws InterruptedException {
+        // when
+        viewModel.setTime(true, 8, 30);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // then
+        assertNull(viewState.getRoomError());
+        assertNull(viewState.getTimeError());
+    }
+
+    @Test
+    public void setEndTimeEarlier() throws InterruptedException {
+        // when
+        viewModel.setTime(false, 8, 30);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // then
+        assertNull(viewState.getRoomError());
+        assertEquals(STOP_BEFORE_START, viewState.getTimeError());
+    }
+
+    @Test
+    public void addParticipant() throws InterruptedException {
+        // given
+        String[] expectedParticipants = {ADD_EMAIL};
+
+        // when
+        viewModel.addParticipant(ADD_EMAIL);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+
+        // Then
+        assertArrayEquals(expectedParticipants, viewState.getParticipants());
+    }
+
+    @Test
     public void test() {
         assertTrue(true);
     }
-
 
 }
