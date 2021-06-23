@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.mareu.repository.CurrentIdRepository;
 
+
+// TODO : a revoir avec le SingleLiveEvent
 public class MainActivityViewModel extends ViewModel {
 
     private final LiveData<Boolean> showMeeting;

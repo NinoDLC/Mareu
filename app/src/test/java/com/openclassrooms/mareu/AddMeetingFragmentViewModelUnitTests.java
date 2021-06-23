@@ -96,7 +96,14 @@ public class AddMeetingFragmentViewModelUnitTests {
         verify(meetingsRepository).getNextMeetingId();
         verifyNoMoreInteractions(meetingsRepository);
 
-        assertEquals("44", viewState.getId());
+        assertEquals(getDefaultViewState(), viewState);
+    }
+
+
+    // TODO a finir de simplifier
+    private AddMeetingFragmentViewState getDefaultViewState() {
+        return new AddMeetingFragmentViewState(
+          "44",
         assertEquals(PHONE_OWNER_EMAIL, viewState.getOwner());
         assertEquals(9, viewState.getStartHour());
         assertEquals(0, viewState.getStartMinute());
@@ -111,6 +118,7 @@ public class AddMeetingFragmentViewModelUnitTests {
         assertNull(viewState.getRoomError());
         assertNull(viewState.getTimeError());
         assertNull(viewState.getTopicError());
+        );
     }
 
     @Test

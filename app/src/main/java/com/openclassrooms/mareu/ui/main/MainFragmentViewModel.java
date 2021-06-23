@@ -92,8 +92,8 @@ public class MainFragmentViewModel extends ViewModel {
             List<Meeting> meetings,
             LocalDateTime timeFilter,
             boolean[] roomFilter) {
-        // todo Nino : RequirableMutableLiveData?
-        // todo Nino : sinon on marque rarement une livedata @NonNull, non ?
+        // todo sinon on marque rarement une livedata @NonNull, non ?
+        //  R : on les mets toujours en nonnull pour Kotlin interop
         List<MainFragmentViewState> itemsList = new ArrayList<>();
 
         if (timeFilter == null) {
