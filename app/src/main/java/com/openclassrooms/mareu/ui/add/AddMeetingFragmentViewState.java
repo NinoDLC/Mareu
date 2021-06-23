@@ -2,6 +2,9 @@ package com.openclassrooms.mareu.ui.add;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class AddMeetingFragmentViewState {
     private final String mId;
     private final String mOwner;
@@ -110,5 +113,56 @@ public class AddMeetingFragmentViewState {
 
     public String getRoomError() {
         return mRoomError;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddMeetingFragmentViewState that = (AddMeetingFragmentViewState) o;
+        return mStartHour == that.mStartHour &&
+            mStartMinute == that.mStartMinute &&
+            mEndHour == that.mEndHour &&
+            mEndMinute == that.mEndMinute &&
+            Objects.equals(mId, that.mId) &&
+            Objects.equals(mOwner, that.mOwner) &&
+            Objects.equals(mStartAsText, that.mStartAsText) &&
+            Objects.equals(mEndAsText, that.mEndAsText) &&
+            Objects.equals(mRoomName, that.mRoomName) &&
+            Arrays.equals(mParticipants, that.mParticipants) &&
+            Arrays.equals(mFreeMeetingRoomNames, that.mFreeMeetingRoomNames) &&
+            Objects.equals(mParticipantError, that.mParticipantError) &&
+            Objects.equals(mTopicError, that.mTopicError) &&
+            Objects.equals(mTimeError, that.mTimeError) &&
+            Objects.equals(mRoomError, that.mRoomError);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mId, mOwner, mStartAsText, mEndAsText, mRoomName, mStartHour, mStartMinute, mEndHour, mEndMinute, mParticipantError, mTopicError, mTimeError, mRoomError);
+        result = 31 * result + Arrays.hashCode(mParticipants);
+        result = 31 * result + Arrays.hashCode(mFreeMeetingRoomNames);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AddMeetingFragmentViewState{" +
+            "mId='" + mId + '\'' +
+            ", mOwner='" + mOwner + '\'' +
+            ", mStartAsText='" + mStartAsText + '\'' +
+            ", mEndAsText='" + mEndAsText + '\'' +
+            ", mRoomName='" + mRoomName + '\'' +
+            ", mParticipants=" + Arrays.toString(mParticipants) +
+            ", mStartHour=" + mStartHour +
+            ", mStartMinute=" + mStartMinute +
+            ", mEndHour=" + mEndHour +
+            ", mEndMinute=" + mEndMinute +
+            ", mFreeMeetingRoomNames=" + Arrays.toString(mFreeMeetingRoomNames) +
+            ", mParticipantError='" + mParticipantError + '\'' +
+            ", mTopicError='" + mTopicError + '\'' +
+            ", mTimeError='" + mTimeError + '\'' +
+            ", mRoomError='" + mRoomError + '\'' +
+            '}';
     }
 }

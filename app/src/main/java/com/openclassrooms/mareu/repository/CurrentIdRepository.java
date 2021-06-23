@@ -6,11 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 public class CurrentIdRepository {
 
-    // todo: Nino au final, ce repo sert a
-    //  - s'épargner des arguments dans newInstance() et navigate()
-    //  - l'injection de dépendance dans les tests, autant coté set() que coté get()
-    //  - éviter les interfaces pour remonter l'info click si on a le droit d'appeler tout repo depuis tout VM
-
     private final MutableLiveData<Integer> currentIdMutableLiveData = new MutableLiveData<>();
 
     @NonNull

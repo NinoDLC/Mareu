@@ -91,7 +91,7 @@ public class TestsMeetingsList {
                     "Global warming",
                     LocalDateTime.of(2021, 6, 14, 8, 40, 0),
                     LocalDateTime.of(2021, 6, 14, 8, 45, 0),
-                    MeetingRoom.values()[7]
+                    MeetingRoom.ROOM_7 // TODO simpler
             ),
             new Meeting(
                     10,

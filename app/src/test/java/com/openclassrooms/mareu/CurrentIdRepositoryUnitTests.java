@@ -1,6 +1,7 @@
 package com.openclassrooms.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.Observer;
 
 import com.openclassrooms.mareu.repository.CurrentIdRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
@@ -10,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class CurrentIdRepositoryUnitTests {
 
@@ -33,5 +35,16 @@ public class CurrentIdRepositoryUnitTests {
 
         //then
         assertEquals((Integer) myId, LiveDataTestUtils.getOrAwaitValue(repo.getCurrentIdLiveData()));
+    }
+
+    @Test
+    public void initial_case() {
+
+        //when
+        repo.getCurrentIdLiveData().observeForever(ignored -> { });
+        Integer result = repo.getCurrentIdLiveData().getValue();
+
+        //then
+        assertNull(result );
     }
 }

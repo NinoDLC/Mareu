@@ -151,7 +151,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
     private List<MeetingRoom> getValidRooms() {
         if (mTimeError != null) return new ArrayList<>();  // end before start
         List<MeetingRoom> validRooms = new ArrayList<>(Arrays.asList(MeetingRoom.values()));
-        List<Meeting> plannedMeetings = mMeetingRepo.getMeetings().getValue();
+        List<Meeting> plannedMeetings = mMeetingRepo.getMeetings().getValue(); // TODO won't work if meetings are on the internet
         if (plannedMeetings == null)
             throw new IllegalStateException("got null instead of meetings list");
         for (Meeting plannedMeeting : plannedMeetings)

@@ -38,7 +38,7 @@ public class MainFragmentViewModelUnitTests {
     private Clock clock;
     private static final int MAGIC_MEETING_ID = 44;
 
-    private static final MutableLiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>();
+    private MutableLiveData<List<Meeting>> EXPECTED_MEETINGS_LIVEDATA;
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -52,9 +52,13 @@ public class MainFragmentViewModelUnitTests {
     @Before
     public void setUp() {
         clock = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
+        EXPECTED_MEETINGS_LIVEDATA = new MutableLiveData<>();
+
         given(meetingsRepository.getMeetings()).willReturn(EXPECTED_MEETINGS_LIVEDATA);
         EXPECTED_MEETINGS_LIVEDATA.setValue(TestsMeetingsList.MEETING_LIST);
         viewModel = new MainFragmentViewModel(meetingsRepository, mCurrentIdRepository, clock);
+
+        verify(meetingsRepository).getMeetings();
     }
 
     @Test
@@ -63,9 +67,6 @@ public class MainFragmentViewModelUnitTests {
         List<MainFragmentViewState> result = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewStateListLiveData());
 
         // then
-        verify(meetingsRepository).getMeetings();
-        //todo Nino : les verifyNoMoreInterraction sont de l'hygiène :
-        // on pourrait les mettre en @After ? Mais ça obligerait des verify() avant...?
         verifyNoMoreInteractions(meetingsRepository);
         verifyNoMoreInteractions(mCurrentIdRepository);
 
@@ -73,6 +74,7 @@ public class MainFragmentViewModelUnitTests {
         assertEquals(20, result.size());
 
         // and should be sorted
+        // TODO export that as a "EXPECTED MainFragmentViewState list"
         assertEquals(1, result.get(0).getId());
         assertEquals(9, result.get(1).getId());
         assertEquals(12, result.get(2).getId());
@@ -187,11 +189,6 @@ public class MainFragmentViewModelUnitTests {
 
         // then
         assertArrayEquals(expected, result);
-    }
-
-    @Test
-    public void setRoomFilterWithNonInitializedRoomFilter() {
-        // todo: Nino how to test it ?
     }
 
     @Test
