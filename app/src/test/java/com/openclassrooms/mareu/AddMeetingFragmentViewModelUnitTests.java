@@ -231,6 +231,17 @@ public class AddMeetingFragmentViewModelUnitTests {
     }
 
     @Test
+    public void removeParticipant() throws InterruptedException {
+        // when
+        viewModel.addParticipant(ADD_EMAIL);
+        viewModel.removeParticipant(ADD_EMAIL);
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // Then
+        assertEquals(0, viewState.getParticipants().length);
+    }
+
+    @Test
     public void test() {
         assertTrue(true);
     }
