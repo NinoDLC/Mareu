@@ -4,6 +4,8 @@ package com.openclassrooms.mareu;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
+import com.openclassrooms.mareu.model.Meeting;
+import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.repository.MeetingsRepository;
 import com.openclassrooms.mareu.testUtils.LiveDataTestUtils;
 import com.openclassrooms.mareu.testUtils.TestsMeetingsList;
@@ -18,12 +20,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -35,6 +40,8 @@ public class AddMeetingFragmentViewModelUnitTests {
 
     private static final int NEXT_MEETING_ID = 44;
     private static final String ADD_EMAIL = "foo@bar.baz";
+    private static final String TOPIC = "TOPIC";
+    private static final Clock CLOCK = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
 
     private static final String PHONE_OWNER_EMAIL = "chuck@buymore.com";
     private static final String SELECT_ROOM = "SELECT_ROOM";
@@ -76,8 +83,6 @@ public class AddMeetingFragmentViewModelUnitTests {
 
     @Before
     public void setUp() {
-        Clock clock = Clock.fixed(utils.ARBITRARY_DAY.toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
-
         given(application.getString(R.string.phone_owner_email)).willReturn(PHONE_OWNER_EMAIL);
         given(application.getString(R.string.topic_error)).willReturn(TOPIC_ERROR);
         given(application.getString(R.string.stop_before_start)).willReturn(STOP_BEFORE_START);
@@ -85,22 +90,33 @@ public class AddMeetingFragmentViewModelUnitTests {
         given(application.getString(R.string.do_not_add_yourself)).willReturn(DO_NOT_ADD_YOURSELF);
         given(application.getString(R.string.already_an_attendee)).willReturn(ALREADY_AN_ATTENDEE);
         given(application.getString(R.string.room_too_small)).willReturn(ROOM_TOO_SMALL);
-        /* given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
         given(application.getString(R.string.no_meeting_room)).willReturn(NO_MEETING_ROOM);
-        given(application.getString(R.string.room_not_free)).willReturn(ROOM_NOT_FREE);*/
-
+        given(application.getString(R.string.select_room)).willReturn(SELECT_ROOM);
+        given(application.getString(R.string.room_not_free)).willReturn(ROOM_NOT_FREE);
         given(meetingsRepository.getNextMeetingId()).willReturn(NEXT_MEETING_ID);
         given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(TestsMeetingsList.MEETING_LIST));
 
-        viewModel = new AddMeetingFragmentViewModel(application, meetingsRepository, clock);
+        viewModel = new AddMeetingFragmentViewModel(application, meetingsRepository, CLOCK);
     }
 
     @Test
     public void nominalCase() throws InterruptedException {
         // when
+        viewModel.setTopic(TOPIC);
+        viewModel.validate();
         AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
 
         // then
+        verify(meetingsRepository).createMeeting(
+                new Meeting(
+                        NEXT_MEETING_ID,
+                        PHONE_OWNER_EMAIL,
+                        new HashSet<>(),
+                        TOPIC,
+                        utils.ARBITRARY_DAY.withHour(9).withMinute(0),
+                        utils.ARBITRARY_DAY.withHour(9).withMinute(30),
+                        MeetingRoom.ROOM_6
+                        ));
         verify(meetingsRepository).getMeetings();
         verify(meetingsRepository).getNextMeetingId();
         verifyNoMoreInteractions(meetingsRepository);
@@ -120,13 +136,10 @@ public class AddMeetingFragmentViewModelUnitTests {
 
     @Test
     public void newTopicRemovesError() throws InterruptedException {
-        // given
-        String topic = "TOPIC";
-
         // when
         viewModel.setTopic("");
         viewModel.validate();
-        viewModel.setTopic(topic);
+        viewModel.setTopic(TOPIC);
 
         //then
         assertNull(LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState()).getTopicError());
@@ -239,7 +252,7 @@ public class AddMeetingFragmentViewModelUnitTests {
     @Test
     public void tooManyParticipants() throws InterruptedException {
         // when
-        viewModel.setTopic("topic");
+        viewModel.setTopic(TOPIC);
         viewModel.addParticipant(ADD_EMAIL);
         viewModel.addParticipant("foobar@bar.baz");
         viewModel.addParticipant("foobaz@bar.baz");
@@ -253,7 +266,7 @@ public class AddMeetingFragmentViewModelUnitTests {
         //then
         assertEquals("Labrador", viewState.getRoomName());
         assertEquals(7, viewState.getParticipants().length);
-        // todo make this work assertEquals(ROOM_TOO_SMALL, viewState.getRoomError());
+        assertEquals(ROOM_TOO_SMALL, viewState.getRoomError());
     }
 
     @Test
@@ -266,8 +279,40 @@ public class AddMeetingFragmentViewModelUnitTests {
     }
 
     @Test
-    public void test() {
-        assertTrue(true);
+    public void allRoomsTakenOnTimeSpan() throws InterruptedException {
+        // when
+        LocalDateTime start = utils.ARBITRARY_DAY.withHour(2);
+        LocalDateTime end = utils.ARBITRARY_DAY.withHour(10);
+        given(meetingsRepository.getMeetings()).willReturn(new MutableLiveData<>(new ArrayList<>(Arrays.asList(
+                new Meeting(1, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_0),
+                new Meeting(2, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_1),
+                new Meeting(3, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_2),
+                new Meeting(4, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_3),
+                new Meeting(5, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_4),
+                new Meeting(6, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_5),
+                new Meeting(7, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_6),
+                new Meeting(8, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_7),
+                new Meeting(9, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_8),
+                new Meeting(10, PHONE_OWNER_EMAIL, new HashSet<>(), TOPIC, start, end, MeetingRoom.ROOM_9)
+        ))));
+        viewModel = new AddMeetingFragmentViewModel(application, meetingsRepository, CLOCK);
+        viewModel.validate();
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // then
+        assertEquals(SELECT_ROOM, viewState.getRoomName());
+        assertEquals(NO_MEETING_ROOM, viewState.getRoomError());
     }
 
+    @Test
+    public void setRoomButThenChangeToIncompatibleTimeSpan() throws InterruptedException {
+        // when
+        viewModel.setTime(true, 17,20);
+        viewModel.setTime(false, 18,0);
+        viewModel.validate();
+        AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
+
+        // then
+        assertEquals(ROOM_NOT_FREE, viewState.getRoomError());
+    }
 }

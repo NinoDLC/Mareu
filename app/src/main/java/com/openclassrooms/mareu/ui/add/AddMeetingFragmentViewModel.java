@@ -178,7 +178,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
             mRoomError = application.getString(R.string.no_meeting_room);
         else if (mParticipants.size() > mRoom.getCapacity())
             mRoomError = application.getString(R.string.room_too_small);
-        if (!mValidRooms.contains(mRoom))
+        else if (!mValidRooms.contains(mRoom))
             mRoomError = application.getString(R.string.room_not_free);
 
         if (mRoomError != null || mParticipantError != null || mTopicError != null || mTimeError != null) {

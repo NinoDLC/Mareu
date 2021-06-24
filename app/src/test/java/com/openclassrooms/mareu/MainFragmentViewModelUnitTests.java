@@ -217,7 +217,4 @@ public class MainFragmentViewModelUnitTests {
         assertEquals(LocalDateTime.now(clock).getHour(), viewModel.getTimeFilterHour());
         assertEquals(LocalDateTime.now(clock).getMinute(), viewModel.getTimeFilterMinute());
     }
-
-    // List<Meeting> list = new ArrayList<>();
-    // LocalDateTime localDateTimeFilter = LocalDateTime.of(2021, 6, 15, 8, 10, 0);
 }
