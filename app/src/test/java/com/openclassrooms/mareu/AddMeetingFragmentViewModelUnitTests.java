@@ -169,10 +169,11 @@ public class AddMeetingFragmentViewModelUnitTests {
     public void setEndTimeEarlier() throws InterruptedException {
         // when
         viewModel.setTime(false, 8, 30);
+        viewModel.validate();
         AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
 
         // then
-        assertNull(viewState.getRoomError());
+        assertEquals(ROOM_NOT_FREE, viewState.getRoomError());
         assertEquals(STOP_BEFORE_START, viewState.getTimeError());
     }
 
@@ -183,6 +184,7 @@ public class AddMeetingFragmentViewModelUnitTests {
 
         // when
         viewModel.addParticipant(ADD_EMAIL);
+        viewModel.validate();
         AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
 
 
@@ -209,6 +211,7 @@ public class AddMeetingFragmentViewModelUnitTests {
     public void addEmptyParticipant() throws InterruptedException {
         // when
         viewModel.addParticipant("");
+        viewModel.validate();
         AddMeetingFragmentViewState viewState = LiveDataTestUtils.getOrAwaitValue(viewModel.getViewState());
 
         // Then

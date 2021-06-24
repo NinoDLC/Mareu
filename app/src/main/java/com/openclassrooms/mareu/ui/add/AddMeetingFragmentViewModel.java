@@ -181,7 +181,7 @@ public class AddMeetingFragmentViewModel extends ViewModel {
         else if (!mValidRooms.contains(mRoom))
             mRoomError = application.getString(R.string.room_not_free);
 
-        if (mRoomError != null || mParticipantError != null || mTopicError != null || mTimeError != null) {
+        if (mTimeError != null || mParticipantError != null || mRoomError != null || mTopicError != null) {
             viewState.setValue(toViewState());
             return false;
         }
