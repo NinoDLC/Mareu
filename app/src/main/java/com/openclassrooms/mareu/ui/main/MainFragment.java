@@ -1,7 +1,6 @@
 package com.openclassrooms.mareu.ui.main;
 
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
@@ -51,9 +52,9 @@ public class MainFragment extends Fragment {
                 }
         );
 
-        view.findViewById(R.id.fab).setOnClickListener(v -> mViewModel.setDetailId(0));
+        view.findViewById(R.id.fragment_main_fab_button).setOnClickListener(v -> mViewModel.setDetailId(0));
 
-        RecyclerView recyclerView = view.findViewById(R.id.meeting_list);
+        RecyclerView recyclerView = view.findViewById(R.id.fragment_main_meeting_list_rv);
         recyclerView.setAdapter(mAdapter);
 
         mViewModel.getViewStateListLiveData().observe(getViewLifecycleOwner(), items -> mAdapter.submitList(items));
@@ -85,23 +86,18 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        menu.findItem(R.id.filter_date).setOnMenuItemClickListener(
-                item -> {
-                    new TimePickerDialog(  // staying away from dates and DatePickerDialog()
-                            requireContext(),
-                            (view, hourOfDay, minute) -> mViewModel.setTimeFilter(hourOfDay, minute),
-                            mViewModel.getTimeFilterHour(),
-                            mViewModel.getTimeFilterMinute(),
-                            true) {
-                        @Override
-                        public void cancel() {
-                            mViewModel.resetTimeFilter();
-                            super.cancel();
-                        }
-                    }.show();
-                    return false;
-                }
-        );
+        menu.findItem(R.id.filter_date).setOnMenuItemClickListener(v -> {
+                    MaterialTimePicker picker = new MaterialTimePicker.Builder()
+                            .setTimeFormat(TimeFormat.CLOCK_24H)
+                            .setHour(mViewModel.getTimeFilterHour())
+                            .setMinute(mViewModel.getTimeFilterMinute())
+                            .setTitleText(R.string.set_filter_time)
+                            .build();
+                    picker.addOnPositiveButtonClickListener(view -> mViewModel.setTimeFilter(picker.getHour(), picker.getMinute()));
+                    picker.addOnPositiveButtonClickListener(view -> mViewModel.resetTimeFilter());
+                    picker.show(getParentFragmentManager(), "my tag");
+                    return true;
+                });
         menu.findItem(R.id.filter_room).setOnMenuItemClickListener(
                 item -> {
                     new AlertDialog.Builder(requireContext())

@@ -20,4 +20,7 @@
     <string name="room_too_small">room too small</string>
     <string name="room_not_free">room not free</string>
     <string name="do_not_add_yourself">do not add yourself</string>
+    <string name="set_start_time">set start time</string>
+    <string name="set_end_time">set end time</string>
+    <string name="set_filter_time">set filter time</string>
 </resources>

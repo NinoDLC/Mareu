@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.ui.add;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +21,8 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.openclassrooms.mareu.R;
 import com.openclassrooms.mareu.ViewModelFactory;
 
@@ -127,12 +128,17 @@ public class AddMeetingFragment extends Fragment {
     }
 
     void bindTimeButton(@NonNull Button button, int hour, int minute, boolean isStartButton) {
-        button.setOnClickListener(view -> new TimePickerDialog(
-                requireContext(),
-                (v, h, m) -> mViewModel.setTime(isStartButton, h, m),
-                hour,
-                minute,
-                true
-        ).show());
+        button.setOnClickListener(v -> {
+            MaterialTimePicker picker = new MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_24H)
+                    .setHour(hour)
+                    .setMinute(minute)
+                    .setTitleText(isStartButton ? getString(R.string.set_start_time) : getString(R.string.set_end_time))
+                    .build();
+            picker.addOnPositiveButtonClickListener(
+                    view -> mViewModel.setTime(isStartButton, picker.getHour(), picker.getMinute())
+            );
+            picker.show(getParentFragmentManager(), "my tag");
+        });
     }
 }
