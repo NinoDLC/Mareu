@@ -70,7 +70,7 @@ public class PuppetMaterialTP {
         ).perform(click());
         onView(
                 allOf(
-                        withText("" + minutes.getMinutes()),
+                        withText(String.format("%02d", minutes.getMinutes())),
                         withParent(withId(R.id.material_clock_face))
                 )
         ).perform(click());
