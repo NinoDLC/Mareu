@@ -18,8 +18,10 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static java.lang.Thread.sleep;
 
 @RunWith(AndroidJUnit4.class)
 public class InstrumentedTest {
@@ -33,38 +35,35 @@ public class InstrumentedTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         activityScenario.close();
     }
 
     @Test
-    public void nominalCase() {
+    public void nominalCase() throws InterruptedException {
         onView(withId(R.id.fragment_main_fab_button)).perform(click());
         onView(withId(R.id.add_meeting_topic_field)).perform(replaceText(TOPIC), closeSoftKeyboard());
         onView(withId(R.id.add_meeting_create)).perform(click());
-    }
 
-    @Test
-    public void veryLongTopic() {
+        // very long topic
         onView(withId(R.id.fragment_main_fab_button)).perform(click());
         onView(withId(R.id.add_meeting_topic_field)).perform(
                 replaceText("This is a very long topic that should be cropped before printing"),
                 closeSoftKeyboard()
         );
         onView(withId(R.id.add_meeting_create)).perform(click());
-    }
 
-    @Test
-    public void createAndFilter() {
+        // delete meetings
+        onView(withId(R.id.fragment_main_meeting_list_rv)).perform(actionOnItemAtPosition(0, new DeleteViewAction()));
+        onView(withId(R.id.fragment_main_meeting_list_rv)).perform(actionOnItemAtPosition(0, new DeleteViewAction()));
+
+        // createAndFilter
         createMeetingAtEightFifteen(MeetingRoom.ROOM_0);
         createMeetingAtEightFifteen(MeetingRoom.ROOM_1);
         createMeetingAtEightFifteen(MeetingRoom.ROOM_2);
-        createMeetingAtEightFifteen(MeetingRoom.ROOM_3);
-    }
-
-    @Test
-    public void shouldPrintRoomError() {
         createMeetingAtEightFifteen(MeetingRoom.ROOM_3);  // Caniche, the default room
+
+        // shouldPrintRoomError()
         onView(withId(R.id.fragment_main_fab_button)).perform(click());
         onView(withId(R.id.add_meeting_topic_field)).perform(replaceText(TOPIC), closeSoftKeyboard());
 
@@ -91,8 +90,11 @@ public class InstrumentedTest {
 
         // suppress room error
         onView(withId(R.id.add_meeting_room)).perform(click());
-        onView(withText(MeetingRoom.ROOM_1.getName())).perform(scrollTo(), click());
+        onView(withText(MeetingRoom.ROOM_4.getName())).perform(scrollTo(), click());
         onView(withId(R.id.add_meeting_create)).perform(click());
+
+        //
+        sleep(10000);
     }
 
     void createMeetingAtEightFifteen(MeetingRoom room) {
