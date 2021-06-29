@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
                             .setTitleText(R.string.set_filter_time)
                             .build();
                     picker.addOnPositiveButtonClickListener(view -> mViewModel.setTimeFilter(picker.getHour(), picker.getMinute()));
-                    picker.addOnPositiveButtonClickListener(view -> mViewModel.resetTimeFilter());
+                    picker.addOnNegativeButtonClickListener(view -> mViewModel.resetTimeFilter());
                     picker.show(getParentFragmentManager(), "my tag");
                     return true;
                 });
