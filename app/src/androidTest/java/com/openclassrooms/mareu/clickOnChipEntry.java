@@ -20,6 +20,8 @@ public class clickOnChipEntry implements ViewAction {
 
     @Override
     public void perform(UiController uiController, View view) {
+        // view.findViewById(123);
+
         int y = view.getHeight() / 2;
         int x = view.getWidth() - y;
         view.performContextClick(x,y);
