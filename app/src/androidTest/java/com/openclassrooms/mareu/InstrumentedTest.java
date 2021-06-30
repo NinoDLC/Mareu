@@ -4,6 +4,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.android.material.chip.Chip;
 import com.openclassrooms.mareu.model.MeetingRoom;
 import com.openclassrooms.mareu.ui.main.MainActivity;
 
@@ -24,6 +25,7 @@ import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtP
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.core.AllOf.allOf;
 
 @RunWith(AndroidJUnit4.class)
@@ -83,12 +85,7 @@ public class InstrumentedTest {
         onView(withId(R.id.add_meeting_participants_field)).perform(pressImeActionButton(), closeSoftKeyboard());
 
         // delete one
-/*
-        onView(allOf(
-                withParent(withId(R.id.add_meeting_participants_group)),
-                withText(getEmail(2))
-        )).perform(new clickOnChipEntry());
-*/
+        onView(new NthChildOf(withId(R.id.add_meeting_participants_group), 2)).perform(new ClickOnChipEntry());
 
         //change room and validate
         onView(withId(R.id.add_meeting_start)).perform(swipeUp(), swipeUp(), swipeUp(), swipeUp(), swipeUp());
