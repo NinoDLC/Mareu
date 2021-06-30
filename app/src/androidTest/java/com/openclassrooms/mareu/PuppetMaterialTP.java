@@ -1,7 +1,5 @@
 package com.openclassrooms.mareu;
 
-import android.view.View;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -11,7 +9,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 
 public class PuppetMaterialTP {
 
-    public static enum Hours {
+    public enum Hours {
         HOUR2(2),
         HOUR4(4),
         HOUR6(6),
@@ -36,7 +34,7 @@ public class PuppetMaterialTP {
         }
     }
 
-    public static enum Minutes {
+    public enum Minutes {
         MINUTES0(0),
         MINUTES5(5),
         MINUTES10(10),

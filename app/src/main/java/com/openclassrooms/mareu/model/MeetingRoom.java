@@ -1,6 +1,5 @@
 package com.openclassrooms.mareu.model;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 

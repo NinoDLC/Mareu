@@ -145,6 +145,7 @@ public class AddMeetingFragmentViewState {
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "AddMeetingFragmentViewState{" +

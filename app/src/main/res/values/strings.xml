@@ -5,7 +5,6 @@
     <string name="hint_owner">Meeting owner email</string>
     <string name="hint_topic">Meeting topic</string>
     <string name="hint_participant">Add a participant email</string>
-    <string name="nothing_to_show_here">Nothing to show here</string>
     <string name="filter_by_room">Displayed meeting rooms</string>
     <string name="free_rooms_dialog_title">Free rooms list to pick from</string>
     <string name="apply">Apply</string>
